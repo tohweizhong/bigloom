@@ -1,0 +1,8 @@
+{
+  "track_id": "core_pipeline_20261002",
+  "title": "Core BigLoom Pipeline (build, queries, qualify, grade, and pytest suite)",
+  "type": "mvp",
+  "status": "new",
+  "created_at": "2026-10-02T09:20:02+08:00",
+  "updated_at": "2026-10-02T09:20:02+08:00"
+}
