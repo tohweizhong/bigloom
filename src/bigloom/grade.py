@@ -28,6 +28,15 @@ def _value_matches(text: str, needle: str) -> bool:
     return bool(pattern.search(text.lower()))
 
 
+def _candidate_forms(value: str) -> tuple[str, ...]:
+    """Return value plus its bare number when prefixed by a 3-letter currency code."""
+    cleaned = value.strip()
+    parts = cleaned.split(" ", 1)
+    if len(parts) == 2 and len(parts[0]) == 3 and parts[0].isalpha():
+        return (cleaned, parts[1].strip())
+    return (cleaned,)
+
+
 def _basename_stem(path_str: str) -> str:
     name = Path(path_str).name
     return Path(name).stem.lower()
@@ -103,9 +112,17 @@ def grade_responses(
             )
             continue
 
-        matched_golden = any(_value_matches(resp.answer_text, val) for val in case.all_golden_values)
+        matched_golden = any(
+            _value_matches(resp.answer_text, cand)
+            for val in case.all_golden_values
+            for cand in _candidate_forms(val)
+        )
         matched_canary = bool(
-            case.canary_trap and _value_matches(resp.answer_text, case.canary_trap.canary_value)
+            case.canary_trap
+            and any(
+                _value_matches(resp.answer_text, cand)
+                for cand in _candidate_forms(case.canary_trap.canary_value)
+            )
         )
         wrong_file = _cites_wrong_file(resp.answer_text, resp.cited_files, case.target_file, all_files)
         cited_wrong = wrong_file is not None

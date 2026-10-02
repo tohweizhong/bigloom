@@ -109,10 +109,10 @@ def test_grade_all_five_verdicts() -> None:
 def test_grade_canary_trap_and_prose_citation() -> None:
     cases = _sample_cases()
     responses = [
-        # Returns canary value from distractor file
+        # Returns canary value from distractor file with currency code moved after the number
         EvalResponse(
             case_id="case-1",
-            answer_text="The reserve budget for Project Aurora is SGD 3,190,450.",
+            answer_text="The reserve budget for Project Aurora is 3,190,450 SGD.",
             cited_files=(),
             tool_calls=("search_documents",),
         ),

@@ -19,6 +19,14 @@ def load_manifest(manifest_path: Path) -> list[ManifestEntry]:
     return entries
 
 
+def _currency_aliases(value: str) -> tuple[str, ...]:
+    """Return bare numeric aliases when value starts with a 3-letter currency code."""
+    parts = value.strip().split(" ", 1)
+    if len(parts) == 2 and len(parts[0]) == 3 and parts[0].isalpha():
+        return (parts[1].strip(),)
+    return ()
+
+
 def generate_queries(manifest_path: Path, out_path: Path | None = None) -> list[EvalCase]:
     """Build two evaluation cases (one text, one image) per large file in manifest_path."""
     entries = load_manifest(manifest_path)
@@ -34,6 +42,7 @@ def generate_queries(manifest_path: Path, out_path: Path | None = None) -> list[
             target_file=entry.target_file,
             modality="text",
             golden_value=entry.text_golden_value,
+            acceptable_values=_currency_aliases(entry.text_golden_value),
             min_unit_index=5,
             canary_trap=CanaryTrap(
                 distractor_file=entry.distractor_file,

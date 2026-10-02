@@ -93,3 +93,12 @@ def grade(
     responses = [EvalResponse.model_validate(item) for item in raw_responses]
     report = grade_responses(cases, responses)
     typer.echo(report.model_dump_json(indent=2))
+
+
+def main() -> None:
+    """Run the BigLoom CLI application."""
+    app()
+
+
+if __name__ == "__main__":
+    main()

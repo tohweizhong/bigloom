@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections.abc import Sequence
 from io import BytesIO
@@ -42,7 +43,6 @@ def inspect_file_bytes(payload: bytes, suffix: str) -> NativeSnapshot:
         for page_idx, page in enumerate(reader.pages, 1):
             text = page.extract_text() or ""
             units.append(NativeUnit(locator=f"page:{page_idx}", text=text))
-        import hashlib
 
         return NativeSnapshot(
             format="pdf",
