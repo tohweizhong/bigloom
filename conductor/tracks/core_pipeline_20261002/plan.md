@@ -23,17 +23,17 @@
   - [x] Run `pytest` and confirm all grading tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) c0d44b3
 
-## Phase 3: Large-File Builder (`build.py`), Query Generator (`queries.py`), and CLI (`cli.py`)
+## Phase 3: Large-File Builder (`build.py`), Query Generator (`queries.py`), and CLI (`cli.py`) [checkpoint: 448393e]
 
-- [~] Task: Write unit tests for `build.py`, `queries.py`, and `cli.py` (Red Phase)
-  - [ ] Create `tests/test_pipeline.py` testing `bigloom build`, `bigloom queries`, `bigloom qualify`, and `bigloom grade` end to end
-  - [ ] Verify determinism from `--seed`, custom byte tiers (`--sizes-mb`), paired `< 1 MB` trap files, and two high-entropy questions per large file
-- [ ] Task: Implement `src/bigloom/build.py` (Green Phase)
-  - [ ] Support both `--corpus-dir` (WorldLoom corpus) and standalone `--seed` synthesis
-  - [ ] Render `.docx`, `.xlsx`, `.pptx`, and `.pdf` files with deep text facts (`unit >= 5`), noisy Pillow chart images, and `< 1 MB` canary trap files
-  - [ ] Write `manifest.jsonl` with byte sizes, SHA-256 hashes, planted facts, and distractor paths
-- [ ] Task: Implement `src/bigloom/queries.py` and update `src/bigloom/cli.py` (Green Phase)
-  - [ ] Generate two high-entropy `EvalCase` items (one `text`, one `image`) per large file from `manifest.jsonl` and write `cases.json`
-  - [ ] Add `bigloom build` and `bigloom queries` commands to `src/bigloom/cli.py` and update `README.md`
-  - [ ] Run full `pytest` suite and verify at least 80% code coverage
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Write unit tests for `build.py`, `queries.py`, and `cli.py` (Red Phase) 3f423cd
+  - [x] Create `tests/test_pipeline.py` testing `bigloom build`, `bigloom queries`, `bigloom qualify`, and `bigloom grade` end to end
+  - [x] Verify determinism from `--seed`, custom byte tiers (`--sizes-mb`), paired `< 1 MB` trap files, and two high-entropy questions per large file
+- [x] Task: Implement `src/bigloom/build.py` (Green Phase) 6ab13ab
+  - [x] Support both `--corpus-dir` (WorldLoom corpus) and standalone `--seed` synthesis
+  - [x] Render `.docx`, `.xlsx`, `.pptx`, and `.pdf` files with deep text facts (`unit >= 5`), noisy Pillow chart images, and `< 1 MB` canary trap files
+  - [x] Write `manifest.jsonl` with byte sizes, SHA-256 hashes, planted facts, and distractor paths
+- [x] Task: Implement `src/bigloom/queries.py` and update `src/bigloom/cli.py` (Green Phase) 448393e
+  - [x] Generate two high-entropy `EvalCase` items (one `text`, one `image`) per large file from `manifest.jsonl` and write `cases.json`
+  - [x] Add `bigloom build` and `bigloom queries` commands to `src/bigloom/cli.py` and update `README.md`
+  - [x] Run full `pytest` suite and verify at least 80% code coverage
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 448393e
