@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from .models import CaseGrade, EvalCase, EvalResponse, GradeReport, LeakageVerdict
 

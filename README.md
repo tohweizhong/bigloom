@@ -4,19 +4,21 @@ BigLoom builds large test files (1 MB to 100 MB) on top of [WorldLoom (`syntheti
 
 ## Problem
 
-When you evaluate a connector on large files (for example, 10 MB to 100 MB DOCX, XLSX, PPTX, and PDF files), target leakage happens in two ways:
+When you evaluate a connector on large files (such as 18 MB, 50 MB, and 100 MB DOCX, XLSX, PPTX, and PDF files), target leakage happens in two ways:
 
-1. **Cross-file leakage:** The connector indexes every file in the workspace. A small file (for example, 0.5 MB) may contain the same number or topic as a 50 MB file. The agent answers the 50 MB question from the 0.5 MB file.
+1. **Cross-file leakage:** The connector indexes every file in the workspace. A small file (under 1 MB) may contain the same number or topic as a 50 MB file. The agent answers the 50 MB question from the small file.
 2. **Snippet leakage:** The search index returns an early paragraph or title snippet from the large file. The agent answers the question from the snippet without calling `download_document` or `fetch_documents`.
 
-## Architecture
+## Four-Stage Offline Pipeline
 
-BigLoom stops leakage at two gates:
+BigLoom runs offline in four stages:
 
 | Stage | Module | What it enforces |
 | :--- | :--- | :--- |
-| **1. Build-time qualification** | `src/bigloom/qualify.py` | Uses `worldloom.native_artifacts.inspect_artifact`, `pypdf`, and `worldloom.evaluate.{bm25,tfidf}` to check global answer uniqueness, deep placement (`min_unit_index`), image-only text exclusion, canary isolation, and leave-one-out retrieval. |
-| **2. Eval-time grading** | `src/bigloom/grade.py` | Grades each query into `CORRECT_WITH_DOWNLOAD`, `SNIPPET_ONLY_LEAK`, `CROSS_FILE_LEAK_CANARY`, `CROSS_FILE_LEAK_CITATION`, or `WRONG_ANSWER`. |
+| **1. Build large files** | `src/bigloom/build.py` | Renders `.docx`, `.xlsx`, `.pptx`, and `.pdf` files at requested byte sizes (`--sizes-mb`), creates one `< 1 MB` canary trap file per large file, and writes `manifest.jsonl`. |
+| **2. Generate queries** | `src/bigloom/queries.py` | Reads `manifest.jsonl` and generates `cases.json` with two high-entropy questions per large file (one deep `text` fact at `unit >= 5` and one `image` chart fact). |
+| **3. Qualify corpus** | `src/bigloom/qualify.py` | Uses `worldloom.native_artifacts.inspect_artifact`, `pypdf`, and `worldloom.evaluate.{bm25,tfidf}` to check high entropy, global answer uniqueness, deep placement, image-only text exclusion, canary isolation, and retrieval ranking. |
+| **4. Grade responses** | `src/bigloom/grade.py` | Grades each query response into `CORRECT_WITH_DOWNLOAD`, `SNIPPET_ONLY_LEAK`, `CROSS_FILE_LEAK_CANARY`, `CROSS_FILE_LEAK_CITATION`, or `WRONG_ANSWER`. |
 
 ## Quick Start
 
@@ -30,9 +32,15 @@ python3 -m venv .venv
 ## CLI Commands
 
 ```bash
-# 1. Qualify a rendered directory and dataset before uploading to a connector
-bigloom qualify --corpus-dir ./artifacts --cases ./cases.json
+# 1. Build large target files and < 1 MB distractor traps
+bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --seed 42
 
-# 2. Grade a completed evaluation run and detect target leakage
-bigloom grade --cases ./cases.json --responses ./responses.json
+# 2. Generate two evaluation cases per large file from manifest.jsonl
+bigloom queries --manifest ./artifacts/manifest.jsonl --out ./artifacts/cases.json
+
+# 3. Qualify the rendered directory and dataset before uploading to a connector
+bigloom qualify --corpus-dir ./artifacts --cases ./artifacts/cases.json
+
+# 4. Grade a completed evaluation run and detect target leakage
+bigloom grade --cases ./artifacts/cases.json --responses ./responses.json
 ```

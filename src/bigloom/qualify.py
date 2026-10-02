@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from io import BytesIO
 from pathlib import Path
-from typing import Sequence
 
 from pypdf import PdfReader
 from worldloom.evaluate.bm25 import Bm25
@@ -28,9 +28,7 @@ def _is_low_entropy_value(value: str) -> bool:
     cleaned = value.strip()
     if len(cleaned) < 4:
         return True
-    if _LOW_ENTROPY_RE.fullmatch(cleaned):
-        return True
-    return False
+    return bool(_LOW_ENTROPY_RE.fullmatch(cleaned))
 
 
 def inspect_file_bytes(payload: bytes, suffix: str) -> NativeSnapshot:
@@ -150,19 +148,18 @@ def qualify_corpus(
                             ),
                         )
                     )
-        elif case.modality == "image":
-            if target_hits:
-                locators = ", ".join(loc for _, loc in target_hits[:3])
-                violations.append(
-                    QualificationViolation(
-                        case_id=case.id,
-                        code=ViolationCode.IMAGE_FACT_LEAKED_IN_TEXT,
-                        detail=(
-                            f"Image-only golden value '{case.golden_value}' leaked into text "
-                            f"of '{case.target_file}' at {locators}."
-                        ),
-                    )
+        elif case.modality == "image" and target_hits:
+            locators = ", ".join(loc for _, loc in target_hits[:3])
+            violations.append(
+                QualificationViolation(
+                    case_id=case.id,
+                    code=ViolationCode.IMAGE_FACT_LEAKED_IN_TEXT,
+                    detail=(
+                        f"Image-only golden value '{case.golden_value}' leaked into text "
+                        f"of '{case.target_file}' at {locators}."
+                    ),
                 )
+            )
 
         # Global uniqueness check across all other files in the corpus.
         for other_file, other_snap in snapshots.items():
