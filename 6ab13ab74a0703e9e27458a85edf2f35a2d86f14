@@ -1,0 +1,1 @@
+Task: Implement src/bigloom/build.py. Renders .docx, .xlsx, .pptx, and .pdf files at custom byte tiers with deep text facts and paired < 1 MB traps.
