@@ -1,0 +1,1 @@
+Task: Implement src/bigloom/queries.py and update src/bigloom/cli.py. Generates two high-entropy questions per large file. Full test suite passes (11 passed, 99% coverage, 0 ruff errors).
