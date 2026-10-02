@@ -1,0 +1,1 @@
+Task: Set up the virtual environment and test dependencies. Added reportlab and pytest-cov to pyproject.toml and added ManifestEntry model to src/bigloom/models.py.
