@@ -19,6 +19,29 @@ class CanaryTrap(FrozenModel):
     canary_value: str
 
 
+class ManifestEntry(FrozenModel):
+    """Metadata and planted facts for one rendered target file and its small trap file."""
+
+    file_id: str
+    format: Literal["docx", "xlsx", "pptx", "pdf"]
+    target_file: str
+    target_size_bytes: int
+    target_sha256: str
+    distractor_file: str
+    distractor_size_bytes: int
+    distractor_sha256: str
+    topic: str
+    period: str
+    distractor_period: str
+    text_metric_label: str
+    text_golden_value: str
+    text_canary_value: str
+    text_unit_index: int
+    image_chart_title: str
+    image_golden_value: str
+    image_canary_value: str
+
+
 class EvalCase(FrozenModel):
     """One large-file evaluation question and its anti-leakage contract."""
 
