@@ -13,19 +13,19 @@
   - [x] Run `pytest` and confirm all qualification tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) b0cfca1
 
-## Phase 2: Leakage Grader (`grade.py`)
+## Phase 2: Leakage Grader (`grade.py`) [checkpoint: c0d44b3]
 
-- [~] Task: Write unit tests for `grade.py` (Red Phase)
-  - [ ] Create `tests/test_grade.py` covering `CORRECT_WITH_DOWNLOAD`, `SNIPPET_ONLY_LEAK`, `CROSS_FILE_LEAK_CANARY`, `CROSS_FILE_LEAK_CITATION`, and `WRONG_ANSWER`
-  - [ ] Add negative tests where `golden_value` or `canary_value` appears only as a partial substring of another number
-- [ ] Task: Update `grade.py` with word-boundary matching and pass all grading tests (Green Phase)
-  - [ ] Use regex word-boundary checks for `golden_value` and `canary_value` in `src/bigloom/grade.py`
-  - [ ] Run `pytest` and confirm all grading tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Write unit tests for `grade.py` (Red Phase) 3e8fffb
+  - [x] Create `tests/test_grade.py` covering `CORRECT_WITH_DOWNLOAD`, `SNIPPET_ONLY_LEAK`, `CROSS_FILE_LEAK_CANARY`, `CROSS_FILE_LEAK_CITATION`, and `WRONG_ANSWER`
+  - [x] Add negative tests where `golden_value` or `canary_value` appears only as a partial substring of another number
+- [x] Task: Update `grade.py` with word-boundary matching and pass all grading tests (Green Phase) c0d44b3
+  - [x] Use regex word-boundary checks for `golden_value` and `canary_value` in `src/bigloom/grade.py`
+  - [x] Run `pytest` and confirm all grading tests pass
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) c0d44b3
 
 ## Phase 3: Large-File Builder (`build.py`), Query Generator (`queries.py`), and CLI (`cli.py`)
 
-- [ ] Task: Write unit tests for `build.py`, `queries.py`, and `cli.py` (Red Phase)
+- [~] Task: Write unit tests for `build.py`, `queries.py`, and `cli.py` (Red Phase)
   - [ ] Create `tests/test_pipeline.py` testing `bigloom build`, `bigloom queries`, `bigloom qualify`, and `bigloom grade` end to end
   - [ ] Verify determinism from `--seed`, custom byte tiers (`--sizes-mb`), paired `< 1 MB` trap files, and two high-entropy questions per large file
 - [ ] Task: Implement `src/bigloom/build.py` (Green Phase)
