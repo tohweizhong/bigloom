@@ -1,0 +1,1 @@
+Task: Write unit tests for build.py, queries.py, and cli.py. Added tests/test_pipeline.py testing full 4-step pipeline and CLI.
