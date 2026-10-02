@@ -1,6 +1,6 @@
 # Implementation Plan: Core BigLoom Pipeline (`core_pipeline_20261002`)
 
-## Phase 1: Environment, Data Models, and Qualification Gate (`qualify.py`)
+## Phase 1: Environment, Data Models, and Qualification Gate (`qualify.py`) [checkpoint: b0cfca1]
 
 - [x] Task: Set up the virtual environment and test dependencies 65c1305
   - [x] Install `worldloom` (`synthetic-foundry`) and `bigloom[dev]` with `pytest-cov` in `.venv`
@@ -11,11 +11,11 @@
 - [x] Task: Update `qualify.py` to pass all qualification tests (Green Phase) b0cfca1
   - [x] Add word-boundary matching to `_unit_matches` in `src/bigloom/qualify.py`
   - [x] Run `pytest` and confirm all qualification tests pass
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) b0cfca1
 
 ## Phase 2: Leakage Grader (`grade.py`)
 
-- [ ] Task: Write unit tests for `grade.py` (Red Phase)
+- [~] Task: Write unit tests for `grade.py` (Red Phase)
   - [ ] Create `tests/test_grade.py` covering `CORRECT_WITH_DOWNLOAD`, `SNIPPET_ONLY_LEAK`, `CROSS_FILE_LEAK_CANARY`, `CROSS_FILE_LEAK_CITATION`, and `WRONG_ANSWER`
   - [ ] Add negative tests where `golden_value` or `canary_value` appears only as a partial substring of another number
 - [ ] Task: Update `grade.py` with word-boundary matching and pass all grading tests (Green Phase)
