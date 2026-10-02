@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets and local configuration
+.env
+*.env
+config.json
+login-config.json
+assist_tokens.json
+
+# Generated large binary corpora and run outputs
+corpora/
+artifacts/
+runs/
+scratch/
+*.report
+
+# IDE, OS, and agent directories
+.agents/
+.gemini/
+.DS_Store
+.idea/
+.vscode/
