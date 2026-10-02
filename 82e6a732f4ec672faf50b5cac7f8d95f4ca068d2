@@ -1,0 +1,1 @@
+Task: Write unit tests for models.py and qualify.py. Created tests/test_qualify.py testing all 4 formats, all 9 ViolationCode values, and word-boundary matching.
