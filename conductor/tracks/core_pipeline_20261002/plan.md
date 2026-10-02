@@ -37,3 +37,8 @@
   - [x] Add `bigloom build` and `bigloom queries` commands to `src/bigloom/cli.py` and update `README.md`
   - [x] Run full `pytest` suite and verify at least 80% code coverage
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 448393e
+
+## Phase: Review Fixes [checkpoint: 4e99cc2]
+
+- [x] Task: Apply review suggestions 4e99cc2
+
