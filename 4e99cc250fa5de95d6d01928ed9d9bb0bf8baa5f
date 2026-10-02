@@ -1,0 +1,1 @@
+Task: Apply review suggestions for track core_pipeline_20261002. Added currency alias matching, top-level hashlib import, and CLI main() entry point.
