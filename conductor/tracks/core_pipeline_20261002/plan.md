@@ -2,16 +2,16 @@
 
 ## Phase 1: Environment, Data Models, and Qualification Gate (`qualify.py`)
 
-- [ ] Task: Set up the virtual environment and test dependencies
-  - [ ] Install `worldloom` (`synthetic-foundry`) and `bigloom[dev]` with `pytest-cov` in `.venv`
-  - [ ] Add `ManifestEntry` model to `src/bigloom/models.py` for `manifest.jsonl` serialization
-- [ ] Task: Write unit tests for `models.py` and `qualify.py` (Red Phase)
-  - [ ] Create `tests/test_qualify.py` to test all nine `ViolationCode` rules on `.docx`, `.xlsx`, `.pptx`, and `.pdf` bytes
-  - [ ] Include word-boundary collision tests so short substrings inside longer numbers do not match falsely
-- [ ] Task: Update `qualify.py` to pass all qualification tests (Green Phase)
-  - [ ] Add word-boundary matching to `_unit_matches` in `src/bigloom/qualify.py`
-  - [ ] Run `pytest` and confirm all qualification tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Set up the virtual environment and test dependencies 65c1305
+  - [x] Install `worldloom` (`synthetic-foundry`) and `bigloom[dev]` with `pytest-cov` in `.venv`
+  - [x] Add `ManifestEntry` model to `src/bigloom/models.py` for `manifest.jsonl` serialization
+- [x] Task: Write unit tests for `models.py` and `qualify.py` (Red Phase) 82e6a73
+  - [x] Create `tests/test_qualify.py` to test all nine `ViolationCode` rules on `.docx`, `.xlsx`, `.pptx`, and `.pdf` bytes
+  - [x] Include word-boundary collision tests so short substrings inside longer numbers do not match falsely
+- [x] Task: Update `qualify.py` to pass all qualification tests (Green Phase) b0cfca1
+  - [x] Add word-boundary matching to `_unit_matches` in `src/bigloom/qualify.py`
+  - [x] Run `pytest` and confirm all qualification tests pass
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: Leakage Grader (`grade.py`)
 
