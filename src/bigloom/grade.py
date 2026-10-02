@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 from pathlib import Path
 from typing import Sequence
@@ -14,6 +15,17 @@ DOWNLOAD_TOOLS = {
     "read_file",
     "get_document_content",
 }
+
+
+def _value_matches(text: str, needle: str) -> bool:
+    """Return True when needle appears on word boundaries inside text."""
+    low_needle = needle.strip().lower()
+    if not low_needle:
+        return False
+    pattern = re.compile(
+        r"(?<![0-9a-z])" + re.escape(low_needle) + r"(?![0-9a-z])(?!\.\d)"
+    )
+    return bool(pattern.search(text.lower()))
 
 
 def _basename_stem(path_str: str) -> str:
@@ -91,10 +103,9 @@ def grade_responses(
             )
             continue
 
-        low_text = resp.answer_text.lower()
-        matched_golden = any(val.lower() in low_text for val in case.all_golden_values)
+        matched_golden = any(_value_matches(resp.answer_text, val) for val in case.all_golden_values)
         matched_canary = bool(
-            case.canary_trap and case.canary_trap.canary_value.lower() in low_text
+            case.canary_trap and _value_matches(resp.answer_text, case.canary_trap.canary_value)
         )
         wrong_file = _cites_wrong_file(resp.answer_text, resp.cited_files, case.target_file, all_files)
         cited_wrong = wrong_file is not None
