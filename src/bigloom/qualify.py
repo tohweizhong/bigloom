@@ -68,11 +68,16 @@ def load_corpus_snapshots(corpus_dir: Path) -> dict[str, NativeSnapshot]:
 
 
 def _unit_matches(units: Sequence[NativeUnit], needle: str) -> list[tuple[int, str]]:
-    """Return 1-based unit indices and locators where needle appears (case-insensitive)."""
-    low_needle = needle.lower()
+    """Return 1-based unit indices and locators where needle appears on word boundaries."""
+    low_needle = needle.strip().lower()
+    if not low_needle:
+        return []
+    pattern = re.compile(
+        r"(?<![0-9a-z])" + re.escape(low_needle) + r"(?![0-9a-z])(?!\.\d)"
+    )
     hits: list[tuple[int, str]] = []
     for idx, unit in enumerate(units, 1):
-        if low_needle in unit.text.lower():
+        if pattern.search(unit.text.lower()):
             hits.append((idx, unit.locator))
     return hits
 
