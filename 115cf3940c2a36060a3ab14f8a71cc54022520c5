@@ -1,0 +1,1 @@
+Task: Write unit tests for report.py and new CLI commands. Added tests/test_report.py covering all 5 scorecard sections and CLI import-run/report.
