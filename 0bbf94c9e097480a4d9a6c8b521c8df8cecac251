@@ -1,0 +1,1 @@
+Task: Write unit tests for adapters.py. Added tests/test_adapters.py covering JSON, JSONL, agent traces, and CSV exports.
