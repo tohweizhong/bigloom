@@ -14,3 +14,9 @@
 
 - [x] **Track: WorldLoom Blueprint and Pack Ingestion (`--world-pack` and `--domain`)**
   *Link: [./tracks/worldloom_blueprint_ingest_20261004/index.md](./tracks/worldloom_blueprint_ingest_20261004/index.md)*
+
+---
+
+- [ ] **Track: Gemini Enterprise Evaluation Harness (`harnesses/gemini_enterprise/`)**
+  *Link: [./tracks/gemini_enterprise_harness_20261004/index.md](./tracks/gemini_enterprise_harness_20261004/index.md)*
+
