@@ -1,0 +1,1 @@
+Task: Implement WorldLoom ingestion in src/bigloom/build.py and src/bigloom/cli.py. All 18 tests pass with 97% coverage.
