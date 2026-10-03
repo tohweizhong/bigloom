@@ -17,6 +17,6 @@
 
 ---
 
-- [ ] **Track: Gemini Enterprise Evaluation Harness (`harnesses/gemini_enterprise/`)**
+- [~] **Track: Gemini Enterprise Evaluation Harness (`harnesses/gemini_enterprise/`)**
   *Link: [./tracks/gemini_enterprise_harness_20261004/index.md](./tracks/gemini_enterprise_harness_20261004/index.md)*
 
