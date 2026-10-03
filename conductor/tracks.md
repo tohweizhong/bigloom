@@ -12,5 +12,5 @@
 
 ---
 
-- [~] **Track: WorldLoom Blueprint and Pack Ingestion (`--world-pack` and `--domain`)**
+- [x] **Track: WorldLoom Blueprint and Pack Ingestion (`--world-pack` and `--domain`)**
   *Link: [./tracks/worldloom_blueprint_ingest_20261004/index.md](./tracks/worldloom_blueprint_ingest_20261004/index.md)*
