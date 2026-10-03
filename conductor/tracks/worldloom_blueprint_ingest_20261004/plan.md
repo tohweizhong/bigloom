@@ -10,3 +10,8 @@
   - [x] Update `build_corpus` and `bigloom build` CLI options (`--world-pack`, `--domain`) and `README.md`
   - [x] Run full `pytest` suite and `ruff check .` with at least 90% coverage
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) bfde924
+
+## Phase: Review Fixes [checkpoint: f9275d9]
+
+- [x] Task: Apply review suggestions f9275d9
+
