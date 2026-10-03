@@ -1,0 +1,3 @@
+Task: Build parse_stream_assist.py and upload_m365.py with TDD unit tests
+Summary: Added StreamAssist chunk parser, EvalResponse exporter, and Microsoft Graph uploader (simple PUT under 4 MB and resumable session at or above 4 MB).
+Files: harnesses/gemini_enterprise/__init__.py, harnesses/gemini_enterprise/parse_stream_assist.py, harnesses/gemini_enterprise/upload_m365.py, pyproject.toml, tests/test_ge_harness.py
