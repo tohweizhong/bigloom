@@ -19,3 +19,8 @@
   - [x] Add `bigloom import-run` and `bigloom report` to `src/bigloom/cli.py` and document them in `README.md`
   - [x] Run full `pytest` suite and `ruff check .` with at least 85% coverage
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 50ce814
+
+## Phase: Review Fixes [checkpoint: 604192c]
+
+- [x] Task: Apply review suggestions 604192c
+
