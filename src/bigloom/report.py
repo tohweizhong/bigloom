@@ -37,6 +37,16 @@ def _format_rate(numerator: int, denominator: int) -> str:
     return f"{numerator} ({pct:.1f}%)"
 
 
+def _group_sort_key(label: str) -> tuple[int, float, str]:
+    """Sort numeric MB labels in ascending numeric order before string labels."""
+    if label.endswith(" MB"):
+        try:
+            return (0, float(label.removesuffix(" MB").strip()), label)
+        except ValueError:
+            pass
+    return (1, 0.0, label)
+
+
 def _render_group_table(
     header_col: str,
     groups: dict[str, list[CaseGrade]],
@@ -46,7 +56,7 @@ def _render_group_table(
         f"| {header_col} | Total Cases | Pass (`CORRECT_WITH_DOWNLOAD`) | Target Leakage | Wrong Answer |",
         "| :--- | ---: | ---: | ---: | ---: |",
     ]
-    for key in sorted(groups.keys()):
+    for key in sorted(groups.keys(), key=_group_sort_key):
         items = groups[key]
         total = len(items)
         passed = sum(1 for g in items if g.verdict == LeakageVerdict.CORRECT_WITH_DOWNLOAD)
@@ -130,9 +140,10 @@ def render_scorecard_markdown(
         case = case_by_id.get(grade.case_id)
         target_file = case.target_file if case else "unknown"
         modality = case.modality if case else "unknown"
+        safe_detail = grade.detail.replace("|", "\\|")
         lines.append(
             f"| `{grade.case_id}` | `{target_file}` | `{modality}` | "
-            f"`{grade.verdict.value}` | {grade.detail} |"
+            f"`{grade.verdict.value}` | {safe_detail} |"
         )
 
     markdown = "\n".join(lines) + "\n"

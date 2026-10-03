@@ -158,10 +158,9 @@ def test_render_scorecard_markdown_sections(tmp_path: Path) -> None:
     assert "SNIPPET_ONLY_LEAK" in md
     assert "CROSS_FILE_LEAK_CANARY" in md
 
-    # Also verify filename-based size fallback when manifest_entries is None
+    # Also verify filename-based size fallback and numeric tier sorting (18 MB before 50 MB)
     md_no_manifest = render_scorecard_markdown(cases=cases, grade_report=grade_report)
-    assert "18 MB" in md_no_manifest
-    assert "50 MB" in md_no_manifest
+    assert md_no_manifest.index("| 18 MB |") < md_no_manifest.index("| 50 MB |")
 
 
 def test_cli_import_run_and_report_end_to_end(tmp_path: Path) -> None:

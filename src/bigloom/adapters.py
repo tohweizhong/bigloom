@@ -82,10 +82,11 @@ def _record_to_eval_response(
     fallback_idx: int,
 ) -> EvalResponse:
     """Convert one raw dictionary record into a validated EvalResponse."""
-    if isinstance(raw.get("messages"), list):
-        merged = _normalize_trace_messages(raw["messages"])
+    trace_items = raw.get("messages") if isinstance(raw.get("messages"), list) else raw.get("steps")
+    if isinstance(trace_items, list):
+        merged = _normalize_trace_messages(trace_items)
         for k, v in raw.items():
-            if k != "messages" and k not in merged:
+            if k not in ("messages", "steps") and k not in merged:
                 merged[k] = v
         raw = merged
 

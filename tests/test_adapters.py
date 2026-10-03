@@ -104,12 +104,31 @@ def test_import_agent_message_trace_directory(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
+    trace_file_2 = trace_dir / "trace_02.json"
+    trace_file_2.write_text(
+        json.dumps(
+            {
+                "steps": [
+                    {"role": "user", "content": "What is the Q4 peak thermal efficiency?"},
+                    {
+                        "role": "assistant",
+                        "content": "Peak thermal efficiency is 28.24%.",
+                        "citations": ["large/doc2.pdf"],
+                        "tools": ["download_document"],
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
     responses = import_run_responses(trace_dir, cases=cases)
-    assert len(responses) == 1
+    assert len(responses) == 2
     assert responses[0].case_id == "case-1"
     assert responses[0].answer_text == "The reserve budget is SGD 2,125,859."
     assert responses[0].cited_files == ("large/doc1.docx",)
     assert responses[0].tool_calls == ("search_documents", "fetch_documents")
+    assert responses[1].case_id == "case-2"
+    assert responses[1].tool_calls == ("download_document",)
 
 
 def test_import_csv_evaluation_table(tmp_path: Path) -> None:
