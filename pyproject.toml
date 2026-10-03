@@ -33,5 +33,7 @@ bigloom = "bigloom.cli:app"
 packages = ["src/bigloom"]
 
 [tool.pytest.ini_options]
+pythonpath = [".", "src"]
 testpaths = ["tests"]
 addopts = "-q"
+
