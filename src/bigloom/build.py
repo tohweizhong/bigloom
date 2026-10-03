@@ -6,6 +6,7 @@ import hashlib
 import math
 import random
 from collections.abc import Sequence
+from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
@@ -20,6 +21,8 @@ from pptx.util import Inches as PptxInches
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
+from worldloom import sdk
+from worldloom.world import World
 
 from .models import ManifestEntry
 
@@ -33,6 +36,15 @@ DEFAULT_TOPICS = (
     "Project Gemini Harbor Microgrid",
     "Project Helios Salt Cavern",
 )
+
+
+@dataclass(frozen=True)
+class _WorldContext:
+    """Grounded enterprise entities and currency extracted from WorldLoom."""
+
+    topics: tuple[str, ...]
+    currency: str
+    governance_line: str
 
 
 def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
@@ -51,6 +63,56 @@ def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
     return found + [t for t in DEFAULT_TOPICS if t not in found]
 
 
+def _resolve_world_context(
+    *,
+    seed: int,
+    corpus_dir: Path | None = None,
+    world_pack: str | None = None,
+    domain: str | None = None,
+) -> _WorldContext:
+    """Resolve WorldLoom company, business units, cost centres, systems, and currency."""
+    world: World | None = None
+    if world_pack:
+        world = World.load(world_pack)
+    elif domain:
+        world = sdk.company(domain.strip().lower(), seed=seed).build().world
+    elif corpus_dir is not None and (corpus_dir / "company.json").is_file():
+        world = World.load(corpus_dir)
+
+    if world is None:
+        return _WorldContext(
+            topics=tuple(_extract_seed_topics(corpus_dir)),
+            currency="SGD",
+            governance_line="All telemetry streams are logged prior to appendix verification.",
+        )
+
+    company_name = world.company.name
+    currency = (world.company.currency or "SGD").strip().upper()
+    topics: list[str] = [
+        f"{company_name} {bu.name} Division" for bu in world.business_units
+    ]
+    if not topics:
+        topics = [f"{company_name} Enterprise Operations"]
+
+    cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
+    sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
+    site_tags = [site.name for site in world.sites[:3]]
+    details: list[str] = [f"Company: {company_name}"]
+    if cc_tags:
+        details.append(f"Cost Centres: {', '.join(cc_tags)}")
+    if sys_tags:
+        details.append(f"Systems: {', '.join(sys_tags)}")
+    if site_tags:
+        details.append(f"Sites: {', '.join(site_tags)}")
+    governance_line = " | ".join(details) + "."
+
+    return _WorldContext(
+        topics=tuple(topics),
+        currency=currency,
+        governance_line=governance_line,
+    )
+
+
 def _make_chart_png(
     rng: random.Random,
     title: str,
@@ -58,7 +120,6 @@ def _make_chart_png(
     raw_rgb_bytes: int,
 ) -> bytes:
     """Render a bar chart PNG with printed_value drawn on canvas and noisy background payload."""
-    # Account for the solid chart label card (260x64 px) so noisy pixels alone exceed raw_rgb_bytes.
     effective_bytes = raw_rgb_bytes + (260 * 64 * 3)
     pixels = max(96 * 96, math.ceil(effective_bytes / 3))
     side = max(140, math.ceil(math.sqrt(pixels)))
@@ -92,6 +153,7 @@ def _render_docx(
     rng: random.Random,
     *,
     header_line: str,
+    governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
@@ -99,14 +161,12 @@ def _render_docx(
 ) -> tuple[bytes, int]:
     """Render a .docx file with the text fact at paragraph index >= 6 and embedded chart PNGs."""
     doc = Document()
-    # Units 1..5: preamble paragraphs so the planted fact lands at unit >= 6
     doc.add_heading(header_line, level=1)
     for idx in range(1, 5):
         doc.add_paragraph(
             f"Section {idx}: Operational governance and compliance review for {header_line}. "
-            f"All telemetry streams are logged prior to appendix verification."
+            f"{governance_line}"
         )
-    # Unit 6: Deep planted text fact
     doc.add_paragraph(fact_sentence)
     text_unit_index = 6
 
@@ -129,6 +189,7 @@ def _render_xlsx(
     rng: random.Random,
     *,
     header_line: str,
+    governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
@@ -139,7 +200,13 @@ def _render_xlsx(
     ws = wb.active
     ws.title = "AuditLedger"
     for row_idx in range(1, 6):
-        ws.append([f"ROW-{row_idx:02d}", header_line, f"Baseline telemetry checkpoint {row_idx}"])
+        ws.append(
+            [
+                f"ROW-{row_idx:02d}",
+                header_line,
+                f"Baseline telemetry checkpoint {row_idx} | {governance_line}",
+            ]
+        )
     ws.append(["ROW-06-DEEP", header_line, fact_sentence])
     text_unit_index = 6
 
@@ -163,6 +230,7 @@ def _render_pptx(
     rng: random.Random,
     *,
     header_line: str,
+    governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
@@ -174,10 +242,12 @@ def _render_pptx(
 
     for slide_idx in range(1, 6):
         slide = prs.slides.add_slide(blank_layout)
-        tx = slide.shapes.add_textbox(PptxInches(0.8), PptxInches(0.8), PptxInches(8.0), PptxInches(2.0))
+        tx = slide.shapes.add_textbox(
+            PptxInches(0.8), PptxInches(0.8), PptxInches(8.0), PptxInches(2.0)
+        )
         tx.text_frame.text = (
             f"Slide {slide_idx}: {header_line}\n"
-            f"Preliminary architecture notes and regional readiness checklist {slide_idx}."
+            f"Preliminary architecture notes {slide_idx}. {governance_line}"
         )
 
     fact_slide = prs.slides.add_slide(blank_layout)
@@ -213,6 +283,7 @@ def _render_pdf(
     rng: random.Random,
     *,
     header_line: str,
+    governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
@@ -226,14 +297,9 @@ def _render_pdf(
         c.setFont("Helvetica-Bold", 12)
         c.drawString(50, 730, f"Page {page_idx}: {header_line}")
         c.setFont("Helvetica", 10)
-        c.drawString(
-            50,
-            705,
-            f"Section {page_idx} operational overview and regional compliance log.",
-        )
+        c.drawString(50, 705, f"Section {page_idx}: {governance_line}")
         c.showPage()
 
-    # Page 6: Deep planted text fact
     c.setFont("Helvetica-Bold", 12)
     c.drawString(50, 730, f"Page 6 Deep Appendix: {header_line}")
     c.setFont("Helvetica", 10)
@@ -263,6 +329,7 @@ def _render_by_format(
     rng: random.Random,
     *,
     header_line: str,
+    governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
@@ -272,6 +339,7 @@ def _render_by_format(
         return _render_docx(
             rng,
             header_line=header_line,
+            governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
@@ -281,6 +349,7 @@ def _render_by_format(
         return _render_xlsx(
             rng,
             header_line=header_line,
+            governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
@@ -290,6 +359,7 @@ def _render_by_format(
         return _render_pptx(
             rng,
             header_line=header_line,
+            governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
@@ -299,6 +369,7 @@ def _render_by_format(
         return _render_pdf(
             rng,
             header_line=header_line,
+            governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
@@ -307,9 +378,9 @@ def _render_by_format(
     raise ValueError(f"Unsupported format: {fmt}")
 
 
-def _unique_currency(rng: random.Random, used: set[str]) -> str:
+def _unique_currency(rng: random.Random, used: set[str], currency: str = "SGD") -> str:
     while True:
-        val = f"SGD {rng.randint(1, 9)},{rng.randint(100, 999)},{rng.randint(100, 999)}"
+        val = f"{currency} {rng.randint(1, 9)},{rng.randint(100, 999)},{rng.randint(100, 999)}"
         if val not in used:
             used.add(val)
             return val
@@ -330,10 +401,18 @@ def build_corpus(
     seed: int = 42,
     formats: Sequence[str] = ("docx", "xlsx", "pptx", "pdf"),
     corpus_dir: Path | None = None,
+    world_pack: str | None = None,
+    domain: str | None = None,
 ) -> list[ManifestEntry]:
     """Build large native documents and paired < 1 MB distractor trap files."""
     rng = random.Random(seed)
-    topics = _extract_seed_topics(corpus_dir)
+    ctx = _resolve_world_context(
+        seed=seed,
+        corpus_dir=corpus_dir,
+        world_pack=world_pack,
+        domain=domain,
+    )
+    topics = ctx.topics
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "large").mkdir(parents=True, exist_ok=True)
     (out_dir / "traps").mkdir(parents=True, exist_ok=True)
@@ -361,8 +440,8 @@ def build_corpus(
             text_metric_label = f"{topic} {period} Authorized Capital Reserve"
             image_chart_title = f"{topic} {period} Q4 Peak Thermal Efficiency"
 
-            text_golden = _unique_currency(rng, used_values)
-            text_canary = _unique_currency(rng, used_values)
+            text_golden = _unique_currency(rng, used_values, currency=ctx.currency)
+            text_canary = _unique_currency(rng, used_values, currency=ctx.currency)
             image_golden = _unique_percentage(rng, used_values)
             image_canary = _unique_percentage(rng, used_values)
 
@@ -380,13 +459,13 @@ def build_corpus(
                 typed_fmt,
                 rng,
                 header_line=target_header,
+                governance_line=ctx.governance_line,
                 fact_sentence=target_fact,
                 chart_title=image_chart_title,
                 chart_value=image_golden,
                 target_bytes=min_target_bytes,
             )
 
-            # Small < 1 MB distractor trap file on the same topic (stale FY2025 draft)
             dist_header = f"{topic} {distractor_period} Preliminary Draft Report"
             dist_fact = (
                 f"Preliminary {topic} {distractor_period} Draft Capital Reserve: "
@@ -396,6 +475,7 @@ def build_corpus(
                 typed_fmt,
                 rng,
                 header_line=dist_header,
+                governance_line=ctx.governance_line,
                 fact_sentence=dist_fact,
                 chart_title=f"{topic} {distractor_period} Draft Chart",
                 chart_value=image_canary,

@@ -32,6 +32,8 @@ def build(
     corpus_dir: Annotated[
         Path | None, typer.Option("--corpus-dir", exists=True, file_okay=False)
     ] = None,
+    world_pack: Annotated[str | None, typer.Option("--world-pack")] = None,
+    domain: Annotated[str | None, typer.Option("--domain")] = None,
 ) -> None:
     """Synthesize large target files and paired < 1 MB distractor trap files."""
     parsed_sizes = tuple(float(x.strip()) for x in sizes_mb.split(",") if x.strip())
@@ -42,6 +44,8 @@ def build(
         seed=seed,
         formats=parsed_formats,
         corpus_dir=corpus_dir,
+        world_pack=world_pack,
+        domain=domain,
     )
     summary = {
         "out_dir": str(out_dir),

@@ -34,8 +34,8 @@ python3 -m venv .venv
 ## CLI Commands
 
 ```bash
-# 1. Build large target files and < 1 MB distractor traps
-bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --seed 42
+# 1. Build large target files and < 1 MB distractor traps (from a WorldLoom pack, domain, or seed)
+bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --world-pack retail-close --seed 42
 
 # 2. Generate two evaluation cases per large file from manifest.jsonl
 bigloom queries --manifest ./artifacts/manifest.jsonl --out ./artifacts/cases.json
