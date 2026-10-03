@@ -14,7 +14,7 @@ BigLoom runs offline in four steps:
 For every large target file (for example, a 50 MB `FY2026` final report), BigLoom creates a small distractor file under 1 MB (for example, an `FY2025` draft note on the same project). Both files share the same topic keywords, so search returns both files. The large file holds the right answer (`golden_value`), and the small file holds a different, unique trap number (`canary_value`). If a connector fails to download the 50 MB file and reads the 0.4 MB file instead, the agent returns the trap number, and `bigloom grade` flags `CROSS_FILE_LEAK_CANARY`.
 
 ## How We Test BigLoom During Development
-We do not need a live Gemini Enterprise app to test BigLoom:
+We do not need a live search or agent system to test BigLoom:
 1. **Test `qualify` with bad files:** We make test files with known mistakes, such as the same answer in two files or on page 1. We check that `bigloom qualify` catches every mistake.
 2. **Test `grade` with saved runs:** We run `bigloom grade` on test responses and on saved evaluation logs. We check that it catches wrong files, trap answers, and snippet-only answers.
 

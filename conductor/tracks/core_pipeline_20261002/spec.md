@@ -41,4 +41,4 @@ This MVP track builds the complete four-step offline pipeline for BigLoom: `bigl
 
 ## 5. Out of Scope
 - Live connector upload scripts (SharePoint, Google Drive, Confluence).
-- Live Gemini Enterprise `streamAssist` API callers.
+- Live agent or search API callers.
