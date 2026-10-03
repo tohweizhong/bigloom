@@ -2,7 +2,7 @@
 
 ## Phase 1: WorldLoom Context Extraction and Grounded Builder (`build.py` and `cli.py`)
 
-- [ ] Task: Write unit tests for WorldLoom pack and SDK domain ingestion (Red Phase)
+- [~] Task: Write unit tests for WorldLoom pack and SDK domain ingestion (Red Phase)
   - [ ] Create `tests/test_worldloom_ingest.py` testing `build_corpus` and CLI `bigloom build` with `world_pack="retail-close"` and `domain="banking"`
   - [ ] Verify that inspected document units contain the WorldLoom company name, business units, and cost centres, and pass `qualify_corpus`
 - [ ] Task: Implement WorldLoom ingestion in `src/bigloom/build.py` and `src/bigloom/cli.py` (Green Phase)
