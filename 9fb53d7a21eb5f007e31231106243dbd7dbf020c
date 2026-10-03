@@ -1,0 +1,1 @@
+Task: Implement src/bigloom/adapters.py. Converts JSON, JSONL, agent message traces, and CSV tables into EvalResponse records (95% coverage).
