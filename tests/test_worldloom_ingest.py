@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from bigloom.build import build_corpus
@@ -33,10 +34,19 @@ def test_build_corpus_with_world_pack(tmp_path: Path) -> None:
     assert "Southern Cross Retail Group" in joined_text
     assert "CC-1000" in joined_text
     assert "Helios ERP" in joined_text
+    assert "FACT-0001" in joined_text
 
     cases = generate_queries(out_dir / "manifest.jsonl", out_dir / "cases.json")
     report = qualify_corpus(snapshots, cases, check_retrieval=True)
     assert report.passed is True, f"Violations: {report.violations}"
+
+    with pytest.raises(ValueError, match="Specify at most one"):
+        build_corpus(
+            out_dir=tmp_path / "err_out",
+            sizes_mb=(0.1,),
+            world_pack="retail-close",
+            domain="banking",
+        )
 
 
 def test_cli_build_with_sdk_domain(tmp_path: Path) -> None:

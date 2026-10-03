@@ -70,7 +70,10 @@ def _resolve_world_context(
     world_pack: str | None = None,
     domain: str | None = None,
 ) -> _WorldContext:
-    """Resolve WorldLoom company, business units, cost centres, systems, and currency."""
+    """Resolve WorldLoom company, business units, cost centres, systems, facts, and currency."""
+    if world_pack and domain:
+        raise ValueError("Specify at most one of world_pack or domain.")
+
     world: World | None = None
     if world_pack:
         world = World.load(world_pack)
@@ -97,6 +100,7 @@ def _resolve_world_context(
     cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
     sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
     site_tags = [site.name for site in world.sites[:3]]
+    fact_tags = [f"{fact.id} ({fact.kind})" for fact in world.facts[:3]]
     details: list[str] = [f"Company: {company_name}"]
     if cc_tags:
         details.append(f"Cost Centres: {', '.join(cc_tags)}")
@@ -104,6 +108,8 @@ def _resolve_world_context(
         details.append(f"Systems: {', '.join(sys_tags)}")
     if site_tags:
         details.append(f"Sites: {', '.join(site_tags)}")
+    if fact_tags:
+        details.append(f"Canonical Facts: {', '.join(fact_tags)}")
     governance_line = " | ".join(details) + "."
 
     return _WorldContext(
