@@ -6,44 +6,37 @@ This subfolder runs BigLoom large-file evaluations against Gemini Enterprise (`s
 
 | File | Purpose |
 | :--- | :--- |
+| `run_eval.sh` | Runs the smoke test (2 cases) or the full test suite (16 cases) in one command. |
 | `upload_m365.py` | Uploads files from `manifest.jsonl` to OneDrive or SharePoint via Microsoft Graph (`PUT` under 4 MB, resumable session at or above 4 MB). |
-| `harness.py` | Runs `cases.json` against `streamAssist`, grades with `bigloom grade` and `gemini-3.8-flash`, and writes `reports/scorecard.md` and `reports/report.md`. |
+| `harness.py` | Runs `cases.json` against `streamAssist`, grades with `bigloom grade` and `gemini-3.8-flash`, and writes `scorecard.md` and `report.md`. |
 | `parse_stream_assist.py` | Extracts answer text, `assist_tokens`, `cited_files`, and `tool_calls` from raw `StreamAssistResponse` chunks. |
 | `login_workforce.sh` | Signs in to `gcloud` with Workforce Identity Federation (WIF) and sets Application Default Credentials. |
 | `config.example.json` | Template for GCP project, engine, location, and data store IDs. |
 
 ## Steps
 
-1. Copy `config.example.json` to `config.json` and fill in your project and engine IDs.
-2. Upload your generated BigLoom artifacts to SharePoint or OneDrive:
+1. Sign in with Workforce Identity Federation in your Microsoft 365 browser profile:
 
 ```bash
-python3 harnesses/gemini_enterprise/upload_m365.py \
-  --manifest ./artifacts/manifest.jsonl \
-  --remote-folder BigLoom-Eval
+cd harnesses/gemini_enterprise
+bash login_workforce.sh
+export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
 ```
 
-3. Sign in with Workforce Identity Federation:
+2. Run the smoke test (2 cases):
 
 ```bash
-bash harnesses/gemini_enterprise/login_workforce.sh
+bash run_eval.sh smoke
 ```
 
-4. Run the evaluation harness:
+3. Run the full suite (16 cases across `.docx`, `.xlsx`, `.pptx`, and `.pdf`):
 
 ```bash
-python3 harnesses/gemini_enterprise/harness.py \
-  --config harnesses/gemini_enterprise/config.json \
-  --cases ./artifacts/cases.json \
-  --manifest ./artifacts/manifest.jsonl \
-  --runs 3
+bash run_eval.sh full
 ```
 
-5. Re-grade saved raw responses offline without calling `streamAssist`:
+4. Re-grade saved raw responses offline without calling `streamAssist`:
 
 ```bash
-python3 harnesses/gemini_enterprise/harness.py \
-  --cases ./artifacts/cases.json \
-  --manifest ./artifacts/manifest.jsonl \
-  --eval-only
+bash run_eval.sh full --eval-only
 ```

@@ -286,28 +286,50 @@ def main(argv: list[str] | None = None) -> int:
     """CLI entry point for uploading a BigLoom manifest to OneDrive or SharePoint."""
     parser = argparse.ArgumentParser(description="Upload BigLoom manifest files to Microsoft 365.")
     parser.add_argument("--manifest", type=Path, required=True, help="Path to manifest.jsonl.")
-    parser.add_argument("--remote-folder", default="BigLoom", help="Remote folder in target drive.")
+    parser.add_argument(
+        "--remote-folder",
+        default="",
+        help="Remote folder in target drive (defaults to SP_TARGET_FOLDER or BigLoom-Eval).",
+    )
+    parser.add_argument("--env", type=Path, default=None, help="Optional path to .env file.")
     args = parser.parse_args(argv)
 
-    load_env_file()
+    load_env_file(args.env)
+    tenant_id = os.environ.get("TENANT_ID") or os.environ["SP_TENANT_ID"]
+    client_id = os.environ.get("CLIENT_ID") or os.environ["SP_CLIENT_ID"]
+    client_secret = os.environ.get("CLIENT_SECRET") or os.environ["SP_CLIENT_SECRET"]
     token = acquire_graph_access_token(
-        tenant_id=os.environ["TENANT_ID"],
-        client_id=os.environ["CLIENT_ID"],
-        client_secret=os.environ["CLIENT_SECRET"],
+        tenant_id=tenant_id,
+        client_id=client_id,
+        client_secret=client_secret,
     )
+
+    sp_host = os.environ.get("SHAREPOINT_HOST")
+    sp_site_path = os.environ.get("SHAREPOINT_SITE_PATH")
+    sp_site_url = os.environ.get("SP_SITE_URL", "")
+    if (not sp_host or not sp_site_path) and sp_site_url:
+        parsed_url = urllib.parse.urlparse(sp_site_url)
+        sp_host = parsed_url.netloc
+        sp_site_path = parsed_url.path
+
     drive_id = resolve_drive_id(
         token,
         user_principal_name=os.environ.get("USER_PRINCIPAL_NAME"),
-        sharepoint_host=os.environ.get("SHAREPOINT_HOST"),
-        sharepoint_site_path=os.environ.get("SHAREPOINT_SITE_PATH"),
+        sharepoint_host=sp_host,
+        sharepoint_site_path=sp_site_path,
+    )
+    remote_folder = (
+        args.remote_folder
+        or os.environ.get("SP_TARGET_FOLDER")
+        or "BigLoom-Eval"
     )
     uploaded = upload_manifest_files(
         manifest_path=args.manifest,
         access_token=token,
         drive_id=drive_id,
-        remote_folder=args.remote_folder,
+        remote_folder=remote_folder,
     )
-    print(f"Uploaded {len(uploaded)} files to drive {drive_id}.")
+    print(f"Uploaded {len(uploaded)} files to drive {drive_id} under '{remote_folder}'.")
     return 0
 
 

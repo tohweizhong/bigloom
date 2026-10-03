@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-POOL_ID="${WIF_POOL_ID:-your-wif-pool-id}"
-PROVIDER_ID="${WIF_PROVIDER_ID:-your-wif-provider-id}"
+POOL_ID="${WIF_POOL_ID:-wif-pool-apr26}"
+PROVIDER_ID="${WIF_PROVIDER_ID:-ms-entra-apr26}"
 CONFIG_FILE="login-config.json"
 
 gcloud iam workforce-pools create-login-config \

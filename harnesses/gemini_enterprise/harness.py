@@ -113,6 +113,72 @@ def build_known_files(
     return files
 
 
+def query_stream_assist_grpc(
+    *,
+    project_id: str,
+    location: str,
+    engine_id: str,
+    assistant_id: str,
+    query_text: str,
+    data_store_ids: list[str],
+    timeout: float = 180.0,
+) -> tuple[list[dict[str, Any]], float, float]:
+    """Query Discovery Engine AssistantServiceClient.stream_assist via gRPC."""
+    from google.api_core.client_options import ClientOptions
+    from google.cloud import discoveryengine_v1 as discoveryengine
+    from google.protobuf.json_format import MessageToJson
+
+    client_options = (
+        None
+        if location == "global"
+        else ClientOptions(api_endpoint=f"{location}-discoveryengine.googleapis.com")
+    )
+    client = discoveryengine.AssistantServiceClient(client_options=client_options)
+    assistant_name = client.assistant_path(
+        project=project_id,
+        location=location,
+        collection="default_collection",
+        engine=engine_id,
+        assistant=assistant_id,
+    )
+    tools_spec = None
+    if data_store_ids:
+        specs = [
+            {
+                "data_store": (
+                    f"projects/{project_id}/locations/{location}/"
+                    f"collections/default_collection/dataStores/{ds_id}"
+                )
+            }
+            for ds_id in data_store_ids
+        ]
+        tools_spec = {"vertex_ai_search_spec": {"data_store_specs": specs}}
+
+    request = discoveryengine.StreamAssistRequest(
+        name=assistant_name,
+        query=discoveryengine.Query(text=query_text),
+        tools_spec=tools_spec,
+    )
+    start_time = time.perf_counter()
+    ttft_ms: float | None = None
+    chunks: list[dict[str, Any]] = []
+
+    for resp in client.stream_assist(request=request, timeout=timeout):
+        chunk_dict = json.loads(MessageToJson(resp._pb))
+        chunks.append(chunk_dict)
+        if ttft_ms is None and resp.answer and resp.answer.replies:
+            for reply in resp.answer.replies:
+                gc = getattr(reply, "grounded_content", None)
+                cnt = getattr(gc, "content", None) if gc else None
+                if cnt and getattr(cnt, "text", "") and not getattr(cnt, "thought", False):
+                    ttft_ms = (time.perf_counter() - start_time) * 1000.0
+                    break
+
+    total_ms = round((time.perf_counter() - start_time) * 1000.0, 1)
+    first_ms = round(ttft_ms, 1) if ttft_ms is not None else total_ms
+    return chunks, first_ms, total_ms
+
+
 def query_stream_assist_rest(
     *,
     project_id: str,
@@ -356,6 +422,7 @@ def main(argv: list[str] | None = None, *, http_client: Any = DEFAULT_HTTP_CLIEN
     parser.add_argument("--judge-model", default=os.environ.get("EVAL_JUDGE_MODEL", DEFAULT_JUDGE_MODEL))
     parser.add_argument("--judge-region", default=os.environ.get("EVAL_JUDGE_REGION", DEFAULT_JUDGE_REGION))
     parser.add_argument("--runs", type=int, default=1)
+    parser.add_argument("--timeout", type=float, default=180.0)
     parser.add_argument("--shuffle", action="store_true", default=False)
     parser.add_argument("--eval-workers", type=int, default=8)
     parser.add_argument("--eval-only", action="store_true")
@@ -385,7 +452,7 @@ def main(argv: list[str] | None = None, *, http_client: Any = DEFAULT_HTTP_CLIEN
         if args.shuffle and args.runs > 1:
             random.shuffle(run_cases)
 
-        for case in run_cases:
+        for idx, case in enumerate(run_cases, 1):
             raw_file = args.raw_dir / f"{case.id}_run{run_idx}_raw.json"
             chunks: list[dict[str, Any]] = []
             ttft_ms = 0.0
@@ -400,17 +467,41 @@ def main(argv: list[str] | None = None, *, http_client: Any = DEFAULT_HTTP_CLIEN
                 if raw_file.exists():
                     chunks = parse_raw_chunks_text(raw_file.read_text())
             else:
+                print(f"[Run {run_idx}/{args.runs} | {idx}/{len(run_cases)}] {case.id}: {case.query}")
                 try:
-                    chunks, ttft_ms, total_latency_ms = query_stream_assist_rest(
-                        project_id=args.project_id,
-                        location=args.location,
-                        engine_id=args.engine_id,
-                        assistant_id=args.assistant_id,
-                        query_text=case.query,
-                        data_store_ids=data_store_ids,
-                        access_token=token or "",
-                        http_client=http_client,
-                    )
+                    if http_client is DEFAULT_HTTP_CLIENT:
+                        try:
+                            chunks, ttft_ms, total_latency_ms = query_stream_assist_grpc(
+                                project_id=args.project_id,
+                                location=args.location,
+                                engine_id=args.engine_id,
+                                assistant_id=args.assistant_id,
+                                query_text=case.query,
+                                data_store_ids=data_store_ids,
+                                timeout=args.timeout,
+                            )
+                        except ImportError:
+                            chunks, ttft_ms, total_latency_ms = query_stream_assist_rest(
+                                project_id=args.project_id,
+                                location=args.location,
+                                engine_id=args.engine_id,
+                                assistant_id=args.assistant_id,
+                                query_text=case.query,
+                                data_store_ids=data_store_ids,
+                                access_token=token or "",
+                                http_client=http_client,
+                            )
+                    else:
+                        chunks, ttft_ms, total_latency_ms = query_stream_assist_rest(
+                            project_id=args.project_id,
+                            location=args.location,
+                            engine_id=args.engine_id,
+                            assistant_id=args.assistant_id,
+                            query_text=case.query,
+                            data_store_ids=data_store_ids,
+                            access_token=token or "",
+                            http_client=http_client,
+                        )
                     raw_file.write_text(json.dumps(chunks, indent=2))
                 except Exception as exc:
                     if is_auth_error(exc):
