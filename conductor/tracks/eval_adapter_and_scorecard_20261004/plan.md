@@ -2,7 +2,7 @@
 
 ## Phase 1: Vendor-Neutral Run Adapter (`adapters.py`)
 
-- [ ] Task: Write unit tests for `adapters.py` (Red Phase)
+- [~] Task: Write unit tests for `adapters.py` (Red Phase)
   - [ ] Create `tests/test_adapters.py` testing conversion of generic JSON/JSONL logs, OpenAI/MCP-style message traces, directory inputs, and CSV tables into `EvalResponse` records
   - [ ] Test automatic query-to-`case_id` matching using `--cases`
 - [ ] Task: Implement `src/bigloom/adapters.py` (Green Phase)

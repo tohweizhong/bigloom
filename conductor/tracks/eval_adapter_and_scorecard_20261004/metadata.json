@@ -1,8 +1,8 @@
 {
   "track_id": "eval_adapter_and_scorecard_20261004",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-10-03T20:41:00Z",
-  "updated_at": "2026-10-03T20:41:00Z",
+  "updated_at": "2026-10-03T20:43:00Z",
   "description": "Vendor-Neutral Run Adapter (bigloom import-run) and Size-Tier Scorecard (bigloom report)"
 }
