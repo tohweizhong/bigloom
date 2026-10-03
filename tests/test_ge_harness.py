@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -293,3 +294,260 @@ def test_upload_manifest_files_uses_simple_put_and_resumable_session(
         lambda **kw: [large_rel, small_rel],
     )
     assert upload_cli_main(["--manifest", str(manifest_path)]) == 0
+
+
+def test_harness_judge_and_eval_only_pipeline(
+    tmp_path: Path,
+    monkeypatch: Any,
+) -> None:
+    import urllib.request
+
+    from harnesses.gemini_enterprise.harness import (
+        DEFAULT_JUDGE_MODEL,
+        evaluate_single_record_with_judge,
+        is_auth_error,
+    )
+    from harnesses.gemini_enterprise.harness import (
+        main as harness_cli_main,
+    )
+    from harnesses.gemini_enterprise.upload_m365 import UrllibClient
+
+    class FakeUrlResp:
+        status = 200
+
+        def __enter__(self) -> Any:
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            pass
+
+        def read(self) -> bytes:
+            return b'{"ok": true}'
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=60.0: FakeUrlResp())
+    uclient = UrllibClient()
+    assert uclient.get("https://example.com").json()["ok"] is True
+    assert uclient.post("https://example.com", data={"a": "1"}).status_code == 200
+    assert uclient.post("https://example.com", json={"a": 1}).status_code == 200
+    assert uclient.put("https://example.com", data=b"x").status_code == 200
+
+    assert DEFAULT_JUDGE_MODEL == "gemini-3.8-flash"
+    assert is_auth_error(RuntimeError("RefreshError: reauthentication is needed")) is True
+    assert is_auth_error(RuntimeError("Normal network timeout")) is False
+
+    manifest_path = tmp_path / "manifest.jsonl"
+    manifest_entry = {
+        "file_id": "doc_001",
+        "format": "docx",
+        "target_file": "docx/acacia_close_fy2026_18mb.docx",
+        "target_size_bytes": 18 * 1024 * 1024,
+        "target_sha256": "a" * 64,
+        "distractor_file": "docx/acacia_close_fy2025_draft.docx",
+        "distractor_size_bytes": 40000,
+        "distractor_sha256": "b" * 64,
+        "topic": "Acacia Retail Ledger Close",
+        "period": "FY2026",
+        "distractor_period": "FY2025",
+        "text_metric_label": "Net Inventory Reserve",
+        "text_golden_value": "AUD 14,892,311",
+        "text_canary_value": "AUD 9,104,220",
+        "text_unit_index": 6,
+        "image_chart_title": "Quarterly Close Variance",
+        "image_golden_value": "41.83%",
+        "image_canary_value": "19.05%",
+    }
+    manifest_path.write_text(json.dumps(manifest_entry) + "\n")
+
+    cases_path = tmp_path / "cases.json"
+    cases_data = [
+        {
+            "id": "doc_001_text",
+            "query": "What is the Net Inventory Reserve for Acacia Retail Ledger Close in FY2026?",
+            "target_file": "docx/acacia_close_fy2026_18mb.docx",
+            "modality": "text",
+            "golden_value": "AUD 14,892,311",
+            "acceptable_values": ["14,892,311"],
+            "min_unit_index": 5,
+            "canary_trap": {
+                "distractor_file": "docx/acacia_close_fy2025_draft.docx",
+                "canary_value": "AUD 9,104,220",
+            },
+        }
+    ]
+    cases_path.write_text(json.dumps(cases_data, indent=2))
+
+    raw_dir = tmp_path / "raw_responses"
+    raw_dir.mkdir()
+    (raw_dir / "doc_001_text_run1_raw.json").write_text(
+        json.dumps(_sample_stream_chunks(), indent=2)
+    )
+
+    class FakeJudgeHttp:
+        def post(
+            self,
+            url: str,
+            headers: dict[str, str] | None = None,
+            data: dict[str, str] | None = None,
+            json: Any = None,
+        ) -> HttpResponse:
+            import json as _json
+
+            assert "gemini-3.8-flash:generateContent" in url
+            payload = {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": _json.dumps(
+                                        {
+                                            "reasoning": "Matched golden value AUD 14,892,311.",
+                                            "failure_mode": "NONE",
+                                            "verdict": "PASS",
+                                        }
+                                    )
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+            return HttpResponse(200, _json.dumps(payload))
+
+    sample_rec = {
+        "id": "doc_001_text",
+        "query": cases_data[0]["query"],
+        "golden_value": "AUD 14,892,311",
+        "canary_value": "AUD 9,104,220",
+        "target_file": "docx/acacia_close_fy2026_18mb.docx",
+        "response_text": "The reserve is AUD 14,892,311.",
+        "error": None,
+        "blocked": False,
+    }
+    judged = evaluate_single_record_with_judge(
+        sample_rec,
+        project_id="proj-1",
+        access_token="tok-1",
+        http_client=FakeJudgeHttp(),
+    )
+    assert judged["status"] == "PASS"
+    assert judged["failure_mode"] == "NONE"
+
+    reports_dir = tmp_path / "reports"
+    responses_out = tmp_path / "responses.json"
+    rc = harness_cli_main(
+        [
+            "--cases",
+            str(cases_path),
+            "--manifest",
+            str(manifest_path),
+            "--raw-dir",
+            str(raw_dir),
+            "--reports-dir",
+            str(reports_dir),
+            "--responses-out",
+            str(responses_out),
+            "--eval-only",
+            "--runs",
+            "1",
+        ]
+    )
+    assert rc == 0
+    assert responses_out.exists()
+    assert (reports_dir / "scorecard.md").exists()
+    assert (reports_dir / "report.md").exists()
+    assert (reports_dir / "assist_tokens.json").exists()
+    report_md = (reports_dir / "report.md").read_text()
+    assert "CORRECT_WITH_DOWNLOAD" in report_md
+    assert "gemini-3.8-flash" in report_md
+
+    # Test judge fallback branches (error, blocked, empty, canary trap, search miss)
+    assert (
+        evaluate_single_record_with_judge({"error": "boom"}, "p", None)["failure_mode"]
+        == "API_ERROR"
+    )
+    assert (
+        evaluate_single_record_with_judge({"blocked": True}, "p", None)["failure_mode"]
+        == "POLICY_VIOLATION"
+    )
+    assert (
+        evaluate_single_record_with_judge({"response_text": ""}, "p", None)["failure_mode"]
+        == "EMPTY_RESPONSE"
+    )
+    assert (
+        evaluate_single_record_with_judge(
+            {
+                "response_text": "AUD 9,104,220",
+                "golden_value": "AUD 14,892,311",
+                "canary_value": "AUD 9,104,220",
+            },
+            "p",
+            None,
+        )["failure_mode"]
+        == "CANARY_TRAP"
+    )
+    assert (
+        evaluate_single_record_with_judge(
+            {
+                "response_text": "No idea",
+                "golden_value": "AUD 14,892,311",
+                "canary_value": "AUD 9,104,220",
+            },
+            "p",
+            None,
+        )["failure_mode"]
+        == "SEARCH_MISS"
+    )
+
+    # Test live runner mode with mocked HTTP client and config file
+    cfg_path = tmp_path / "config.json"
+    cfg_path.write_text(
+        json.dumps(
+            {
+                "project_id": "proj-live",
+                "location": "sg",
+                "engine_id": "eng-1",
+                "assistant_id": "default_assistant",
+                "data_store_ids": ["ds-1"],
+            }
+        )
+    )
+
+    class FakeLiveHttp:
+        def post(
+            self,
+            url: str,
+            headers: dict[str, str] | None = None,
+            data: dict[str, str] | None = None,
+            json: Any = None,
+        ) -> HttpResponse:
+            import json as _json
+
+            if ":streamAssist" in url:
+                return HttpResponse(200, _json.dumps(_sample_stream_chunks()))
+            return FakeJudgeHttp().post(url, headers=headers, data=data, json=json)
+
+    os.environ["GCP_ACCESS_TOKEN"] = "tok-env"
+    try:
+        rc_live = harness_cli_main(
+            [
+                "--config",
+                str(cfg_path),
+                "--cases",
+                str(cases_path),
+                "--manifest",
+                str(manifest_path),
+                "--raw-dir",
+                str(tmp_path / "raw_live"),
+                "--reports-dir",
+                str(tmp_path / "reports_live"),
+                "--runs",
+                "1",
+            ],
+            http_client=FakeLiveHttp(),
+        )
+        assert rc_live == 0
+    finally:
+        os.environ.pop("GCP_ACCESS_TOKEN", None)
+
+

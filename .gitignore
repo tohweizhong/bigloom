@@ -23,6 +23,8 @@ assist_tokens.json
 corpora/
 artifacts/
 runs/
+raw_responses/
+reports/
 scratch/
 *.report
 

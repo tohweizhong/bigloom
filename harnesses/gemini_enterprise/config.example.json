@@ -1,0 +1,10 @@
+{
+  "project_id": "your-gcp-project-id",
+  "engine_id": "your-gemini-enterprise-engine-id",
+  "location": "global",
+  "assistant_id": "default_assistant",
+  "data_store_ids": [
+    "your-sharepoint-datastore_file",
+    "your-onedrive-datastore_file"
+  ]
+}

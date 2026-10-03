@@ -52,3 +52,10 @@ bigloom grade --cases ./artifacts/cases.json --responses ./responses.json > ./gr
 # 6. Render a Markdown scorecard by size tier, format, and modality
 bigloom report --cases ./artifacts/cases.json --grade-report ./grade_report.json --manifest ./artifacts/manifest.jsonl --out ./scorecard.md
 ```
+
+## Evaluation Harnesses
+
+Vendor-specific runners live under `harnesses/` so the core `bigloom` package stays independent of any cloud vendor:
+
+- **[`harnesses/gemini_enterprise/`](./harnesses/gemini_enterprise/README.md):** Uploads `manifest.jsonl` files to SharePoint or OneDrive via Microsoft Graph, runs `cases.json` against Discovery Engine `streamAssist`, exports `EvalResponse` JSON, and grades runs with `bigloom grade` and `gemini-3.8-flash`.
+
