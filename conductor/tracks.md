@@ -20,3 +20,8 @@
 - [x] **Track: Gemini Enterprise Evaluation Harness (`harnesses/gemini_enterprise/`)**
   *Link: [./tracks/gemini_enterprise_harness_20261004/index.md](./tracks/gemini_enterprise_harness_20261004/index.md)*
 
+
+---
+
+- [ ] **Track: Reusable Proposal Generator (`bigloom proposal`) from a YAML topic file**
+  *Link: [./tracks/proposal_generator_20261006/index.md](./tracks/proposal_generator_20261006/index.md)*
