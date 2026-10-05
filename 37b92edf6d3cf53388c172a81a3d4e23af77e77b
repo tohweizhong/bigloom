@@ -1,0 +1,1 @@
+Task: Add PyYAML to conductor/tech-stack.md and pyproject.toml. Files: conductor/tech-stack.md, pyproject.toml, conductor/tracks/proposal_generator_20261006/spec.md. Why: Document and declare PyYAML dependency for YAML proposal specs.
