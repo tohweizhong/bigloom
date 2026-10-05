@@ -38,7 +38,8 @@ The command replaces the one-off script `sharepoint-research/worldloom/make_gsw_
 ### 2.6 Weight layer (BigLoom)
 - The weight layer adds realistic figures that BigLoom draws from world entities, for example sites, business units, systems, and phases. Each figure has light grain, so ZIP compression does not make it smaller.
 - The weight layer does not add raw ballast parts, for example `worldloom/shape-ballast.bin`.
-- `sizes_mb` sets one or more targets. The command adjusts the figure size until each file is between the target and 3 percent over it, with a maximum of 3 builds for each size.
+- `sizes_mb` sets one or more targets (including `200`, `500`, and `1024` MiB). The command adjusts the figure size until each file is between the target and 3 percent over it, with a maximum of 3 builds for each size.
+- The weight layer streams each PNG media part directly into the `.docx` ZIP file on disk so that a `1024` MiB (`1 GiB`) build stays below the 3 GB memory limit.
 - Only the weight layer depends on the size. All sizes use the same prose.
 
 ### 2.7 Evidence positions (BigLoom)
@@ -64,7 +65,7 @@ The command replaces the one-off script `sharepoint-research/worldloom/make_gsw_
 - Tests use the WorldLoom deterministic provider or a fake Gemini client. Tests make no network calls.
 - Coverage for new code: at least 80 percent. `ruff check .` passes.
 - `tech-stack.md` adds PyYAML before the code uses it.
-- Peak memory for a 200 MiB file stays below 3 GB.
+- Peak memory for files from 200 MiB up to 1024 MiB (1 GiB) stays below 3 GB.
 
 ## 4. Acceptance Criteria
 1. `bigloom proposal --spec specs/gsw_proposal.yaml --out <dir>` with `sizes_mb: [200]` makes a `.docx` file between 200 MiB and 206 MiB.
