@@ -1,4 +1,4 @@
-# Track: Reusable Proposal Generator (`proposal_generator_20261006`)
+# Track: Large-File Production on WorldLoom (`proposal_generator_20261006`)
 
 - [Specification](./spec.md)
 - [Implementation Plan](./plan.md)
