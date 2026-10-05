@@ -59,3 +59,4 @@ The file is for transport tests of large files, for example the fetch-to-GCS des
 - Upload to SharePoint or OneDrive. `upload_m365.py` already does this.
 - Text-only files where text makes most of the bytes.
 - Changes to WorldLoom or `make_large_files.py`.
+- The five-layer generalisation (topic brief, document types, plate library, pack currency and voice, size profile). See [generalization.md](./generalization.md). Deferred to a later track.
