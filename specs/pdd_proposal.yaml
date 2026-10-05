@@ -1,0 +1,122 @@
+# 1. Required from user
+world_pack: retail-close
+subject: "Punggol Digital District Smart Estate and Digital Twin Programme"
+sizes_mb:
+  - 1024
+
+# 2. Optional user overrides (otherwise resolved from WorldLoom at runtime or derived by BigLoom)
+currency: SGD
+agency_name: Government Technology Agency (Synthetic)
+marking: "OFFICIAL (CLOSED) // SENSITIVE NORMAL (SYNTHETIC TEST DATA)"
+short_mark: "OFFICIAL (CLOSED) // SENSITIVE NORMAL"
+
+title: "Punggol Digital District Smart Estate and Digital Twin Programme: Proposal for Funding Approval"
+short_title: "Punggol Digital District Twin Programme"
+doc_ref: "the Punggol Digital District smart estate and digital twin funding proposal (final, v1.0)"
+filename: "Punggol-Digital-District-Smart-Estate-Digital-Twin_Proposal-for-Funding-Approval_v1.0_FINAL.docx"
+trap_filename: "Punggol-Digital-District-Smart-Estate-Digital-Twin_Proposal_DRAFT_v0.4_superseded.docx"
+id_prefix: "PDD"
+ref_prefix: "PDD-DT"
+office: "Punggol Digital District Programme Office"
+phase1_sites: "the Campus Heart and the business park parcels"
+module_name: "Northshore estate energy twin module"
+approval_annex: "Annex H: Approval record"
+middle_chapter: "Implementation plan and phasing"
+
+sections_per_chapter: 18
+annex_sections: 10
+figures: 480
+
+context: >-
+  You are writing part of a SYNTHETIC test document. The author is the Government Technology Agency
+  (Synthetic), a fictional Singapore statutory board. The document is a formal funding proposal titled
+  'Punggol Digital District Smart Estate and Digital Twin Programme: Proposal for Funding Approval'.
+  The programme builds a district-scale digital twin, an Open Digital Platform with edge sensors, and
+  shared data services for the Punggol Digital District in the north-east of Singapore. The district
+  joins a business park, the Singapore Institute of Technology campus, and the surrounding Punggol
+  housing estates. It covers areas such as the Campus Heart, the Punggol Coast MRT station precinct,
+  the business park parcels, the Punggol Waterway, the Punggol Promenade, the Coney Island edge, the
+  Northshore and Matilda estates, and Punggol Point. Partner agencies include JTC, SIT, HDB, URA, LTA,
+  PUB, NParks, IMDA, and CSA. Only name places inside Punggol, Sengkang, and Seletar. Write in formal
+  British English, in the voice of a public-sector programme office. Use plain prose. IMPORTANT: do not
+  state any specific dollar amount, budget total, contingency percentage, approval reference number,
+  go-live date, sponsor name, or count of sensor nodes. Use qualitative words for these. Other numbers
+  (areas, timelines in years, service levels) are allowed. Do not use Markdown headings or bold text.
+  Separate paragraphs with one blank line. You can use short bullet lists that start with '- '.
+
+chapters:
+  - "Executive summary"
+  - "Strategic context: Punggol Digital District and the digital economy"
+  - "Problem statement and needs analysis"
+  - "Current-state assessment of estate systems"
+  - "Stakeholders, governance, and decision rights"
+  - "Proposed solution overview"
+  - "Digital twin design and simulation services"
+  - "Open Digital Platform, edge sensing, and connectivity"
+  - "Technical architecture on Government on Commercial Cloud"
+  - "Data management, privacy, and security (IM8)"
+  - "Integration with agency, campus, and industry systems"
+  - "Service design for residents, students, and businesses"
+  - "Testing, assurance, and operational readiness"
+  - "Implementation plan and phasing"
+  - "Procurement strategy"
+  - "Financial analysis and budget"
+  - "Economic appraisal and cost-benefit analysis"
+  - "Risk management"
+  - "Benefits realisation and key performance indicators"
+  - "Workforce, skills, and change management"
+  - "Stakeholder engagement and communications"
+  - "Sustainability, energy, and climate resilience"
+  - "Operations, maintenance, and service management"
+  - "Exit strategy and long-term sustainment"
+  - "Annex A: Glossary and abbreviations"
+  - "Annex B: Detailed functional and non-functional requirements"
+  - "Annex C: Site plates and reference drawings"
+  - "Annex D: Summary of agency, industry, and resident consultation"
+  - "Annex E: Assumptions, dependencies, and constraints"
+  - "Annex F: Detailed cost model notes"
+  - "Annex G: Technical standards and compliance matrix"
+
+zones:
+  - "Campus Heart"
+  - "Punggol Coast Station"
+  - "Business Park North"
+  - "Business Park South"
+  - "Punggol Waterway"
+  - "Punggol Promenade"
+  - "Coney Island Edge"
+  - "Northshore Estate"
+  - "Matilda Estate"
+  - "Punggol Point"
+
+packages:
+  - "District digital twin core"
+  - "Open Digital Platform"
+  - "Edge sensor network"
+  - "Smart estate services"
+  - "Mobility analytics"
+  - "District cooling and energy"
+  - "Security operations"
+  - "Campus and industry data exchange"
+
+phases:
+  - "Phase 1: Campus Heart and business park"
+  - "Phase 2A: Punggol Coast Station"
+  - "Phase 2B: Northshore and Matilda estates"
+  - "Phase 3: Punggol Waterway"
+  - "Phase 4: Promenade and Coney Island edge"
+  - "Phase 5: Full district operations"
+
+leak_terms:
+  - "GSW"
+  - "Greater Southern"
+  - "Keppel"
+  - "Pulau Brani"
+  - "Pasir Panjang"
+  - "Labrador"
+  - "Mount Faber"
+  - "HarbourFront"
+  - "Telok Blangah"
+  - "Sentosa"
+  - "Tanjong Pagar"
+  - "Tuas"

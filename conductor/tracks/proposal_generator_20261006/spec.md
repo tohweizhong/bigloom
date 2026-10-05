@@ -14,12 +14,27 @@ BigLoom does not use WorldLoom's narrative claim compiler (`NarrativeRequest` an
 
 ## 2. Functional Requirements
 
-### 2.1 Spec File (YAML)
-- The spec file defines the world source (`world_pack` or `domain`), the proposal topic (title, short title, document reference, filenames, chapters, middle chapter, zones, work packages, phases, and forbidden leak terms), `sizes_mb`, `figures`, and the prose provider (`deterministic` or `gemini`).
+### 2.1 Input Ownership: User vs WorldLoom Runtime vs BigLoom Defaults
+
+| Source | Input | Purpose |
+| :--- | :--- | :--- |
+| **Required from User** (YAML + CLI) | `world_pack` or `domain` | Selects the WorldLoom pack (`govtech-pack.json`, `retail-close`) or domain (`retail`). |
+| **Required from User** (YAML + CLI) | `subject` | One-line proposal topic (for example, `"Greater Southern Waterfront Digital Twin Programme"`). |
+| **Required from User** (YAML + CLI) | `sizes_mb` | Target `.docx` file sizes in MiB (for example, `[200]`, `[500]`, `[1024]`). |
+| **Required from User** (CLI) | `--out` | Output folder for `docx/`, `traps/`, `manifest.jsonl`, `evals.jsonl`, and `evals.csv`. |
+| **Required from WorldLoom at Runtime** | `world.company` | Supplies the agency name and currency (`SGD`, `USD`, `AUD`). |
+| **Required from WorldLoom at Runtime** | `world.people` / `name_pools` | Supplies staff given names and surnames for sponsors and project leads. |
+| **Required from WorldLoom at Runtime** | `world.sites` | Supplies default site and zone names for tables and zone plates. |
+| **Required from WorldLoom at Runtime** | `world.business_units` and `world.systems` | Supplies default work package and system names for budget plates and prose. |
+| **Required from WorldLoom at Runtime** | `world.facts` (`FactLedger`) | Supplies target facts (`golden_value`) and `supersedes` or comparator draft facts (`canary_value`). |
+| **Required from WorldLoom at Runtime** | `native_artifacts.inspect_artifact` | Verifies `.docx` XML paragraphs, tables, and image positions after build. |
+| **Derived by BigLoom at Runtime** | `title`, `short_title`, `doc_ref`, `filename`, `trap_filename`, `id_prefix`, `ref_prefix`, `office` | Derived from `subject` unless overridden in YAML. |
+| **Derived by BigLoom at Runtime** | `chapters`, `middle_chapter`, `approval_annex` | Derived from `genre: funding_proposal` unless overridden in YAML. |
+| **Derived by BigLoom at Runtime** | `figures` | Scaled from `max(sizes_mb)` (`round(max_mb * 0.48)`) unless overridden in YAML. |
+
+### 2.2 Spec Validation and World Fact Selection
 - A Pydantic model (`ProposalSpec`) validates the YAML file. A bad file raises an error that names the invalid field.
 - The repository includes `specs/gsw_proposal.yaml` (200 MiB target), `specs/tuas_proposal.yaml` (500 MiB target), and `specs/pdd_proposal.yaml` (1024 MiB target).
-
-### 2.2 World and Facts (WorldLoom)
 - The command loads the world from `World.load(world_pack)`, a WorldLoom org-pack JSON file, or `sdk.company(domain, seed=seed).build().world`.
 - The command selects unique facts from `world.facts` and formats values with `worldloom.narrative.references.render_value`.
 - For each target fact, the command selects a trap value from its `supersedes` predecessor fact in `world.facts`, or from a distinct comparator fact of the same kind when no predecessor exists.

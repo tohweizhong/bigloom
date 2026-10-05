@@ -1,0 +1,96 @@
+# 1. Required from user
+world_pack: retail-close
+subject: "Greater Southern Waterfront Integrated Digital Twin and Smart Estate Programme"
+sizes_mb:
+  - 200
+
+# 2. Optional user overrides (otherwise resolved from WorldLoom at runtime or derived by BigLoom)
+currency: SGD
+agency_name: Government Technology Agency (Synthetic)
+marking: "OFFICIAL (CLOSED) // SENSITIVE NORMAL (SYNTHETIC TEST DATA)"
+short_mark: "OFFICIAL (CLOSED) // SENSITIVE NORMAL"
+
+title: "Greater Southern Waterfront Integrated Digital Twin and Smart Estate Programme: Proposal for Funding Approval"
+short_title: "GSW Integrated Digital Twin Programme"
+doc_ref: "the Greater Southern Waterfront digital twin funding proposal (final, v1.0)"
+filename: "GSW-Integrated-Digital-Twin_Proposal-for-Funding-Approval_v1.0_FINAL.docx"
+trap_filename: "GSW-Integrated-Digital-Twin_Proposal_DRAFT_v0.3_superseded.docx"
+id_prefix: "GSW"
+ref_prefix: "GSW-DT"
+office: "GSW Programme Office"
+phase1_sites: "Pulau Brani and the former Keppel Club site"
+module_name: "Pasir Panjang Power District twin module"
+approval_annex: "Annex F: Approval record"
+middle_chapter: "Implementation plan and phasing"
+
+sections_per_chapter: 6
+annex_sections: 3
+figures: 96
+
+context: >-
+  You are writing part of a SYNTHETIC test document. The author is the Government Technology Agency
+  (Synthetic), a fictional Singapore statutory board. The document is a formal funding proposal titled
+  'Greater Southern Waterfront Integrated Digital Twin and Smart Estate Programme: Proposal for Funding
+  Approval'. The programme builds a city-scale digital twin, an edge sensor network, and shared data
+  services for the Greater Southern Waterfront, the 30 km coastline from Gardens by the Bay East to
+  Pasir Panjang. It covers sites such as the former Keppel Club, Pulau Brani, the Pasir Panjang Power
+  District, the former Tanjong Pagar and Keppel terminals, Labrador Park, Mount Faber, and HarbourFront.
+  Partner agencies include URA, JTC, LTA, PUB, HDB, NParks, and SLA. Write in formal British English,
+  in the voice of a public-sector programme office. Use plain prose. IMPORTANT: do not state any
+  specific dollar amount, budget total, contingency percentage, approval reference number, go-live date,
+  sponsor name, or count of sensor nodes. Use qualitative words for these. Other numbers (areas,
+  timelines in years, service levels) are allowed. Do not use Markdown headings or bold text. Separate
+  paragraphs with one blank line. You can use short bullet lists that start with '- '.
+
+chapters:
+  - "Executive summary"
+  - "Strategic context: the Greater Southern Waterfront vision"
+  - "Problem statement and needs analysis"
+  - "Stakeholders, governance, and decision rights"
+  - "Proposed solution overview"
+  - "Technical architecture on Government on Commercial Cloud"
+  - "Data management, privacy, and security (IM8)"
+  - "Implementation plan and phasing"
+  - "Procurement strategy"
+  - "Financial analysis and budget"
+  - "Risk management"
+  - "Benefits realisation and key performance indicators"
+  - "Change management and stakeholder engagement"
+  - "Sustainability and coastal climate resilience"
+  - "Annex A: Glossary and abbreviations"
+  - "Annex B: Detailed functional and non-functional requirements"
+  - "Annex C: Site plates and reference drawings"
+  - "Annex D: Summary of agency and public consultation"
+  - "Annex E: Assumptions, dependencies, and constraints"
+
+zones:
+  - "Keppel Club"
+  - "Pulau Brani"
+  - "Pasir Panjang Power District"
+  - "Tanjong Pagar Terminal"
+  - "Keppel Terminal"
+  - "Labrador Park"
+  - "Mount Faber"
+  - "HarbourFront"
+  - "Telok Blangah"
+  - "Sentosa Gateway"
+
+packages:
+  - "Digital twin core"
+  - "Edge sensor network"
+  - "Data exchange layer"
+  - "Citizen services"
+  - "Coastal monitoring"
+  - "Mobility analytics"
+  - "Energy and utilities"
+  - "Security operations"
+
+phases:
+  - "Phase 1: Pulau Brani and Keppel Club"
+  - "Phase 2A: Tanjong Pagar Terminal"
+  - "Phase 2B: Keppel Terminal"
+  - "Phase 3: Pasir Panjang Power District"
+  - "Phase 4: Labrador and Mount Faber"
+  - "Phase 5: Full waterfront operations"
+
+leak_terms: []

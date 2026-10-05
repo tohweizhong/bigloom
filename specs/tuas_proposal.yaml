@@ -1,0 +1,119 @@
+# 1. Required from user
+world_pack: retail-close
+subject: "Tuas Port Smart Operations and Digital Twin Programme"
+sizes_mb:
+  - 500
+
+# 2. Optional user overrides (otherwise resolved from WorldLoom at runtime or derived by BigLoom)
+currency: SGD
+agency_name: Government Technology Agency (Synthetic)
+marking: "OFFICIAL (CLOSED) // SENSITIVE NORMAL (SYNTHETIC TEST DATA)"
+short_mark: "OFFICIAL (CLOSED) // SENSITIVE NORMAL"
+
+title: "Tuas Port Smart Operations and Digital Twin Programme: Proposal for Funding Approval"
+short_title: "Tuas Port Digital Twin Programme"
+doc_ref: "the Tuas Port smart operations and digital twin funding proposal (final, v1.0)"
+filename: "Tuas-Port-Smart-Operations-Digital-Twin_Proposal-for-Funding-Approval_v1.0_FINAL.docx"
+trap_filename: "Tuas-Port-Smart-Operations-Digital-Twin_Proposal_DRAFT_v0.2_superseded.docx"
+id_prefix: "TUAS"
+ref_prefix: "TUAS-DT"
+office: "Tuas Port Programme Office"
+phase1_sites: "the Tuas Phase 1 berths and the Tuas South yard"
+module_name: "Tuas Phase 3 yard automation twin module"
+approval_annex: "Annex H: Approval record"
+middle_chapter: "Implementation plan and phasing"
+
+sections_per_chapter: 9
+annex_sections: 5
+figures: 240
+
+context: >-
+  You are writing part of a SYNTHETIC test document. The author is the Government Technology Agency
+  (Synthetic), a fictional Singapore statutory board. The document is a formal funding proposal titled
+  'Tuas Port Smart Operations and Digital Twin Programme: Proposal for Funding Approval'. The programme
+  builds a port-scale digital twin, an edge sensor and telemetry network, and shared data services for
+  Tuas Port, the next-generation port in the west of Singapore that consolidates the city terminals.
+  It covers areas such as the Tuas Phase 1 berths, the Tuas Phase 2 wharves, the Tuas Phase 3 and
+  Phase 4 reclamation, Tuas South, the Tuas View Extension, the Jurong Island interface, the Pioneer
+  Sector, and Tuas Nexus. Partner agencies include MPA, PSA, JTC, LTA, PUB, NEA, and ICA. Write in
+  formal British English, in the voice of a public-sector programme office. Use plain prose. IMPORTANT:
+  do not state any specific dollar amount, budget total, contingency percentage, approval reference
+  number, go-live date, sponsor name, or count of sensor nodes. Use qualitative words for these. Other
+  numbers (areas, timelines in years, service levels) are allowed. Do not use Markdown headings or bold
+  text. Separate paragraphs with one blank line. You can use short bullet lists that start with '- '.
+
+chapters:
+  - "Executive summary"
+  - "Strategic context: Tuas Port and the next-generation maritime hub"
+  - "Problem statement and needs analysis"
+  - "Current-state assessment of port systems"
+  - "Stakeholders, governance, and decision rights"
+  - "Proposed solution overview"
+  - "Digital twin design and simulation services"
+  - "Edge sensing, telemetry, and connectivity"
+  - "Technical architecture on Government on Commercial Cloud"
+  - "Data management, privacy, and security (IM8)"
+  - "Integration with port community and agency systems"
+  - "Service design for port users and operators"
+  - "Testing, assurance, and operational readiness"
+  - "Implementation plan and phasing"
+  - "Procurement strategy"
+  - "Financial analysis and budget"
+  - "Economic appraisal and cost-benefit analysis"
+  - "Risk management"
+  - "Benefits realisation and key performance indicators"
+  - "Workforce, skills, and change management"
+  - "Stakeholder engagement and communications"
+  - "Sustainability, decarbonisation, and climate resilience"
+  - "Operations, maintenance, and service management"
+  - "Exit strategy and long-term sustainment"
+  - "Annex A: Glossary and abbreviations"
+  - "Annex B: Detailed functional and non-functional requirements"
+  - "Annex C: Site plates and reference drawings"
+  - "Annex D: Summary of agency and industry consultation"
+  - "Annex E: Assumptions, dependencies, and constraints"
+  - "Annex F: Detailed cost model notes"
+  - "Annex G: Technical standards and compliance matrix"
+
+zones:
+  - "Tuas Phase 1 Berths"
+  - "Tuas Phase 2 Wharves"
+  - "Tuas Phase 3 Reclamation"
+  - "Tuas Phase 4 Reclamation"
+  - "Tuas South Yard"
+  - "Tuas View Extension"
+  - "Jurong Island Interface"
+  - "Pioneer Sector"
+  - "Tuas Checkpoint"
+  - "Tuas Nexus"
+
+packages:
+  - "Port digital twin core"
+  - "AGV telemetry"
+  - "Berth and yard optimisation"
+  - "Vessel traffic data"
+  - "Seawall monitoring"
+  - "Energy management"
+  - "Security operations"
+  - "Port community exchange"
+
+phases:
+  - "Phase 1: Tuas Phase 1 berths"
+  - "Phase 2A: Tuas Phase 2 wharves"
+  - "Phase 2B: Yard automation"
+  - "Phase 3: Tuas Phase 3 reclamation"
+  - "Phase 4: Tuas Phase 4 reclamation"
+  - "Phase 5: Full port operations"
+
+leak_terms:
+  - "GSW"
+  - "Greater Southern"
+  - "Keppel"
+  - "Pulau Brani"
+  - "Pasir Panjang"
+  - "Labrador"
+  - "Mount Faber"
+  - "HarbourFront"
+  - "Telok Blangah"
+  - "Sentosa"
+  - "Tanjong Pagar"
