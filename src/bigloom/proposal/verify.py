@@ -28,6 +28,17 @@ class ProposalVerificationReport(BaseModel):
     errors: list[str]
 
 
+def _contains_token(haystack: str, needle: str) -> bool:
+    """Return True when `needle` appears on word boundaries inside `haystack`."""
+    cleaned = needle.strip().lower()
+    if not cleaned:
+        return False
+    pattern = re.compile(
+        r"(?<![0-9a-z])" + re.escape(cleaned) + r"(?![0-9a-z])(?!\.\d)"
+    )
+    return bool(pattern.search(haystack.lower()))
+
+
 def find_leaks(texts: list[str], leak_terms: list[str]) -> list[str]:
     """Return sorted leak_terms that appear in any of `texts` (case-insensitive word boundary)."""
     if not leak_terms:
@@ -115,7 +126,7 @@ def verify_proposal_outputs(
                     errors.append(f"{row_id}: unit_locator {unit_loc!r} not found in snapshot.")
                 else:
                     unit_idx, unit_text = units_by_locator[unit_loc]
-                    if answer not in unit_text:
+                    if not _contains_token(unit_text, answer):
                         errors.append(
                             f"{row_id}: answer {answer!r} missing at locator {unit_loc}."
                         )
@@ -125,12 +136,12 @@ def verify_proposal_outputs(
                             f"caption at unit {last_plate_idx}."
                         )
             elif modality == "image":
-                if answer in all_target_text:
+                if _contains_token(all_target_text, answer):
                     errors.append(
                         f"{row_id}: image-only fact {answer!r} leaked into document text."
                     )
 
-            if trap_answer in all_target_text:
+            if _contains_token(all_target_text, trap_answer):
                 errors.append(
                     f"{row_id}: trap_answer {trap_answer!r} leaked into target document text."
                 )

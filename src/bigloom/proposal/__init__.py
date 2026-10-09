@@ -3,6 +3,8 @@
 from .builder import (
     DocxLocator,
     ProposalBuildResult,
+    ProposalEvalRow,
+    ProposalManifestEntry,
     build_proposal,
     write_proposal_docx,
 )
@@ -28,6 +30,8 @@ __all__ = [
     "EvidencePosition",
     "Fig",
     "ProposalBuildResult",
+    "ProposalEvalRow",
+    "ProposalManifestEntry",
     "ProposalSpec",
     "ProposalTextFact",
     "ProposalVerificationReport",

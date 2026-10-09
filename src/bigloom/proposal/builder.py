@@ -42,12 +42,50 @@ class DocxLocator(BaseModel):
     caption: str | None = None
 
 
+class ProposalManifestEntry(BaseModel):
+    """Validated manifest record written to manifest.jsonl for one built .docx size."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    file: str
+    size_mb: int
+    bytes: int
+    sha256: str
+    words: int
+    figures: int
+    trap_file: str
+    trap_bytes: int
+    trap_sha256: str
+    seed: int
+    provider: str
+    model: str
+
+
+class ProposalEvalRow(BaseModel):
+    """Validated evaluation question row written to evals.jsonl."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    id: str
+    file: str
+    modality: Literal["text", "image"]
+    position: Literal["start", "middle", "end"]
+    question: str
+    answer: str
+    trap_answer: str
+    fact_id: str
+    trap_fact_id: str
+    relation: str
+    evidence: str
+    locator: DocxLocator
+
+
 @dataclass(frozen=True)
 class ProposalBuildResult:
     """Paths and metadata produced by a proposal build."""
 
-    manifest_entries: list[dict[str, object]]
-    eval_rows: list[dict[str, object]]
+    manifest_entries: list[ dict[str, object] ]
+    eval_rows: list[ dict[str, object] ]
     target_paths: list[Path]
     trap_path: Path
 
@@ -233,6 +271,43 @@ def _resolve_text_locator(payload: bytes, needle: str) -> DocxLocator:
     raise ValueError(f"Unable to locate text fact {needle!r} in rendered .docx.")
 
 
+def _filter_facts_by_positions(
+    all_facts: list[ProposalTextFact],
+    spec: ProposalSpec,
+) -> list[ProposalTextFact]:
+    """Select text facts matching the requested text evidence_positions in spec."""
+    by_where: dict[str, list[ProposalTextFact]] = {"start": [], "middle": [], "end": []}
+    for fact in all_facts:
+        by_where[fact.where].append(fact)
+
+    selected: list[ProposalTextFact] = []
+    for ev in spec.evidence_positions:
+        if ev.modality != "text":
+            continue
+        bucket = by_where.get(ev.position, [])
+        if bucket:
+            selected.append(bucket.pop(0))
+    return selected
+
+
+def _select_image_picks(
+    total_figs: int,
+    spec: ProposalSpec,
+) -> dict[str, int]:
+    """Select start/middle/end figure indices matching the image evidence_positions in spec."""
+    defaults = {
+        "start": 0,
+        "middle": total_figs // 2,
+        "end": max(0, total_figs - 1),
+    }
+    requested_positions = [
+        ev.position for ev in spec.evidence_positions if ev.modality == "image"
+    ]
+    if not requested_positions:
+        return {}
+    return {pos: defaults[pos] for pos in requested_positions if pos in defaults}
+
+
 def build_proposal(
     spec: ProposalSpec,
     out_dir: Path,
@@ -252,9 +327,10 @@ def build_proposal(
     prose = load_prose(cache_dir, spec)
 
     rng = random.Random(seed)
-    facts = select_proposal_facts(spec, entities, seed=seed)
+    all_facts = select_proposal_facts(spec, entities, seed=seed)
+    facts = _filter_facts_by_positions(all_facts, spec)
     figs = make_figs(rng, spec.figures, spec, entities)
-    picks = {"start": 0, "middle": len(figs) // 2, "end": len(figs) - 1}
+    picks = _select_image_picks(len(figs), spec)
 
     if spec.leak_terms:
         texts_to_check = [
@@ -280,7 +356,6 @@ def build_proposal(
         if leaked:
             raise ValueError(f"Forbidden leak_terms found in proposal inputs: {leaked}")
 
-    # Build the < 1 MB trap twin first so its SHA-256 and byte size can be recorded in manifest.jsonl
     trap_figs = make_trap_figs(figs, picks, spec, entities, seed=seed, budget=80_000)
     second_chapter = spec.chapters[1] if len(spec.chapters) > 1 else spec.chapters[0]
     trap_prose = [
@@ -303,9 +378,8 @@ def build_proposal(
     trap_bytes = trap_path.read_bytes()
     trap_sha256 = hashlib.sha256(trap_bytes).hexdigest()
 
-    # Build each requested size in sizes_mb
     target_paths: list[Path] = []
-    manifest_entries: list[dict[str, object]] = []
+    manifest_models: list[ProposalManifestEntry] = []
     stem = Path(spec.filename).stem
     suffix = Path(spec.filename).suffix or ".docx"
 
@@ -339,44 +413,44 @@ def build_proposal(
         payload = path.read_bytes()
         sha256 = hashlib.sha256(payload).hexdigest()
         target_paths.append(path)
-        manifest_entries.append(
-            {
-                "file": f"docx/{target_filename}",
-                "size_mb": int(size_mb),
-                "bytes": len(payload),
-                "sha256": sha256,
-                "words": stats["words"],
-                "figures": stats["figures"],
-                "trap_file": f"traps/{spec.trap_filename}",
-                "trap_bytes": len(trap_bytes),
-                "trap_sha256": trap_sha256,
-                "seed": seed,
-                "provider": spec.prose.provider,
-                "model": spec.prose.model,
-            }
+        manifest_models.append(
+            ProposalManifestEntry(
+                file=f"docx/{target_filename}",
+                size_mb=int(size_mb),
+                bytes=len(payload),
+                sha256=sha256,
+                words=stats["words"],
+                figures=stats["figures"],
+                trap_file=f"traps/{spec.trap_filename}",
+                trap_bytes=len(trap_bytes),
+                trap_sha256=trap_sha256,
+                seed=seed,
+                provider=spec.prose.provider,
+                model=spec.prose.model,
+            )
         )
 
-    primary_rel_file = str(manifest_entries[0]["file"])
+    primary_rel_file = manifest_models[0].file
     primary_payload = target_paths[0].read_bytes()
 
-    eval_rows: list[dict[str, object]] = []
+    eval_models: list[ProposalEvalRow] = []
     for f in facts:
         locator = _resolve_text_locator(primary_payload, f.answer)
-        eval_rows.append(
-            {
-                "id": f"{spec.id_prefix}-{f.fid}",
-                "file": primary_rel_file,
-                "modality": "text",
-                "position": f.where,
-                "question": f.question,
-                "answer": f.answer,
-                "trap_answer": f.trap_answer,
-                "fact_id": f.fact_id,
-                "trap_fact_id": f.trap_fact_id,
-                "relation": f.relation,
-                "evidence": f.sentence,
-                "locator": locator.model_dump(),
-            }
+        eval_models.append(
+            ProposalEvalRow(
+                id=f"{spec.id_prefix}-{f.fid}",
+                file=primary_rel_file,
+                modality="text",
+                position=f.where,
+                question=f.question,
+                answer=f.answer,
+                trap_answer=f.trap_answer,
+                fact_id=f.fact_id,
+                trap_fact_id=f.trap_fact_id,
+                relation=f.relation,
+                evidence=f.sentence,
+                locator=locator,
+            )
         )
 
     for (where, idx), (_, tf) in zip(picks.items(), trap_figs):
@@ -387,22 +461,25 @@ def build_proposal(
             index=idx + 1,
             caption=f"Plate {idx + 1}: {fg.caption}",
         )
-        eval_rows.append(
-            {
-                "id": f"{spec.id_prefix}-I{idx + 1}",
-                "file": primary_rel_file,
-                "modality": "image",
-                "position": where,
-                "question": fg.question,
-                "answer": fg.answer,
-                "trap_answer": tf.answer,
-                "fact_id": f"plate:{idx + 1}",
-                "trap_fact_id": f"trap_plate:{idx + 1}",
-                "relation": "plate_state",
-                "evidence": f"image: Plate {idx + 1}: {fg.caption}",
-                "locator": img_locator.model_dump(),
-            }
+        eval_models.append(
+            ProposalEvalRow(
+                id=f"{spec.id_prefix}-I{idx + 1}",
+                file=primary_rel_file,
+                modality="image",
+                position=where,  # type: ignore[arg-type]
+                question=fg.question,
+                answer=fg.answer,
+                trap_answer=tf.answer,
+                fact_id=f"plate:{idx + 1}",
+                trap_fact_id=f"trap_plate:{idx + 1}",
+                relation="plate_state",
+                evidence=f"image: Plate {idx + 1}: {fg.caption}",
+                locator=img_locator,
+            )
         )
+
+    manifest_entries = [m.model_dump() for m in manifest_models]
+    eval_rows = [r.model_dump() for r in eval_models]
 
     with (out_dir / "manifest.jsonl").open("w", encoding="utf-8") as fh:
         for entry in manifest_entries:

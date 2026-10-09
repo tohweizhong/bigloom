@@ -179,3 +179,40 @@ def test_verify_proposal_outputs_detects_tampered_evals_and_ballast(tmp_path: Pa
     assert any("image-only fact" in err for err in report.errors)
     assert any("trap_answer" in err for err in report.errors)
 
+
+def test_custom_evidence_positions_and_pydantic_models(tmp_path: Path) -> None:
+    """Custom evidence_positions filter evaluation rows and validate against frozen Pydantic models."""
+    from bigloom.proposal.builder import ProposalEvalRow, ProposalManifestEntry
+    from bigloom.proposal.spec import EvidencePosition
+
+    spec = ProposalSpec(
+        world_pack="retail-close",
+        subject="Greater Southern Waterfront Digital Twin Programme",
+        sizes_mb=[1],
+        chapters=[
+            "Executive summary",
+            "Implementation plan and phasing",
+            "Annex A: Glossary and abbreviations",
+        ],
+        middle_chapter="Implementation plan and phasing",
+        sections_per_chapter=1,
+        annex_sections=1,
+        figures=6,
+        evidence_positions=[
+            EvidencePosition(position="start", modality="text"),
+            EvidencePosition(position="end", modality="text"),
+            EvidencePosition(position="middle", modality="image"),
+        ],
+        prose=ProseConfig(provider="deterministic", workers=2),
+    )
+    result = build_proposal(spec, out_dir=tmp_path, seed=2026)
+    assert len(result.eval_rows) == 3
+
+    manifest_model = ProposalManifestEntry.model_validate(result.manifest_entries[0])
+    assert manifest_model.size_mb == 1
+
+    eval_models = [ProposalEvalRow.model_validate(row) for row in result.eval_rows]
+    assert [m.position for m in eval_models] == ["start", "end", "middle"]
+    assert [m.modality for m in eval_models] == ["text", "text", "image"]
+
+
