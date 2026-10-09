@@ -23,5 +23,5 @@
 
 ---
 
-- [~] **Track: Large-File Production on WorldLoom (`bigloom proposal`)**
+- [x] **Track: Large-File Production on WorldLoom (`bigloom proposal`)**
   *Link: [./tracks/proposal_generator_20261006/index.md](./tracks/proposal_generator_20261006/index.md)*
