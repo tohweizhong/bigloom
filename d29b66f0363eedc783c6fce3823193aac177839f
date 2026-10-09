@@ -1,0 +1,1 @@
+Review Fixes: added ProposalManifestEntry and ProposalEvalRow frozen Pydantic models, custom evidence_positions filtering, and word-boundary token checks in verify.py.
