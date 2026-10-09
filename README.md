@@ -2,17 +2,76 @@
 
 BigLoom builds large test files (1 MB to 100 MB) on top of [WorldLoom (`synthetic-foundry`)](https://github.com/vamsiramakrishnan/synthetic-foundry) and prevents target leakage in connector and RAG evaluations.
 
+## Overview: Dependencies, Inputs, and Outputs
+
+BigLoom connects two external systems: [`synthetic-foundry`](https://github.com/vamsiramakrishnan/synthetic-foundry) (imported as `worldloom`) for corpus synthesis and qualification, and the connector or search agent under test for evaluation.
+
+```mermaid
+flowchart LR
+    subgraph DEP ["External Dependency"]
+        WL["synthetic-foundry (worldloom)"]
+    end
+
+    subgraph BUILD ["1. Build and Qualify"]
+        B_CMD["bigloom build + queries + qualify"]
+        CORPUS["Output: Large Target Files and Small Trap Files"]
+        MANIFEST["Output: manifest.jsonl"]
+        CASES["Output: cases.json"]
+    end
+
+    subgraph RUN ["2. External Evaluation Run"]
+        SUT["Connector and Search Agent"]
+        LOGS["Output: Raw Run Logs"]
+    end
+
+    subgraph GRADE ["3. Import, Grade, and Report"]
+        G_CMD["bigloom import-run + grade + report"]
+        RESP["Output: responses.json"]
+        REPORT["Output: grade_report.json and scorecard.md"]
+    end
+
+    WL -->|"Entities, Facts, Unit Parser, Rankers"| B_CMD
+    B_CMD --> CORPUS
+    B_CMD --> MANIFEST
+    B_CMD --> CASES
+
+    CORPUS -->|"Upload Files"| SUT
+    CASES -->|"Ask Questions"| SUT
+    SUT --> LOGS
+
+    LOGS -->|"Raw Traces"| G_CMD
+    CASES -->|"Expected Answers and Traps"| G_CMD
+    MANIFEST -->|"File Sizes and Metadata"| G_CMD
+    G_CMD --> RESP
+    G_CMD --> REPORT
+```
+
+| Phase | External Dependency | Input | BigLoom Commands | Output |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Build and Qualify** | `synthetic-foundry` (`worldloom`) | CLI flags (`--world-pack`, `--domain`, `--sizes-mb`, `--seed`) | `bigloom build`, `bigloom queries`, `bigloom qualify` | Large target files, `< 1 MB` trap files, `manifest.jsonl`, `cases.json` |
+| **2. Evaluation Run** | Connector and Search Agent (such as SharePoint + `streamAssist`) | Large target files, `< 1 MB` trap files, `cases.json` | External runner (or `harnesses/gemini_enterprise/`) | Raw run logs (`.jsonl`, `.json`, or `.csv`) |
+| **3. Grade and Report** | None | Raw run logs, `cases.json`, `manifest.jsonl` | `bigloom import-run`, `bigloom grade`, `bigloom report` | `responses.json`, `grade_report.json`, `scorecard.md` |
+
 ## Prerequisite Dependency: `synthetic-foundry` (`worldloom`)
 
 BigLoom requires the [`synthetic-foundry`](https://github.com/vamsiramakrishnan/synthetic-foundry) package (imported in Python as `worldloom`). This package is not published on PyPI. You must install it from a local clone before you run `bigloom`.
 
 BigLoom uses three modules from `worldloom`:
 
-| `worldloom` Module | How BigLoom Uses It |
-| :--- | :--- |
-| `worldloom.World` and `worldloom.sdk.company` | Loads enterprise blueprints, company entities, cost centres, and the `FactLedger` (canonical facts and draft predecessor facts). |
-| `worldloom.native_artifacts.inspect_artifact` | Parses rendered `.docx`, `.xlsx`, and `.pptx` files into numbered text units (paragraphs, sheets, or slides) to verify fact placement. |
-| `worldloom.evaluate.bm25` and `worldloom.evaluate.tfidf` | Ranks every file in the corpus against each evaluation query to confirm that the large target file ranks first. |
+| `worldloom` Module | BigLoom Consumer | How BigLoom Uses It |
+| :--- | :--- | :--- |
+| `worldloom.World` and `worldloom.sdk.company` | `src/bigloom/build.py`, `src/bigloom/proposal/facts.py` | Loads enterprise blueprints, company entities, cost centres, and the `FactLedger` (canonical facts for the large file and draft predecessor facts for the `< 1 MB` trap file). |
+| `worldloom.native_artifacts.inspect_artifact` | `src/bigloom/qualify.py` | Parses rendered `.docx`, `.xlsx`, and `.pptx` files into numbered text units (paragraphs, sheets, or slides) to verify deep fact placement (`unit >= 5`), global uniqueness, and image-fact isolation. |
+| `worldloom.evaluate.bm25` and `worldloom.evaluate.tfidf` | `src/bigloom/qualify.py` | Ranks every file in the corpus against each evaluation query to confirm that the large target file ranks first (`#1`). |
+
+### Detailed Data Flow from WorldLoom into BigLoom
+
+The diagram below shows how each `worldloom` module connects to the six stages of BigLoom and the generated files between them:
+
+1. **Blueprint and Fact Extraction:** `worldloom.World.load` and `worldloom.sdk.company` pass enterprise entities, canonical golden facts, and draft canary facts into `bigloom build`.
+2. **Corpus and Case Generation:** `bigloom build` renders the large target files (`18 MB`, `50 MB`, `100 MB+`) and `< 1 MB` trap twins and writes `manifest.jsonl`. Next, `bigloom queries` reads `manifest.jsonl` and writes two `EvalCase` objects per large file (`1 text` and `1 image`) to `cases.json`.
+3. **Qualification Gate:** Before you upload files to a connector, `bigloom qualify` inspects the rendered files with `worldloom.native_artifacts.inspect_artifact` and ranks the corpus with `worldloom.evaluate.bm25` and `worldloom.evaluate.tfidf` to verify all nine anti-leakage rules.
+4. **Connector Evaluation and Grading:** After the connector and search agent run against the uploaded files and `cases.json`, `bigloom import-run` normalizes the raw logs into `responses.json`, `bigloom grade` classifies each answer into five leakage verdicts in `grade_report.json`, and `bigloom report` joins `cases.json`, `manifest.jsonl`, and `grade_report.json` to write `scorecard.md`.
 
 ```mermaid
 flowchart TD
