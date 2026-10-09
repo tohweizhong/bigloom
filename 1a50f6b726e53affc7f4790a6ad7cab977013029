@@ -1,0 +1,1 @@
+Task: Write unit tests for prose generation, caching, and grained plate encoding (Red Phase). Files: tests/test_proposal_prose.py, tests/test_proposal_plates.py.
