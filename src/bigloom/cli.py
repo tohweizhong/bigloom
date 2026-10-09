@@ -12,6 +12,7 @@ from .adapters import import_run_responses
 from .build import build_corpus
 from .grade import grade_responses
 from .models import EvalCase, EvalResponse, GradeReport
+from .proposal import build_proposal, load_proposal_spec, verify_proposal_outputs
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries, load_manifest
 from .report import render_scorecard_markdown
@@ -21,6 +22,29 @@ app = typer.Typer(
     help="Large-file synthesis and target-leakage gates on top of WorldLoom.",
     add_completion=False,
 )
+
+
+@app.command()
+def proposal(
+    spec_path: Annotated[Path, typer.Option("--spec", exists=True, dir_okay=False)],
+    out_dir: Annotated[Path, typer.Option("--out", file_okay=False)],
+    seed: Annotated[int, typer.Option("--seed")] = 2026,
+    skip_prose: Annotated[bool, typer.Option("--skip-prose")] = False,
+) -> None:
+    """Build large .docx funding proposals (up to 1 GiB) and < 1 MB trap twins from a YAML spec."""
+    spec = load_proposal_spec(spec_path)
+    result = build_proposal(spec, out_dir=out_dir, seed=seed, skip_prose=skip_prose)
+    verification = verify_proposal_outputs(spec, out_dir=out_dir, build_result=result)
+    summary = {
+        "out": str(out_dir),
+        "passed": verification.passed,
+        "manifest_entries": result.manifest_entries,
+        "total_eval_rows": verification.total_eval_rows,
+        "errors": verification.errors,
+    }
+    typer.echo(json.dumps(summary, indent=2))
+    if not verification.passed:
+        raise typer.Exit(code=1)
 
 
 @app.command()

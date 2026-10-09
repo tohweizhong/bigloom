@@ -145,3 +145,37 @@ def test_cli_bigloom_proposal_end_to_end(tmp_path: Path) -> None:
     assert (out_dir / "manifest.jsonl").is_file()
     assert (out_dir / "evals.jsonl").is_file()
     assert (out_dir / "evals.csv").is_file()
+
+
+def test_verify_proposal_outputs_detects_tampered_evals_and_ballast(tmp_path: Path) -> None:
+    """verify_proposal_outputs flags bad locators, image text leaks, trap leaks, and ballast."""
+    spec = _make_small_spec(sizes_mb=[1])
+    result = build_proposal(spec, out_dir=tmp_path, seed=2026)
+
+    # Inject a forbidden shape-ballast.bin into the target .docx
+    with zipfile.ZipFile(result.target_paths[0], "a") as zf:
+        zf.writestr("worldloom/shape-ballast.bin", b"ballast")
+
+    # Tamper with eval_rows to trigger locator, image-in-text, and trap-in-target errors
+    tampered_rows = [dict(r) for r in result.eval_rows]
+    tampered_rows[0]["locator"] = {"unit_locator": "paragraph:99999"}
+    tampered_rows[4]["locator"] = {"unit_locator": "paragraph:1"}  # end fact before last plate
+    tampered_rows[6]["answer"] = "Greater Southern Waterfront"  # image fact present in text
+    tampered_rows[0]["trap_answer"] = "Greater Southern Waterfront"  # trap present in text
+
+    from bigloom.proposal.builder import ProposalBuildResult
+
+    bad_result = ProposalBuildResult(
+        manifest_entries=result.manifest_entries,
+        eval_rows=tampered_rows,
+        target_paths=result.target_paths,
+        trap_path=result.trap_path,
+    )
+    report = verify_proposal_outputs(spec, out_dir=tmp_path, build_result=bad_result)
+    assert report.passed is False
+    assert any("shape-ballast.bin" in err for err in report.errors)
+    assert any("paragraph:99999" in err for err in report.errors)
+    assert any("not after last plate" in err for err in report.errors)
+    assert any("image-only fact" in err for err in report.errors)
+    assert any("trap_answer" in err for err in report.errors)
+

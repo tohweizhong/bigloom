@@ -391,11 +391,10 @@ def encode_job(args: tuple[bytes, tuple[int, int], int]) -> tuple[bytes, tuple[i
     scale = math.sqrt(budget / 1.6 / (base.width * base.height))
     data, out_size = b"", size
     for _ in range(4):
-        scale = min(3.0, max(0.3, scale))
-        img = base.resize(
-            (max(64, int(base.width * scale)), max(64, int(base.height * scale))),
-            Image.Resampling.LANCZOS,
-        )
+        scale = min(3.0, max(0.25, scale))
+        w_px = max(80, round(base.width * scale / 8.0) * 8)
+        h_px = (w_px * 5) // 8
+        img = base.resize((w_px, h_px), Image.Resampling.LANCZOS)
         noise = Image.merge("RGB", [Image.effect_noise(img.size, 64) for _ in range(3)])
         img = Image.blend(img, noise, GRAIN / 100)
         buf = io.BytesIO()

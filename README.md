@@ -227,6 +227,11 @@ bigloom grade --cases ./artifacts/cases.json --responses ./responses.json > ./gr
 
 # 6. Render a Markdown scorecard by size tier, format, and modality
 bigloom report --cases ./artifacts/cases.json --grade-report ./grade_report.json --manifest ./artifacts/manifest.jsonl --out ./scorecard.md
+
+# 7. Build a 200 MiB, 500 MiB, or 1 GiB .docx funding proposal and < 1 MB trap twin from a YAML spec
+bigloom proposal --spec ./specs/gsw_proposal.yaml --out ./artifacts-gsw-200mb --seed 2026
+bigloom proposal --spec ./specs/tuas_proposal.yaml --out ./artifacts-tuas-500mb --seed 2026
+bigloom proposal --spec ./specs/pdd_proposal.yaml --out ./artifacts-pdd-1gb --seed 2026
 ```
 
 ## Evaluation Harnesses
