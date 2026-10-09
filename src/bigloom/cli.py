@@ -16,7 +16,7 @@ from .proposal import build_proposal, load_proposal_spec, verify_proposal_output
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries, load_manifest
 from .report import render_scorecard_markdown
-from .wizard import run_interactive_wizard
+from .wizard import parse_facets, run_interactive_wizard
 
 app = typer.Typer(
     name="bigloom",
@@ -73,10 +73,13 @@ def build(
     ] = None,
     world_pack: Annotated[str | None, typer.Option("--world-pack")] = None,
     domain: Annotated[str | None, typer.Option("--domain")] = None,
+    locale: Annotated[str | None, typer.Option("--locale")] = None,
+    facets: Annotated[str | None, typer.Option("--facets")] = None,
 ) -> None:
     """Synthesize large target files and paired < 1 MB distractor trap files."""
     parsed_sizes = tuple(float(x.strip()) for x in sizes_mb.split(",") if x.strip())
     parsed_formats = tuple(x.strip() for x in formats.split(",") if x.strip())
+    parsed_facets = parse_facets(facets) if facets else None
     entries = build_corpus(
         out_dir=out_dir,
         sizes_mb=parsed_sizes,
@@ -85,6 +88,8 @@ def build(
         corpus_dir=corpus_dir,
         world_pack=world_pack,
         domain=domain,
+        locale=locale,
+        facets=parsed_facets,
     )
     summary = {
         "out_dir": str(out_dir),

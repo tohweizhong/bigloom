@@ -31,3 +31,9 @@
 - [x] **Track: Interactive WorldLoom Interface (`bigloom init`) and Custom Pack Documentation**
   *Link: [./tracks/interactive_worldloom_cli_20261010/index.md](./tracks/interactive_worldloom_cli_20261010/index.md)*
 
+---
+
+- [x] **Track: Full WorldLoom Pack and Blueprint Configuration (`bigloom init`)**
+  *Link: [./tracks/worldloom_full_blueprint_wizard_20261010/index.md](./tracks/worldloom_full_blueprint_wizard_20261010/index.md)*
+
+

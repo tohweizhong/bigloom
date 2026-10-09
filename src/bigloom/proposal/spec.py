@@ -116,6 +116,8 @@ class ProposalSpec(BaseModel):
     agency_name: str | None = None
     marking: str | None = None
     short_mark: str | None = None
+    locale: str | None = None
+    facets: dict[str, str] = Field(default_factory=dict)
 
     title: str = ""
     short_title: str = ""

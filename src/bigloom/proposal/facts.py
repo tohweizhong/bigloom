@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Literal
 
@@ -25,10 +25,22 @@ DEFAULT_GIVEN = (
     "Li Ting",
     "Muhammad",
     "Nurul",
+    "Hafiz",
+    "Siti",
+    "Farhan",
+    "Aisyah",
     "Arjun",
     "Priya",
+    "Rajesh",
+    "Kavitha",
+    "Suresh",
+    "Divya",
     "Daniel",
     "Rachel",
+    "Marcus",
+    "Michelle",
+    "Ryan",
+    "Sarah",
 )
 DEFAULT_SURNAMES = (
     "Tan",
@@ -41,8 +53,20 @@ DEFAULT_SURNAMES = (
     "Chua",
     "Koh",
     "Teo",
+    "Chan",
+    "Yeo",
+    "Ho",
+    "Low",
+    "Sim",
+    "Toh",
     "Abdullah",
+    "Rahman",
+    "Ismail",
+    "Hassan",
     "Kumar",
+    "Nair",
+    "Pillai",
+    "Raj",
 )
 
 
@@ -83,6 +107,17 @@ class ProposalTextFact:
     relation: Literal["supersedes", "comparator"]
 
 
+def _apply_blueprint_options(blueprint: sdk.Blueprint, spec: ProposalSpec) -> sdk.Blueprint:
+    """Apply optional locale and facet claims onto a WorldLoom Blueprint."""
+    if spec.locale:
+        blueprint = blueprint.located(spec.locale.strip().lower())
+    if spec.facets:
+        blueprint = blueprint.facets(**spec.facets)
+        if blueprint.domain_name != "retail":
+            blueprint = replace(blueprint, calendar_name=None, estate_size=None)
+    return blueprint
+
+
 def _load_world(spec: ProposalSpec, seed: int) -> tuple[World, dict[str, object]]:
     """Load a WorldLoom World from a bundled pack, corpus directory, org-pack JSON, or domain."""
     pack_meta: dict[str, object] = {}
@@ -94,12 +129,14 @@ def _load_world(spec: ProposalSpec, seed: int) -> tuple[World, dict[str, object]
             blueprint = sdk.company(base_domain, seed=seed)
             if "units" in pack_meta:
                 blueprint = blueprint.pack(str(candidate))
+            blueprint = _apply_blueprint_options(blueprint, spec)
             world = blueprint.build().episodes("2026-01", periods=2).world
             return world, pack_meta
         return World.load(spec.world_pack), pack_meta
 
     domain = (spec.domain or "retail").strip().lower()
-    world = sdk.company(domain, seed=seed).build().episodes("2026-01", periods=2).world
+    blueprint = _apply_blueprint_options(sdk.company(domain, seed=seed), spec)
+    world = blueprint.build().episodes("2026-01", periods=2).world
     return world, pack_meta
 
 

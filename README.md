@@ -213,10 +213,24 @@ You do not need to run `worldloom` manually before you run `bigloom`. BigLoom ca
 
 | Input Mode | CLI Flag or Command | When to Use It |
 | :--- | :--- | :--- |
-| **1. Interactive Wizard (`bigloom init`)** | `bigloom init --out ./my-run` | Prompts you for the company name, industry, currency, divisions, proposal subject, and target file sizes, writes `org-pack.json` and `proposal-spec.yaml`, and runs WorldLoom and BigLoom automatically. |
-| **2. Industry Domain Preset (`--domain`)** | `--domain retail` (or `banking`, `insurance`, `procurement`) | Generates a synthetic company on the fly for a standard industry domain without writing a pack file. |
-| **3. Bundled or Custom Org Pack (`--world-pack`)** | `--world-pack retail-close` or `--world-pack ./org-pack.json` | Uses a bundled WorldLoom pack or your own custom `.json` organisation pack with custom business units, systems, name pools, and currency. |
+| **1. Interactive Wizard (`bigloom init`)** | `bigloom init --out ./my-run` | Prompts you for company identity, divisions, and optional advanced WorldLoom blueprint settings (revenue, headcount, fiscal year, locale, headquarters, regions, estate size, system brands, employee name pools, executive voice, facets, and lore), validates `org-pack.json` with `worldloom.packs.lint`, and runs WorldLoom and BigLoom automatically. |
+| **2. Industry Domain Preset (`--domain`)** | `--domain retail --locale singapore --facets listing=state_owned,scale=enterprise` | Generates a synthetic company on the fly for a standard industry domain (`retail`, `banking`, `insurance`, `procurement`) with optional locale and facet claims. |
+| **3. Bundled or Custom Org Pack (`--world-pack`)** | `--world-pack retail-close` or `--world-pack ./org-pack.json` | Uses a bundled WorldLoom pack or your own custom `.json` organisation pack. |
 | **4. Pre-built Corpus Directory (`--corpus-dir`)** | `--corpus-dir /path/to/worldloom_corpus` | Loads an existing directory produced earlier by `worldloom build` or `worldloom demo`. |
+
+### WorldLoom Company Pack Fields (`org-pack.json`) and Blueprint Dimensions
+
+When you run `bigloom init` (or write an `org-pack.json` file and `proposal-spec.yaml`), WorldLoom accepts the following company pack fields and blueprint dimensions:
+
+| Category | Fields / Flags | Allowed Values or Examples |
+| :--- | :--- | :--- |
+| **Core Identity** | `company_name`, `industry`, `base`, `currency`, `units` | `"Government Technology Agency (Synthetic)"`, `base`: `retail`, `banking`, `insurance`, `procurement`, `currency`: `"SGD"` |
+| **Scale and Calendar** | `annual_revenue`, `employees`, `fiscal_year_start_month`, `seasonality` | `1700000` (in thousands), `3900` employees, month `4` (April), `seasonality`: `flat`, `christmas`, `summer` |
+| **Geography and Locale** | `locale`, `headquarters`, `regions` | `locale`: `singapore`, `australia`, `united_kingdom`, `germany`, `japan`, `india`, `china`, `hong_kong`, `malaysia`, `indonesia`, `taiwan`, `gulf` |
+| **Technology Estate** | `estate`, `landscape`, `system_brands` | `estate`: `small`, `medium`, `large` (up to 12 core systems and 80 microservices) |
+| **People and Voice** | `name_pools` (`given`, `family`), `voices` (`cfo`) | At least 24 given names and 24 family surnames, plus executive tone and recurring phrases |
+| **Company Facets** | `facets` (`--facets key=value,...`) | `listing` (`unlisted`, `listed`, `mutual`, `state_owned`), `governance` (`professional`, `founder_led`, `private_equity`), `scale` (`startup`, `midmarket`, `enterprise`, `multinational`), `maturity` (`young`, `established`, `legacy`), `competition` (`monopoly`, `concentrated`, `fragmented`), `margin_profile` (`commodity`, `standard`, `premium`), `trading_pattern` (`steady`, `christmas_peak`, `southern_summer`, `seasonal`, `sales_calendar`) |
+| **Historical Lore** | `lore` (`decision`, `norm`) | Past decisions and norms that constrain `event_likelihood` (such as `data_quality_incident/inventory`) or `terminology` |
 
 ### WorldLoom Standalone CLI (`worldloom`)
 
@@ -226,19 +240,20 @@ Installing `synthetic-foundry` also installs the standalone `worldloom` CLI in `
 | :--- | :--- |
 | `worldloom pack list` | Lists all bundled WorldLoom packs. |
 | `worldloom pack template` | Prints a starter JSON organisation pack template (`company_name`, `industry`, `currency`, `units`, `lore`). |
-| `worldloom pack lint <file.json>` | Validates a custom `.json` organisation pack against the WorldLoom schema. |
+| `worldloom pack facets` / `locales` / `landscapes` / `targets` | Lists all supported facets, jurisdictions, system landscapes, and lore targets per engine. |
+| `worldloom pack lint <file.json>` | Validates a custom `.json` organisation pack against the WorldLoom schema and lore engine. |
 | `worldloom build --domain retail --out ./corpus` | Builds and validates a standalone WorldLoom corpus directory on disk. |
-| `worldloom demo --out ./demo-corpus` | Builds, validates, and exports a bundled demo corpus. |
 | `worldloom inspect <corpus_dir>` | Summarises the company, business units, systems, and fact counts in a corpus. |
 
 ## CLI Commands
 
 ```bash
-# 0. Interactive wizard: answers questions, builds the WorldLoom company, and runs BigLoom
+# 0. Interactive wizard: answers questions, builds and lints the WorldLoom company, and runs BigLoom
 bigloom init --out ./artifacts-interactive --seed 2026
 
 # 1. Build large target files, < 1 MB distractor traps, and manifest.jsonl
 bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --world-pack retail-close --seed 42
+bigloom build --out-dir ./artifacts-custom --sizes-mb 18,50 --domain retail --locale singapore --facets listing=state_owned,scale=enterprise --seed 42
 
 # 2. Generate two evaluation cases per large file (cases.json) from manifest.jsonl
 bigloom queries --manifest ./artifacts/manifest.jsonl --out ./artifacts/cases.json

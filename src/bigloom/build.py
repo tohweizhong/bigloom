@@ -6,8 +6,8 @@ import hashlib
 import json
 import math
 import random
-from collections.abc import Sequence
-from dataclasses import dataclass
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, replace
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
@@ -64,12 +64,30 @@ def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
     return found + [t for t in DEFAULT_TOPICS if t not in found]
 
 
+def _configure_blueprint(
+    blueprint: sdk.Blueprint,
+    *,
+    locale: str | None = None,
+    facets: Mapping[str, str] | None = None,
+) -> sdk.Blueprint:
+    """Apply optional locale and facet claims onto a WorldLoom Blueprint."""
+    if locale:
+        blueprint = blueprint.located(locale.strip().lower())
+    if facets:
+        blueprint = blueprint.facets(**facets)
+        if blueprint.domain_name != "retail":
+            blueprint = replace(blueprint, calendar_name=None, estate_size=None)
+    return blueprint
+
+
 def _resolve_world_context(
     *,
     seed: int,
     corpus_dir: Path | None = None,
     world_pack: str | None = None,
     domain: str | None = None,
+    locale: str | None = None,
+    facets: Mapping[str, str] | None = None,
 ) -> _WorldContext:
     """Resolve WorldLoom company, business units, cost centres, systems, facts, and currency."""
     if world_pack and domain:
@@ -81,11 +99,21 @@ def _resolve_world_context(
         if candidate.is_file() and candidate.suffix.lower() == ".json":
             pack_meta = json.loads(candidate.read_text(encoding="utf-8"))
             base_domain = str(pack_meta.get("base", "retail")).strip().lower()
-            world = sdk.company(base_domain, seed=seed).pack(str(candidate)).build().world
+            blueprint = _configure_blueprint(
+                sdk.company(base_domain, seed=seed).pack(str(candidate)),
+                locale=locale,
+                facets=facets,
+            )
+            world = blueprint.build().world
         else:
             world = World.load(world_pack)
     elif domain:
-        world = sdk.company(domain.strip().lower(), seed=seed).build().world
+        blueprint = _configure_blueprint(
+            sdk.company(domain.strip().lower(), seed=seed),
+            locale=locale,
+            facets=facets,
+        )
+        world = blueprint.build().world
     elif corpus_dir is not None and (corpus_dir / "company.json").is_file():
         world = World.load(corpus_dir)
 
@@ -416,6 +444,8 @@ def build_corpus(
     corpus_dir: Path | None = None,
     world_pack: str | None = None,
     domain: str | None = None,
+    locale: str | None = None,
+    facets: Mapping[str, str] | None = None,
 ) -> list[ManifestEntry]:
     """Build large native documents and paired < 1 MB distractor trap files."""
     rng = random.Random(seed)
@@ -424,6 +454,8 @@ def build_corpus(
         corpus_dir=corpus_dir,
         world_pack=world_pack,
         domain=domain,
+        locale=locale,
+        facets=facets,
     )
     topics = ctx.topics
     out_dir.mkdir(parents=True, exist_ok=True)
