@@ -144,8 +144,10 @@ def test_vertex_gemini_client_retries_transient_errors_and_succeeds(
 
     attempts = 0
 
+    from typing import Self
+
     class FakeHTTPResponse:
-        def __enter__(self) -> FakeHTTPResponse:
+        def __enter__(self) -> Self:
             return self
 
         def __exit__(self, *args: object) -> None:
