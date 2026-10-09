@@ -14,18 +14,18 @@ Revised 6 Oct 2026 SGT to use only the three required WorldLoom outputs (`World`
   - [x] Run `pytest` and confirm that all Phase 1 tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) c0bfd61
 
-## Phase 2: Cached Prose Generator and Grained Plate Weight Layer
+## Phase 2: Cached Prose Generator and Grained Plate Weight Layer [checkpoint: 5917cef]
 - [x] Task: Write unit tests for prose generation, caching, and grained plate encoding (Red Phase) 1a50f6b
   - [x] Create `tests/test_proposal_prose.py` testing `deterministic` prose generation, fake `VertexGeminiClient` caching (second run makes zero calls), HTTP 401/403 immediate stop, and transient error retry
   - [x] Create `tests/test_proposal_plates.py` testing the six plate drawers (`zone`, `gantt`, `budget`, `render`, `section`, `sensors`), trap plate reproduction from saved RNG state, and batched JPEG grain scaling
-- [~] Task: Implement `src/bigloom/proposal/prose.py` and `src/bigloom/proposal/plates.py` (Green Phase)
-  - [ ] Implement `VertexGeminiClient`, `write_prose`, `load_prose`, and deterministic offline prose generator in `src/bigloom/proposal/prose.py`
-  - [ ] Implement the six grained plate drawers and batched `encode_all` loop in `src/bigloom/proposal/plates.py`
-  - [ ] Run `pytest` and confirm that all Phase 2 tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Implement `src/bigloom/proposal/prose.py` and `src/bigloom/proposal/plates.py` (Green Phase) 5917cef
+  - [x] Implement `VertexGeminiClient`, `write_prose`, `load_prose`, and deterministic offline prose generator in `src/bigloom/proposal/prose.py`
+  - [x] Implement the six grained plate drawers and batched `encode_all` loop in `src/bigloom/proposal/plates.py`
+  - [x] Run `pytest` and confirm that all Phase 2 tests pass
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 5917cef
 
 ## Phase 3: DOCX Assembly, Byte Verification (`inspect_artifact`), and CLI (`bigloom proposal`)
-- [ ] Task: Write unit tests for `.docx` assembly, multi-size XML identity, verification checks, and CLI (Red Phase)
+- [~] Task: Write unit tests for `.docx` assembly, multi-size XML identity, verification checks, and CLI (Red Phase)
   - [ ] Create `tests/test_proposal_build.py` testing multi-size builds (`sizes_mb`), identical `word/document.xml` across sizes, absence of `shape-ballast.bin`, `end` text facts placed after the last image, image facts absent from text, trap twin isolation, leak-term detection, and `bigloom proposal` CLI execution
 - [ ] Task: Implement `src/bigloom/proposal/builder.py`, `src/bigloom/proposal/verify.py`, and `bigloom proposal` CLI command (Green Phase)
   - [ ] Implement `.docx` writer, `< 1 MB` trap twin writer, `manifest.jsonl` (with SHA-256), `evals.jsonl` (with `DocxLocator`), and `evals.csv` in `src/bigloom/proposal/builder.py`
