@@ -1,0 +1,1 @@
+Completed Track 7 (worldloom_full_blueprint_wizard_20261010): added full WorldLoom pack fields, packs.lint validation across all 4 domains, locale and facets support in ProposalSpec and build_corpus, and 50 passing tests (95% coverage).
