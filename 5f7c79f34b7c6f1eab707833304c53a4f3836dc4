@@ -1,0 +1,1 @@
+Completed Track 6 (interactive_worldloom_cli_20261010): added bigloom init wizard, custom .json org-pack loading via sdk.company.pack().episodes(), README documentation of WorldLoom CLI and four input modes, and 5 new tests in tests/test_wizard.py (48 passed, 95% coverage).
