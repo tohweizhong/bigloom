@@ -33,3 +33,9 @@ Revised 6 Oct 2026 SGT to use only the three required WorldLoom outputs (`World`
   - [x] Wire `bigloom proposal` in `src/bigloom/cli.py` and document it in `README.md`
   - [x] Run `pytest` and `ruff check .` and confirm >= 80% coverage
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 479ee5d
+
+## Phase: Review Fixes [checkpoint: d29b66f]
+- [x] Task: Apply review suggestions d29b66f
+  - [x] Add frozen Pydantic models (`ProposalManifestEntry` and `ProposalEvalRow`) in `src/bigloom/proposal/builder.py`
+  - [x] Honor custom `spec.evidence_positions` when selecting text and image evaluation rows in `src/bigloom/proposal/builder.py`
+  - [x] Use word-boundary matching for `answer` and `trap_answer` checks in `src/bigloom/proposal/verify.py`
