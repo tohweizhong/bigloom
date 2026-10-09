@@ -1,0 +1,1 @@
+Task: Implement src/bigloom/proposal/builder.py, src/bigloom/proposal/verify.py, and bigloom proposal CLI command (Green Phase) and Phase 3 verification. Coverage: 93% across src/bigloom/proposal/.
