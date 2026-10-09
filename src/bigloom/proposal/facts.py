@@ -91,12 +91,16 @@ def _load_world(spec: ProposalSpec, seed: int) -> tuple[World, dict[str, object]
         if candidate.is_file() and candidate.suffix.lower() == ".json":
             pack_meta = json.loads(candidate.read_text(encoding="utf-8"))
             base_domain = str(pack_meta.get("base", "retail")).strip().lower()
-            world = sdk.company(base_domain, seed=seed).build().world
+            blueprint = sdk.company(base_domain, seed=seed)
+            if "units" in pack_meta:
+                blueprint = blueprint.pack(str(candidate))
+            world = blueprint.build().episodes("2026-01", periods=2).world
             return world, pack_meta
         return World.load(spec.world_pack), pack_meta
 
     domain = (spec.domain or "retail").strip().lower()
-    return sdk.company(domain, seed=seed).build().world, pack_meta
+    world = sdk.company(domain, seed=seed).build().episodes("2026-01", periods=2).world
+    return world, pack_meta
 
 
 def load_world_entities(spec: ProposalSpec, *, seed: int = 2026) -> WorldEntities:
@@ -231,6 +235,19 @@ def _find_fact_pair(
                 trap = references.render_value(trap_fact, locale=locale)  # type: ignore[arg-type]
                 if trap and trap != ans and trap not in used_answers:
                     return target, trap_fact, "comparator", ans, trap
+
+    for i, target in enumerate(facts):
+        if target.id in used_ids:
+            continue
+        ans = references.render_value(target, locale=locale) or str(target.value or target.id)  # type: ignore[arg-type]
+        if ans in used_answers:
+            continue
+        for trap_fact in facts[i + 1 :]:
+            if trap_fact.id in used_ids:
+                continue
+            trap = references.render_value(trap_fact, locale=locale) or str(trap_fact.value or trap_fact.id)  # type: ignore[arg-type]
+            if trap and trap != ans and trap not in used_answers:
+                return target, trap_fact, "comparator", ans, trap
 
     raise ValueError("Unable to find enough distinct canonical/comparator fact pairs in WorldLoom.")
 

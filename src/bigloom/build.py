@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import random
 from collections.abc import Sequence
@@ -76,7 +77,13 @@ def _resolve_world_context(
 
     world: World | None = None
     if world_pack:
-        world = World.load(world_pack)
+        candidate = Path(world_pack)
+        if candidate.is_file() and candidate.suffix.lower() == ".json":
+            pack_meta = json.loads(candidate.read_text(encoding="utf-8"))
+            base_domain = str(pack_meta.get("base", "retail")).strip().lower()
+            world = sdk.company(base_domain, seed=seed).pack(str(candidate)).build().world
+        else:
+            world = World.load(world_pack)
     elif domain:
         world = sdk.company(domain.strip().lower(), seed=seed).build().world
     elif corpus_dir is not None and (corpus_dir / "company.json").is_file():

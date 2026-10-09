@@ -25,3 +25,9 @@
 
 - [x] **Track: Large-File Production on WorldLoom (`bigloom proposal`)**
   *Link: [./tracks/proposal_generator_20261006/index.md](./tracks/proposal_generator_20261006/index.md)*
+
+---
+
+- [x] **Track: Interactive WorldLoom Interface (`bigloom init`) and Custom Pack Documentation**
+  *Link: [./tracks/interactive_worldloom_cli_20261010/index.md](./tracks/interactive_worldloom_cli_20261010/index.md)*
+

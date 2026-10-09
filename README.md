@@ -207,9 +207,36 @@ python3 -m venv .venv
 .venv/bin/pytest
 ```
 
+## Configuring Your Synthetic Company (Four Input Modes)
+
+You do not need to run `worldloom` manually before you run `bigloom`. BigLoom calls the WorldLoom Python SDK (`worldloom.sdk.company` and `worldloom.World.load`) in the backend. You can supply company inputs in four ways:
+
+| Input Mode | CLI Flag or Command | When to Use It |
+| :--- | :--- | :--- |
+| **1. Interactive Wizard (`bigloom init`)** | `bigloom init --out ./my-run` | Prompts you for the company name, industry, currency, divisions, proposal subject, and target file sizes, writes `org-pack.json` and `proposal-spec.yaml`, and runs WorldLoom and BigLoom automatically. |
+| **2. Industry Domain Preset (`--domain`)** | `--domain retail` (or `banking`, `insurance`, `procurement`) | Generates a synthetic company on the fly for a standard industry domain without writing a pack file. |
+| **3. Bundled or Custom Org Pack (`--world-pack`)** | `--world-pack retail-close` or `--world-pack ./org-pack.json` | Uses a bundled WorldLoom pack or your own custom `.json` organisation pack with custom business units, systems, name pools, and currency. |
+| **4. Pre-built Corpus Directory (`--corpus-dir`)** | `--corpus-dir /path/to/worldloom_corpus` | Loads an existing directory produced earlier by `worldloom build` or `worldloom demo`. |
+
+### WorldLoom Standalone CLI (`worldloom`)
+
+Installing `synthetic-foundry` also installs the standalone `worldloom` CLI in `.venv/bin/worldloom`. You can use it to inspect or author packs directly:
+
+| `worldloom` Command | What It Does |
+| :--- | :--- |
+| `worldloom pack list` | Lists all bundled WorldLoom packs. |
+| `worldloom pack template` | Prints a starter JSON organisation pack template (`company_name`, `industry`, `currency`, `units`, `lore`). |
+| `worldloom pack lint <file.json>` | Validates a custom `.json` organisation pack against the WorldLoom schema. |
+| `worldloom build --domain retail --out ./corpus` | Builds and validates a standalone WorldLoom corpus directory on disk. |
+| `worldloom demo --out ./demo-corpus` | Builds, validates, and exports a bundled demo corpus. |
+| `worldloom inspect <corpus_dir>` | Summarises the company, business units, systems, and fact counts in a corpus. |
+
 ## CLI Commands
 
 ```bash
+# 0. Interactive wizard: answers questions, builds the WorldLoom company, and runs BigLoom
+bigloom init --out ./artifacts-interactive --seed 2026
+
 # 1. Build large target files, < 1 MB distractor traps, and manifest.jsonl
 bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --world-pack retail-close --seed 42
 
@@ -239,5 +266,3 @@ bigloom proposal --spec ./specs/pdd_proposal.yaml --out ./artifacts-pdd-1gb --se
 Vendor-specific runners live under `harnesses/` so the core `bigloom` package stays independent of any cloud vendor:
 
 - **[`harnesses/gemini_enterprise/`](./harnesses/gemini_enterprise/README.md):** Uploads the files listed in `manifest.jsonl` to SharePoint or OneDrive via Microsoft Graph, runs `cases.json` against Discovery Engine `streamAssist`, exports `responses.json`, and grades runs with `bigloom grade` and `gemini-3.8-flash`.
-
-

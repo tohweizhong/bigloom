@@ -16,12 +16,27 @@ from .proposal import build_proposal, load_proposal_spec, verify_proposal_output
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries, load_manifest
 from .report import render_scorecard_markdown
+from .wizard import run_interactive_wizard
 
 app = typer.Typer(
     name="bigloom",
     help="Large-file synthesis and target-leakage gates on top of WorldLoom.",
     add_completion=False,
 )
+
+
+@app.command()
+def init(
+    out_dir: Annotated[Path, typer.Option("--out", file_okay=False)] = Path("/tmp/bigloom-run"),
+    seed: Annotated[int, typer.Option("--seed")] = 2026,
+) -> None:
+    """Interactive wizard that asks for company details and runs WorldLoom and BigLoom."""
+    summary = run_interactive_wizard(out_dir=out_dir, seed=seed)
+    typer.echo(json.dumps(summary, indent=2))
+    if summary.get("executed") and summary.get("passed") is False:
+        raise typer.Exit(code=1)
+    if summary.get("executed") and summary.get("qualified") is False:
+        raise typer.Exit(code=1)
 
 
 @app.command()
