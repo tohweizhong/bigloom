@@ -14,6 +14,71 @@ BigLoom uses three modules from `worldloom`:
 | `worldloom.native_artifacts.inspect_artifact` | Parses rendered `.docx`, `.xlsx`, and `.pptx` files into numbered text units (paragraphs, sheets, or slides) to verify fact placement. |
 | `worldloom.evaluate.bm25` and `worldloom.evaluate.tfidf` | Ranks every file in the corpus against each evaluation query to confirm that the large target file ranks first. |
 
+```mermaid
+flowchart TD
+    subgraph WL ["WorldLoom (synthetic-foundry)"]
+        WL_WORLD["worldloom.World.load(pack) / sdk.company(domain, seed)"]
+        WL_LEDGER["World Entities and FactLedger (Canonical + Draft Facts)"]
+        WL_INSPECT["worldloom.native_artifacts.inspect_artifact(path)"]
+        WL_RANK["worldloom.evaluate.bm25 and tfidf Rankers"]
+        WL_WORLD --> WL_LEDGER
+    end
+
+    subgraph BL_BUILD ["1. Build and Query Generation (BigLoom)"]
+        BUILD["bigloom build / proposal (build.py, proposal/facts.py)"]
+        TARGET["Large Target Files (18 MB, 50 MB, 100 MB+ DOCX, XLSX, PPTX, PDF)"]
+        TRAP["Small Canary Trap Twins (Under 1 MB Draft Files)"]
+        MANIFEST["manifest.jsonl (Paths, Sizes, SHA-256, Golden and Canary Facts)"]
+        QUERIES["bigloom queries (queries.py)"]
+        CASES["cases.json (2 EvalCases per Large File: 1 Deep Text + 1 Chart Image)"]
+    end
+
+    subgraph BL_QUAL ["2. Build-Time Qualification Gate (BigLoom)"]
+        QUALIFY["bigloom qualify (qualify.py)"]
+        Q_REPORT["QualificationReport (Pass or 9 Violation Codes)"]
+    end
+
+    subgraph BL_EVAL ["3. Connector Run and Grading (BigLoom)"]
+        SUT["Connector or Search Agent Run (SharePoint, OneDrive, streamAssist)"]
+        ADAPTER["bigloom import-run (adapters.py)"]
+        RESPONSES["responses.json (Answer Text, Citations, Tool Calls)"]
+        GRADE["bigloom grade (grade.py)"]
+        GREPORT["grade_report.json (5 Leakage Verdicts)"]
+        REPORT["bigloom report (report.py)"]
+        SCORECARD["scorecard.md (Accuracy and Leakage by Size Tier)"]
+    end
+
+    WL_LEDGER -->|"Entities, Golden Facts, Draft Canary Facts"| BUILD
+    BUILD --> TARGET
+    BUILD --> TRAP
+    BUILD --> MANIFEST
+    MANIFEST --> QUERIES
+    QUERIES --> CASES
+
+    TARGET --> WL_INSPECT
+    TRAP --> WL_INSPECT
+    WL_INSPECT -->|"Numbered Text Units"| QUALIFY
+    TARGET --> WL_RANK
+    TRAP --> WL_RANK
+    CASES --> WL_RANK
+    WL_RANK -->|"Top-1 Retrieval Check"| QUALIFY
+    CASES --> QUALIFY
+    QUALIFY --> Q_REPORT
+
+    TARGET -->|"Upload Corpus"| SUT
+    TRAP -->|"Upload Corpus"| SUT
+    CASES -->|"Run Queries"| SUT
+    SUT -->|"Raw Logs and Traces"| ADAPTER
+    ADAPTER --> RESPONSES
+    CASES --> GRADE
+    RESPONSES --> GRADE
+    GRADE --> GREPORT
+    CASES --> REPORT
+    MANIFEST --> REPORT
+    GREPORT --> REPORT
+    REPORT --> SCORECARD
+```
+
 ## Problem
 
 When you evaluate a connector or search agent on large files (such as 18 MB, 50 MB, and 100 MB DOCX, XLSX, PPTX, and PDF files), target leakage happens in two ways:
