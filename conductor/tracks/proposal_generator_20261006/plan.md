@@ -15,10 +15,10 @@ Revised 6 Oct 2026 SGT to use only the three required WorldLoom outputs (`World`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) c0bfd61
 
 ## Phase 2: Cached Prose Generator and Grained Plate Weight Layer
-- [ ] Task: Write unit tests for prose generation, caching, and grained plate encoding (Red Phase)
-  - [ ] Create `tests/test_proposal_prose.py` testing `deterministic` prose generation, fake `VertexGeminiClient` caching (second run makes zero calls), HTTP 401/403 immediate stop, and transient error retry
-  - [ ] Create `tests/test_proposal_plates.py` testing the six plate drawers (`zone`, `gantt`, `budget`, `render`, `section`, `sensors`), trap plate reproduction from saved RNG state, and batched JPEG grain scaling
-- [ ] Task: Implement `src/bigloom/proposal/prose.py` and `src/bigloom/proposal/plates.py` (Green Phase)
+- [x] Task: Write unit tests for prose generation, caching, and grained plate encoding (Red Phase) 1a50f6b
+  - [x] Create `tests/test_proposal_prose.py` testing `deterministic` prose generation, fake `VertexGeminiClient` caching (second run makes zero calls), HTTP 401/403 immediate stop, and transient error retry
+  - [x] Create `tests/test_proposal_plates.py` testing the six plate drawers (`zone`, `gantt`, `budget`, `render`, `section`, `sensors`), trap plate reproduction from saved RNG state, and batched JPEG grain scaling
+- [~] Task: Implement `src/bigloom/proposal/prose.py` and `src/bigloom/proposal/plates.py` (Green Phase)
   - [ ] Implement `VertexGeminiClient`, `write_prose`, `load_prose`, and deterministic offline prose generator in `src/bigloom/proposal/prose.py`
   - [ ] Implement the six grained plate drawers and batched `encode_all` loop in `src/bigloom/proposal/plates.py`
   - [ ] Run `pytest` and confirm that all Phase 2 tests pass
