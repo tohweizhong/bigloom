@@ -13,7 +13,6 @@ import yaml
 from worldloom import packs
 
 from .build import build_corpus
-from .proposal import build_proposal, load_proposal_spec, verify_proposal_outputs
 from .proposal.facts import DEFAULT_GIVEN, DEFAULT_SURNAMES
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries
@@ -309,25 +308,19 @@ def write_proposal_spec_yaml(
     return out_path
 
 
-def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]:
-    """Prompt the user for company and output settings, then optionally run WorldLoom + BigLoom."""
+def run_interactive_wizard(
+    out_dir: Path,
+    *,
+    seed: int = 2026,
+    default_sizes_mb: str = "18,50,100",
+    default_formats: str = "docx,xlsx,pptx,pdf",
+) -> dict[str, Any]:
+    """Prompt the user for company, file sizes (up to 1 GiB), and formats, then run BigLoom."""
     out_dir.mkdir(parents=True, exist_ok=True)
-
-    mode = (
-        typer.prompt(
-            "1. Generation mode ('proposal' for single-topic .docx up to 1 GiB, "
-            "or 'corpus' for multi-format .docx/.xlsx/.pptx/.pdf)",
-            default="proposal",
-        )
-        .strip()
-        .lower()
-    )
-    if mode not in {"proposal", "corpus"}:
-        raise typer.BadParameter("Mode must be 'proposal' or 'corpus'.")
 
     source = (
         typer.prompt(
-            "2. Company source ('custom' to define your own company, "
+            "1. Company source ('custom' to define your own company, "
             "'domain' for an industry preset, or 'pack' for a bundled/JSON pack)",
             default="custom",
         )
@@ -339,8 +332,6 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
 
     world_pack: str | None = None
     domain: str | None = None
-    agency_name: str | None = None
-    currency: str | None = None
     locale: str | None = None
     facets: dict[str, str] = {}
     pack_lint_findings: list[str] = []
@@ -413,19 +404,14 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
                 default="Central, East, North, North-East, West",
             )
             regions = [r.strip() for r in regions_raw.split(",") if r.strip()]
-            estate = typer.prompt("   Technology estate size (small, medium, large)", default="large")
-            erp_key = "erp" if base_domain == "retail" else next(
-                iter(
-                    DEFAULT_SYSTEM_BRANDS_BY_DOMAIN.get(
-                        base_domain, DEFAULT_SYSTEM_BRANDS_BY_DOMAIN["retail"]
-                    )
-                )
+            estate = typer.prompt(
+                "   Technology estate size (small, medium, large)", default="large"
             )
-            platform_key = "platform" if base_domain == "retail" else list(
-                DEFAULT_SYSTEM_BRANDS_BY_DOMAIN.get(
-                    base_domain, DEFAULT_SYSTEM_BRANDS_BY_DOMAIN["retail"]
-                )
-            )[2]
+            brand_defaults = DEFAULT_SYSTEM_BRANDS_BY_DOMAIN.get(
+                base_domain, DEFAULT_SYSTEM_BRANDS_BY_DOMAIN["retail"]
+            )
+            erp_key = "erp" if base_domain == "retail" else next(iter(brand_defaults))
+            platform_key = "platform" if base_domain == "retail" else list(brand_defaults)[2]
             erp_brand = typer.prompt(
                 f"   Primary ledger/ERP system name ({erp_key})",
                 default="WOG Finance and Procurement System",
@@ -452,7 +438,9 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
                 default="listing=state_owned,scale=enterprise",
             )
             facets = parse_facets(facets_raw)
-            lore_assertion = typer.prompt("   Historical lore decision assertion", default=lore_assertion)
+            lore_assertion = typer.prompt(
+                "   Historical lore decision assertion", default=lore_assertion
+            )
 
         pack_path = write_org_pack_json(
             out_dir / "org-pack.json",
@@ -477,7 +465,6 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
         loaded_pack = packs.load(str(pack_path))
         pack_lint_findings = packs.lint(loaded_pack)
         world_pack = str(pack_path)
-        agency_name = company_name
     elif source == "domain":
         domain = (
             typer.prompt(
@@ -503,81 +490,31 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
             default="retail-close",
         ).strip()
 
-    if mode == "proposal":
-        subject = typer.prompt(
-            "3. Proposal subject / programme title",
-            default="Greater Southern Waterfront Digital Twin Programme",
-        )
-        default_short = (
-            "".join(w[0].upper() for w in subject.split() if w[:1].isalnum())[:6] or "PRG"
-        )
-        id_prefix = typer.prompt("   Short reference prefix", default=default_short)
-        sizes_raw = typer.prompt(
-            "4. Target file sizes in MiB (comma-separated integers)", default="5"
-        )
-        sizes_mb_int = [max(1, round(float(x.strip()))) for x in sizes_raw.split(",") if x.strip()]
-        use_deterministic = typer.confirm(
-            "5. Use fast deterministic prose instead of calling Vertex Gemini?",
-            default=True,
-        )
-        spec_path = write_proposal_spec_yaml(
-            out_dir / "proposal-spec.yaml",
-            subject=subject,
-            id_prefix=id_prefix,
-            sizes_mb=sizes_mb_int,
-            world_pack=world_pack,
-            domain=domain,
-            agency_name=agency_name,
-            currency=currency,
-            locale=locale,
-            facets=facets,
-            prose_provider="deterministic" if use_deterministic else "gemini",
-        )
-        run_now = typer.confirm("6. Run WorldLoom and build the proposal now?", default=True)
-        if not run_now:
-            return {
-                "mode": "proposal",
-                "executed": False,
-                "out": str(out_dir),
-                "spec": str(spec_path),
-                "world_pack": world_pack,
-                "domain": domain,
-                "locale": locale,
-                "facets": facets,
-                "pack_lint_findings": pack_lint_findings,
-            }
-        spec = load_proposal_spec(spec_path)
-        result = build_proposal(spec, out_dir=out_dir, seed=seed, skip_prose=False)
-        verification = verify_proposal_outputs(spec, out_dir=out_dir, build_result=result)
-        return {
-            "mode": "proposal",
-            "executed": True,
-            "out": str(out_dir),
-            "spec": str(spec_path),
-            "locale": locale,
-            "facets": facets,
-            "pack_lint_findings": pack_lint_findings,
-            "passed": verification.passed,
-            "manifest_entries": result.manifest_entries,
-            "total_eval_rows": verification.total_eval_rows,
-            "errors": verification.errors,
-        }
-
-    sizes_raw = typer.prompt("3. Target file sizes in MiB (comma-separated)", default="18,50")
+    subject = typer.prompt(
+        "2. Programme or topic title",
+        default="Greater Southern Waterfront Digital Twin Programme",
+    ).strip()
+    sizes_raw = typer.prompt(
+        "3. Target file sizes in MiB (comma-separated, up to 1024 MiB / 1 GiB)",
+        default=default_sizes_mb,
+    )
     sizes_mb = [float(x.strip()) for x in sizes_raw.split(",") if x.strip()]
     formats_raw = typer.prompt(
         "4. Document formats (comma-separated: docx,xlsx,pptx,pdf)",
-        default="docx,xlsx,pptx,pdf",
+        default=default_formats,
     )
     formats = [x.strip() for x in formats_raw.split(",") if x.strip()]
-    run_now = typer.confirm("5. Run WorldLoom and build the corpus now?", default=True)
+    run_now = typer.confirm(
+        "5. Run WorldLoom, build the files, and verify zero target leakage now?",
+        default=True,
+    )
     if not run_now:
         return {
-            "mode": "corpus",
             "executed": False,
             "out": str(out_dir),
             "world_pack": world_pack,
             "domain": domain,
+            "subject": subject,
             "locale": locale,
             "facets": facets,
             "pack_lint_findings": pack_lint_findings,
@@ -594,17 +531,19 @@ def run_interactive_wizard(out_dir: Path, *, seed: int = 2026) -> dict[str, Any]
         domain=domain,
         locale=locale,
         facets=facets,
+        subject=subject,
     )
     cases_path = out_dir / "cases.json"
     cases = generate_queries(manifest_path=out_dir / "manifest.jsonl", out_path=cases_path)
     snapshots = load_corpus_snapshots(out_dir)
     qual_report = qualify_corpus(snapshots, cases, check_retrieval=True)
     return {
-        "mode": "corpus",
         "executed": True,
         "out": str(out_dir),
         "manifest": str(out_dir / "manifest.jsonl"),
         "cases": str(cases_path),
+        "evals_csv": str(out_dir / "evals.csv"),
+        "subject": subject,
         "locale": locale,
         "facets": facets,
         "pack_lint_findings": pack_lint_findings,

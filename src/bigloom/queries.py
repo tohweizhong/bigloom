@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -70,5 +71,11 @@ def generate_queries(manifest_path: Path, out_path: Path | None = None) -> list[
         out_path.parent.mkdir(parents=True, exist_ok=True)
         payload = [case.model_dump() for case in cases]
         out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        csv_path = out_path.with_name("evals.csv")
+        with csv_path.open("w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(["query", "golden"])
+            for case in cases:
+                writer.writerow([case.query, case.golden_value])
 
     return cases

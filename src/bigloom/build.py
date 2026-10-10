@@ -178,8 +178,15 @@ def _make_chart_png(
     return buf.getvalue()
 
 
-def _split_image_budgets(target_bytes: int, max_chunk: int = 3_000_000) -> list[int]:
-    """Split a byte budget into one or more raw RGB image sizes with an 8% safety margin."""
+def _split_image_budgets(target_bytes: int, max_chunk: int | None = None) -> list[int]:
+    """Split a byte budget (up to 1 GiB) into raw RGB image sizes with an 8% safety margin."""
+    if max_chunk is None:
+        if target_bytes >= 250 * 1024 * 1024:
+            max_chunk = 32_000_000
+        elif target_bytes >= 50 * 1024 * 1024:
+            max_chunk = 16_000_000
+        else:
+            max_chunk = 3_000_000
     padded = max(24_576, int(target_bytes * 1.08))
     chunks: list[int] = []
     remaining = padded
@@ -446,8 +453,12 @@ def build_corpus(
     domain: str | None = None,
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
+    subject: str | None = None,
 ) -> list[ManifestEntry]:
-    """Build large native documents and paired < 1 MB distractor trap files."""
+    """Build large native documents (up to 1 GiB) and paired < 1 MB distractor trap files."""
+    if not sizes_mb or any(s <= 0 or s > 1024.0 for s in sizes_mb):
+        raise ValueError("Every entry in sizes_mb must be between 0 and 1024 MiB (1 GiB).")
+
     rng = random.Random(seed)
     ctx = _resolve_world_context(
         seed=seed,
@@ -457,7 +468,11 @@ def build_corpus(
         locale=locale,
         facets=facets,
     )
-    topics = ctx.topics
+    topics = (
+        tuple(f"{t} — {subject.strip()}" for t in ctx.topics)
+        if subject and subject.strip()
+        else ctx.topics
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "large").mkdir(parents=True, exist_ok=True)
     (out_dir / "traps").mkdir(parents=True, exist_ok=True)

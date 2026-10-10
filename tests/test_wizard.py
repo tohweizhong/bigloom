@@ -1,14 +1,15 @@
-"""Tests for the interactive WorldLoom wizard (`bigloom init`) and custom org-pack JSON loading."""
+"""Tests for the unified WorldLoom wizard (`bigloom init`), 1 GiB scaling, and custom org packs."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 from worldloom import packs
 
-from bigloom.build import _resolve_world_context
+from bigloom.build import _resolve_world_context, _split_image_budgets, build_corpus
 from bigloom.cli import app
 from bigloom.proposal.facts import load_world_entities
 from bigloom.proposal.spec import ProposalSpec
@@ -20,6 +21,21 @@ from bigloom.wizard import (
 )
 
 runner = CliRunner()
+
+
+def test_split_image_budgets_up_to_one_gib(tmp_path: Path) -> None:
+    """Verify _split_image_budgets scales chunk size up to 1024 MiB (1 GiB) and rejects > 1024 MiB."""
+    one_gib = 1024 * 1024 * 1024
+    chunks = _split_image_budgets(one_gib)
+    assert sum(chunks) >= one_gib
+    assert max(chunks) <= 32_000_000
+    assert len(chunks) <= 40
+
+    mid_chunks = _split_image_budgets(100 * 1024 * 1024)
+    assert max(mid_chunks) <= 16_000_000
+
+    with pytest.raises(ValueError, match="1024 MiB"):
+        build_corpus(tmp_path, sizes_mb=[2048.0])
 
 
 def test_custom_org_pack_json_lints_clean_across_all_domains(tmp_path: Path) -> None:
@@ -126,11 +142,10 @@ def test_build_org_pack_dict_and_write_proposal_spec_yaml(tmp_path: Path) -> Non
     assert "state_owned" in text
 
 
-def test_cli_init_proposal_custom_company_default_and_run(tmp_path: Path) -> None:
-    """Test `bigloom init` interactive proposal flow with default advanced options and immediate build."""
-    out_dir = tmp_path / "wizard_proposal_out"
+def test_cli_init_custom_company_default_and_run(tmp_path: Path) -> None:
+    """Test unified `bigloom init` flow with custom company, multiple formats, and immediate build."""
+    out_dir = tmp_path / "wizard_unified_out"
     user_inputs = (
-        "proposal\n"
         "custom\n"
         "Merlion Digital Agency\n"
         "Public Sector Digital\n"
@@ -139,31 +154,31 @@ def test_cli_init_proposal_custom_company_default_and_run(tmp_path: Path) -> Non
         "Cloud Platform Division, Cyber Defence Division\n"
         "n\n"
         "Whole-of-Government Vault Modernisation\n"
-        "WGVM\n"
-        "1\n"
-        "y\n"
+        "0.2\n"
+        "docx,pdf\n"
         "y\n"
     )
     result = runner.invoke(
         app,
-        ["init", "--out", str(out_dir), "--seed", "2026"],
+        ["init", "--out", str(out_dir), "--sizes-mb", "0.2", "--formats", "docx,pdf", "--seed", "2026"],
         input=user_inputs,
     )
     assert result.exit_code == 0, result.stdout
     assert (out_dir / "org-pack.json").is_file()
-    assert (out_dir / "proposal-spec.yaml").is_file()
     assert (out_dir / "manifest.jsonl").is_file()
-    assert (out_dir / "evals.jsonl").is_file()
+    assert (out_dir / "cases.json").is_file()
     assert (out_dir / "evals.csv").is_file()
     payload = json.loads(result.stdout[result.stdout.index("{") :])
     assert payload["pack_lint_findings"] == []
+    assert payload["qualified"] is True
+    assert payload["total_large_files"] == 2
+    assert payload["total_cases"] == 4
 
 
-def test_cli_init_proposal_custom_company_advanced_options(tmp_path: Path) -> None:
-    """Test `bigloom init` when the user enables advanced WorldLoom blueprint prompts."""
+def test_cli_init_custom_company_advanced_options(tmp_path: Path) -> None:
+    """Test unified `bigloom init` when the user enables advanced WorldLoom blueprint prompts."""
     out_dir = tmp_path / "wizard_advanced_out"
     user_inputs = (
-        "proposal\n"
         "custom\n"
         "Government Technology Agency (Synthetic)\n"
         "Public Sector\n"
@@ -187,9 +202,8 @@ def test_cli_init_proposal_custom_company_advanced_options(tmp_path: Path) -> No
         "listing=state_owned,scale=enterprise\n"
         "Under the 2018 cloud-first policy, legacy agency codes are maintained by hand.\n"
         "Greater Southern Waterfront Digital Twin Programme\n"
-        "GSW\n"
-        "1\n"
-        "y\n"
+        "5\n"
+        "docx,xlsx,pptx,pdf\n"
         "n\n"
     )
     result = runner.invoke(
@@ -202,12 +216,22 @@ def test_cli_init_proposal_custom_company_advanced_options(tmp_path: Path) -> No
     assert payload["pack_lint_findings"] == []
     assert payload["locale"] == "singapore"
     assert payload["facets"] == {"listing": "state_owned", "scale": "enterprise"}
+    assert payload["executed"] is False
 
 
-def test_cli_init_corpus_domain_and_run(tmp_path: Path) -> None:
-    """Test `bigloom init` interactive corpus flow with a WorldLoom domain preset."""
-    out_dir = tmp_path / "wizard_corpus_out"
-    user_inputs = "corpus\ndomain\nbanking\nsingapore\nlisting=listed\n0.2\ndocx\ny\n"
+def test_cli_init_domain_and_run(tmp_path: Path) -> None:
+    """Test unified `bigloom init` flow with a WorldLoom domain preset."""
+    out_dir = tmp_path / "wizard_domain_out"
+    user_inputs = (
+        "domain\n"
+        "banking\n"
+        "singapore\n"
+        "listing=listed\n"
+        "Basel III Capital Return Modernisation\n"
+        "0.2\n"
+        "docx\n"
+        "y\n"
+    )
     result = runner.invoke(
         app,
         ["init", "--out", str(out_dir), "--seed", "42"],
@@ -216,22 +240,20 @@ def test_cli_init_corpus_domain_and_run(tmp_path: Path) -> None:
     assert result.exit_code == 0, result.stdout
     assert (out_dir / "manifest.jsonl").is_file()
     assert (out_dir / "cases.json").is_file()
+    assert (out_dir / "evals.csv").is_file()
     payload = json.loads(result.stdout[result.stdout.index("{") :])
-    assert payload["mode"] == "corpus"
     assert payload["qualified"] is True
 
 
 def test_cli_init_pack_no_run(tmp_path: Path) -> None:
-    """Test `bigloom init` with a bundled pack when the user declines immediate execution."""
+    """Test unified `bigloom init` with a bundled pack when the user declines immediate execution."""
     out_dir = tmp_path / "wizard_no_run"
     user_inputs = (
-        "proposal\n"
         "pack\n"
         "retail-close\n"
         "Aurora Grid Upgrade\n"
-        "AGU\n"
-        "5\n"
-        "y\n"
+        "50,200,1024\n"
+        "docx,pdf\n"
         "n\n"
     )
     result = runner.invoke(
@@ -240,5 +262,7 @@ def test_cli_init_pack_no_run(tmp_path: Path) -> None:
         input=user_inputs,
     )
     assert result.exit_code == 0, result.stdout
-    assert (out_dir / "proposal-spec.yaml").is_file()
+    payload = json.loads(result.stdout[result.stdout.index("{") :])
+    assert payload["sizes_mb"] == [50.0, 200.0, 1024.0]
+    assert payload["formats"] == ["docx", "pdf"]
     assert not (out_dir / "manifest.jsonl").exists()

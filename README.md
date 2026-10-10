@@ -1,6 +1,6 @@
 # BigLoom
 
-BigLoom builds large test files (1 MB to 100 MB) on top of [WorldLoom (`synthetic-foundry`)](https://github.com/vamsiramakrishnan/synthetic-foundry) and prevents target leakage in connector and RAG evaluations.
+BigLoom builds large test files (1 MB to 1 GiB across `.docx`, `.xlsx`, `.pptx`, and `.pdf`) on top of [WorldLoom (`synthetic-foundry`)](https://github.com/vamsiramakrishnan/synthetic-foundry) and prevents target leakage in connector and RAG evaluations.
 
 ## Overview: Dependencies, Inputs, and Outputs
 
@@ -248,32 +248,27 @@ Installing `synthetic-foundry` also installs the standalone `worldloom` CLI in `
 ## CLI Commands
 
 ```bash
-# 0. Interactive wizard: answers questions, builds and lints the WorldLoom company, and runs BigLoom
-bigloom init --out ./artifacts-interactive --seed 2026
+# 0. Interactive wizard: asks company questions, builds files up to 1 GiB, and qualifies the corpus
+bigloom init --out ./runs/merlion-vault --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --seed 2026
 
-# 1. Build large target files, < 1 MB distractor traps, and manifest.jsonl
-bigloom build --out-dir ./artifacts --sizes-mb 18,50,100 --formats docx,xlsx,pptx,pdf --world-pack retail-close --seed 42
-bigloom build --out-dir ./artifacts-custom --sizes-mb 18,50 --domain retail --locale singapore --facets listing=state_owned,scale=enterprise --seed 42
+# 1. Build large target files (up to 1024 MiB / 1 GiB), < 1 MB distractor traps, and manifest.jsonl
+bigloom build --out-dir ./runs/merlion-vault --sizes-mb 18,50,100,500,1024 --formats docx,xlsx,pptx,pdf --world-pack retail-close --seed 42
+bigloom build --out-dir ./runs/custom-vault --sizes-mb 50,200 --formats docx,pdf --domain retail --locale singapore --facets listing=state_owned,scale=enterprise --seed 42
 
-# 2. Generate two evaluation cases per large file (cases.json) from manifest.jsonl
-bigloom queries --manifest ./artifacts/manifest.jsonl --out ./artifacts/cases.json
+# 2. Generate two evaluation cases per large file (cases.json and evals.csv) from manifest.jsonl
+bigloom queries --manifest ./runs/merlion-vault/manifest.jsonl --out ./runs/merlion-vault/cases.json
 
 # 3. Qualify the rendered directory and dataset before uploading to a connector
-bigloom qualify --corpus-dir ./artifacts --cases ./artifacts/cases.json
+bigloom qualify --corpus-dir ./runs/merlion-vault --cases ./runs/merlion-vault/cases.json
 
 # 4. Import saved evaluation logs (JSON, JSONL, agent traces, or CSV) into responses.json
-bigloom import-run --input ./raw_logs.jsonl --cases ./artifacts/cases.json --out ./responses.json
+bigloom import-run --input ./raw_logs.jsonl --cases ./runs/merlion-vault/cases.json --out ./responses.json
 
 # 5. Grade a completed evaluation run and detect target leakage
-bigloom grade --cases ./artifacts/cases.json --responses ./responses.json > ./grade_report.json
+bigloom grade --cases ./runs/merlion-vault/cases.json --responses ./responses.json > ./grade_report.json
 
 # 6. Render a Markdown scorecard by size tier, format, and modality
-bigloom report --cases ./artifacts/cases.json --grade-report ./grade_report.json --manifest ./artifacts/manifest.jsonl --out ./scorecard.md
-
-# 7. Build a 200 MiB, 500 MiB, or 1 GiB .docx funding proposal and < 1 MB trap twin from a YAML spec
-bigloom proposal --spec ./specs/gsw_proposal.yaml --out ./artifacts-gsw-200mb --seed 2026
-bigloom proposal --spec ./specs/tuas_proposal.yaml --out ./artifacts-tuas-500mb --seed 2026
-bigloom proposal --spec ./specs/pdd_proposal.yaml --out ./artifacts-pdd-1gb --seed 2026
+bigloom report --cases ./runs/merlion-vault/cases.json --grade-report ./grade_report.json --manifest ./runs/merlion-vault/manifest.jsonl --out ./scorecard.md
 ```
 
 ## Evaluation Harnesses
@@ -281,3 +276,4 @@ bigloom proposal --spec ./specs/pdd_proposal.yaml --out ./artifacts-pdd-1gb --se
 Vendor-specific runners live under `harnesses/` so the core `bigloom` package stays independent of any cloud vendor:
 
 - **[`harnesses/gemini_enterprise/`](./harnesses/gemini_enterprise/README.md):** Uploads the files listed in `manifest.jsonl` to SharePoint or OneDrive via Microsoft Graph, runs `cases.json` against Discovery Engine `streamAssist`, exports `responses.json`, and grades runs with `bigloom grade` and `gemini-3.8-flash`.
+

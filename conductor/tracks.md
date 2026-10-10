@@ -36,4 +36,10 @@
 - [x] **Track: Full WorldLoom Pack and Blueprint Configuration (`bigloom init`)**
   *Link: [./tracks/worldloom_full_blueprint_wizard_20261010/index.md](./tracks/worldloom_full_blueprint_wizard_20261010/index.md)*
 
+---
+
+- [x] **Track: Unified Multi-Format Large-File Pipeline (`bigloom build` and `bigloom init`)**
+  *Link: [./tracks/unified_pipeline_20261010/index.md](./tracks/unified_pipeline_20261010/index.md)*
+
+
 

@@ -28,13 +28,18 @@ app = typer.Typer(
 @app.command()
 def init(
     out_dir: Annotated[Path, typer.Option("--out", file_okay=False)] = Path("/tmp/bigloom-run"),
+    sizes_mb: Annotated[str, typer.Option("--sizes-mb")] = "18,50,100",
+    formats: Annotated[str, typer.Option("--formats")] = "docx,xlsx,pptx,pdf",
     seed: Annotated[int, typer.Option("--seed")] = 2026,
 ) -> None:
     """Interactive wizard that asks for company details and runs WorldLoom and BigLoom."""
-    summary = run_interactive_wizard(out_dir=out_dir, seed=seed)
+    summary = run_interactive_wizard(
+        out_dir=out_dir,
+        seed=seed,
+        default_sizes_mb=sizes_mb,
+        default_formats=formats,
+    )
     typer.echo(json.dumps(summary, indent=2))
-    if summary.get("executed") and summary.get("passed") is False:
-        raise typer.Exit(code=1)
     if summary.get("executed") and summary.get("qualified") is False:
         raise typer.Exit(code=1)
 
@@ -75,8 +80,9 @@ def build(
     domain: Annotated[str | None, typer.Option("--domain")] = None,
     locale: Annotated[str | None, typer.Option("--locale")] = None,
     facets: Annotated[str | None, typer.Option("--facets")] = None,
+    subject: Annotated[str | None, typer.Option("--subject")] = None,
 ) -> None:
-    """Synthesize large target files and paired < 1 MB distractor trap files."""
+    """Synthesize large target files (up to 1 GiB) and paired < 1 MB distractor trap files."""
     parsed_sizes = tuple(float(x.strip()) for x in sizes_mb.split(",") if x.strip())
     parsed_formats = tuple(x.strip() for x in formats.split(",") if x.strip())
     parsed_facets = parse_facets(facets) if facets else None
@@ -90,6 +96,7 @@ def build(
         domain=domain,
         locale=locale,
         facets=parsed_facets,
+        subject=subject,
     )
     summary = {
         "out_dir": str(out_dir),
