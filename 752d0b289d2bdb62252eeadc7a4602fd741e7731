@@ -1,0 +1,1 @@
+Completed Track 8 (unified_pipeline_20261010): combined build and init into one unified multi-format pipeline supporting --sizes-mb up to 1024 MiB (1 GiB) and --formats docx,xlsx,pptx,pdf, with automatic cases.json, evals.csv, and qualify verification.
