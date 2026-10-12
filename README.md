@@ -289,9 +289,29 @@ bigloom grade --cases ./runs/merlion-vault/cases.json --responses ./responses.js
 bigloom report --cases ./runs/merlion-vault/cases.json --grade-report ./grade_report.json --manifest ./runs/merlion-vault/manifest.jsonl --out ./scorecard.md
 ```
 
+## SharePoint and OneDrive Upload Helpers (`utils/`)
+
+The `utils/` folder contains standard-library helpers adapted from `sharepoint-research` to upload `large/` and `traps/` files to Microsoft SharePoint or OneDrive via Microsoft Graph:
+
+- `utils/upload_to_sharepoint.py`: Uploads a BigLoom run folder (`--source`) or `manifest.jsonl` (`--manifest`) using `3.75 MiB` resumable upload sessions for files over `4 MiB` and verifies remote file sizes.
+- `utils/inventory_sharepoint.py`: Lists remote files and folders recursively or resolves direct `webUrl` links (`--resolve-url`).
+- `utils/sharepoint.env.example`: Template for `sharepoint.env` or `.env`.
+
+```bash
+# Dry run (shows the upload plan without modifying SharePoint)
+python3 utils/upload_to_sharepoint.py --source ./runs/trial-5mb
+
+# Upload large/ and traps/ files and verify remote sizes
+python3 utils/upload_to_sharepoint.py --source ./runs/trial-5mb --target-folder BigLoom-Trial --upload
+
+# List uploaded files and their SharePoint webUrl links
+python3 utils/inventory_sharepoint.py --folder BigLoom-Trial
+```
+
 ## Evaluation Harnesses
 
 Vendor-specific runners live under `harnesses/` so the core `bigloom` package stays independent of any cloud vendor:
 
 - **[`harnesses/gemini_enterprise/`](./harnesses/gemini_enterprise/README.md):** Uploads the files listed in `manifest.jsonl` to SharePoint or OneDrive via Microsoft Graph, runs `cases.json` against Discovery Engine `streamAssist`, exports `responses.json`, and grades runs with `bigloom grade` and `gemini-3.8-flash`.
+
 
