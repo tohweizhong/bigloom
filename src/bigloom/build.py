@@ -220,6 +220,7 @@ def _render_docx(
 
     chunks = _split_image_budgets(target_bytes)
     for chunk_idx, chunk_bytes in enumerate(chunks):
+        doc.add_paragraph(f"Visual Appendix {chunk_idx + 1}: {header_line} — {chart_title}")
         png = _make_chart_png(
             rng,
             title=f"{chart_title} (Panel {chunk_idx + 1})",
@@ -260,6 +261,13 @@ def _render_xlsx(
 
     chunks = _split_image_budgets(target_bytes)
     for chunk_idx, chunk_bytes in enumerate(chunks):
+        ws.append(
+            [
+                f"FIG-{chunk_idx + 1:02d}",
+                header_line,
+                f"Visual Appendix {chunk_idx + 1}: {header_line} — {chart_title}",
+            ]
+        )
         png = _make_chart_png(
             rng,
             title=f"{chart_title} (Panel {chunk_idx + 1})",

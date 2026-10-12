@@ -218,6 +218,24 @@ You do not need to run `worldloom` manually before you run `bigloom`. BigLoom ca
 | **3. Bundled or Custom Org Pack (`--world-pack`)** | `--world-pack retail-close` or `--world-pack ./org-pack.json` | Uses a bundled WorldLoom pack or your own custom `.json` organisation pack. |
 | **4. Pre-built Corpus Directory (`--corpus-dir`)** | `--corpus-dir /path/to/worldloom_corpus` | Loads an existing directory produced earlier by `worldloom build` or `worldloom demo`. |
 
+### `bigloom init` Interactive Prompts and Default Values
+
+When you run `bigloom init` and press `Enter` at each prompt, the wizard uses these 11 defaults:
+
+| Order | Prompt in `src/bigloom/wizard.py` | Default Selected by `Enter` |
+| :--- | :--- | :--- |
+| **1** | `1. Company source` | `custom` |
+| **2** | `Company / agency name` | `Merlion Sovereign Cloud` |
+| **3** | `Industry / sector` | `Public Sector Digital` |
+| **4** | `Base WorldLoom domain` | `retail` |
+| **5** | `Currency (3-letter ISO code)` | `SGD` |
+| **6** | `Divisions / business units` | `Core Platform Division, Cyber Defence Division, Data Services Division` |
+| **7** | `Configure advanced WorldLoom blueprint options? [y/N]` | `No` (uses default scale, Singapore geography, 5 systems, 24 staff names, and lore) |
+| **8** | `2. Programme or topic title` | `Greater Southern Waterfront Digital Twin Programme` |
+| **9** | `3. Target file sizes in MiB` | `18,50,100` |
+| **10** | `4. Document formats` | `docx,xlsx,pptx,pdf` |
+| **11** | `5. Run WorldLoom, build the files, and verify zero target leakage now? [Y/n]` | `Yes` |
+
 ### WorldLoom Company Pack Fields (`org-pack.json`) and Blueprint Dimensions
 
 When you run `bigloom init` (or write an `org-pack.json` file and `proposal-spec.yaml`), WorldLoom accepts the following company pack fields and blueprint dimensions:
