@@ -20,17 +20,30 @@ import urllib.parse
 from pathlib import Path
 from typing import Any
 
-from .upload_to_sharepoint import (
-    GRAPH,
-    ConfigError,
-    GraphError,
-    find_default_env,
-    get_token,
-    load_env,
-    request,
-    resolve_drive,
-    validate,
-)
+try:
+    from .upload_to_sharepoint import (
+        GRAPH,
+        ConfigError,
+        GraphError,
+        find_default_env,
+        get_token,
+        load_env,
+        request,
+        resolve_drive,
+        validate,
+    )
+except ImportError:
+    from upload_to_sharepoint import (  # type: ignore[no-redef]
+        GRAPH,
+        ConfigError,
+        GraphError,
+        find_default_env,
+        get_token,
+        load_env,
+        request,
+        resolve_drive,
+        validate,
+    )
 
 
 def get_file_metadata(
