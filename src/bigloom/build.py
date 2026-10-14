@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 import random
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
@@ -12,20 +11,51 @@ from io import BytesIO
 from pathlib import Path
 from typing import Literal
 
+import xlsxwriter
 from docx import Document
-from docx.shared import Inches
-from openpyxl import Workbook
-from openpyxl.drawing.image import Image as XlImage
-from PIL import Image, ImageDraw
+from docx.shared import Inches, Pt, RGBColor
 from pptx import Presentation
+from pptx.dml.color import RGBColor as PptxRGBColor
 from pptx.util import Inches as PptxInches
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.utils import ImageReader
-from reportlab.pdfgen import canvas
+from pptx.util import Pt as PptxPt
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.platypus import (
+    Image as RLImage,
+)
+from reportlab.platypus import (
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
 from worldloom import sdk
 from worldloom.world import World
 
+from .charts import (
+    CHART_KINDS,
+    ChartContext,
+    FigurePlate,
+    encode_figure_tight,
+    make_chart_figures,
+)
 from .models import ManifestEntry
+from .prose_writer import (
+    DEFAULT_AGENCY,
+    DEFAULT_SECTIONS,
+    MARKING,
+    MITIGATIONS,
+    RISKS,
+    THEME_PALETTE,
+    ProseCorpus,
+    Writer,
+    format_money,
+    sheet_definition,
+)
 
 DEFAULT_TOPICS = (
     "Project Aurora Sovereign Grid",
@@ -38,6 +68,14 @@ DEFAULT_TOPICS = (
     "Project Helios Salt Cavern",
 )
 
+SHEET_KINDS: tuple[str, ...] = ("budget", "procurement", "pipeline", "auth")
+DATA_SHEET_PREFIX: dict[str, str] = {
+    "budget": "Lines",
+    "procurement": "POs",
+    "pipeline": "Runs",
+    "auth": "Txns",
+}
+
 
 @dataclass(frozen=True)
 class _WorldContext:
@@ -46,6 +84,7 @@ class _WorldContext:
     topics: tuple[str, ...]
     currency: str
     governance_line: str
+    prose_corpus: ProseCorpus
 
 
 def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
@@ -78,6 +117,51 @@ def _configure_blueprint(
         if blueprint.domain_name != "retail":
             blueprint = replace(blueprint, calendar_name=None, estate_size=None)
     return blueprint
+
+
+def _default_prose_corpus(currency: str = "SGD") -> ProseCorpus:
+    return ProseCorpus(
+        company=DEFAULT_AGENCY,
+        currency=currency,
+        periods=["FY2025", "FY2026"],
+        names={
+            "BU-01": "Smart Nation Platform Solutions",
+            "BU-02": "Cloud and Data Infrastructure",
+            "BU-03": "Cybersecurity Operations",
+            "CAT-01": "Identity and Authentication",
+            "CAT-02": "Whole-of-Government Cloud",
+            "CAT-03": "Developer Platform Services",
+        },
+        revenue={
+            ("BU-01", "FY2025"): (14_250.0, 13_800.0),
+            ("BU-01", "FY2026"): (16_480.0, 15_900.0),
+            ("BU-02", "FY2025"): (21_120.0, 20_500.0),
+            ("BU-02", "FY2026"): (24_650.0, 23_900.0),
+            ("CAT-01", "FY2025"): (8_420.0, 8_100.0),
+            ("CAT-02", "FY2026"): (19_300.0, 18_950.0),
+        },
+        units=["BU-01", "BU-02", "BU-03"],
+        categories=["CAT-01", "CAT-02", "CAT-03"],
+        people=[
+            ("Tan Wei Jie", "Director, Platform Engineering"),
+            ("Lim Hui Ling", "Deputy Director, Cloud Operations"),
+            ("Arun Kumar", "Principal Architect, Identity"),
+            ("Nur Aisyah Rahman", "Senior Director, Service Design"),
+            ("Vikram Menon", "Lead, Site Reliability Engineering"),
+        ],
+        systems=[
+            "Singpass Auth Core",
+            "SHIP-HATS Pipeline",
+            "GCC Landing Zone",
+            "SGTS Observability Stack",
+        ],
+        sites=[
+            "Mapletree Business City",
+            "Sandcrawler Building",
+            "Punggol Digital District",
+            "Changi Business Park",
+        ],
+    )
 
 
 def _resolve_world_context(
@@ -122,15 +206,19 @@ def _resolve_world_context(
             topics=tuple(_extract_seed_topics(corpus_dir)),
             currency="SGD",
             governance_line="All telemetry streams are logged prior to appendix verification.",
+            prose_corpus=_default_prose_corpus("SGD"),
         )
 
     company_name = world.company.name
     currency = (world.company.currency or "SGD").strip().upper()
     topics: list[str] = [
-        f"{company_name} {bu.name} Division" for bu in world.business_units
+        f"{company_name} {bu.name} Division ({DEFAULT_TOPICS[idx % len(DEFAULT_TOPICS)]})"
+        for idx, bu in enumerate(world.business_units)
     ]
     if not topics:
-        topics = [f"{company_name} Enterprise Operations"]
+        topics = [
+            f"{company_name} Enterprise Operations ({t})" for t in DEFAULT_TOPICS
+        ]
 
     cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
     sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
@@ -147,35 +235,70 @@ def _resolve_world_context(
         details.append(f"Canonical Facts: {', '.join(fact_tags)}")
     governance_line = " | ".join(details) + "."
 
+    names: dict[str, str] = {}
+    units: list[str] = []
+    for bu in world.business_units:
+        names[bu.id] = bu.name
+        units.append(bu.id)
+    categories: list[str] = []
+    for cat in getattr(world, "categories", ()):
+        names[cat.id] = cat.name
+        categories.append(cat.id)
+    for cc in world.cost_centres:
+        names[cc.id] = cc.name
+        if not categories:
+            categories.append(cc.id)
+
+    people = [
+        (p.name, p.title)
+        for p in getattr(world, "people", ())
+        if getattr(p, "function", "") != "Merchandising"
+    ] or _default_prose_corpus(currency).people
+    systems = [s.name for s in world.systems[:4]] or ["Core Enterprise Platform"]
+    sites = [s.name for s in world.sites] or ["Headquarters"]
+
+    revenue_slots: dict[tuple[str, str], list[float | None]] = {}
+    for fact in world.facts:
+        kind = getattr(fact, "kind", "")
+        if kind not in ("financial.revenue.actual", "financial.revenue.budget"):
+            continue
+        val = getattr(fact, "value", None)
+        amt = val.get("amount") if isinstance(val, Mapping) else val
+        period = getattr(fact, "period", None)
+        subject_id = getattr(fact, "subject", None)
+        if period and subject_id and isinstance(amt, (int, float)):
+            slot = revenue_slots.setdefault((str(subject_id), str(period)), [None, None])
+            slot[0 if kind.endswith("actual") else 1] = float(amt)
+    revenue: dict[tuple[str, str], tuple[float, float]] = {
+        k: (v[0], v[1])
+        for k, v in revenue_slots.items()
+        if v[0] is not None and v[1] is not None
+    }
+    if not revenue:
+        for idx, u_id in enumerate(units[:4] or ["BU-01", "BU-02"], 1):
+            names.setdefault(u_id, f"{company_name} Unit {idx}")
+            revenue[(u_id, "FY2025")] = (12_400.0 * idx, 12_000.0 * idx)
+            revenue[(u_id, "FY2026")] = (14_150.0 * idx, 13_750.0 * idx)
+
+    prose_corpus = ProseCorpus(
+        company=company_name,
+        currency=currency,
+        periods=sorted({p for _, p in revenue}) or ["FY2025", "FY2026"],
+        names=names,
+        revenue=revenue,
+        units=units or ["BU-01"],
+        categories=categories or units or ["CAT-01"],
+        people=people,
+        systems=systems,
+        sites=sites,
+    )
+
     return _WorldContext(
         topics=tuple(topics),
         currency=currency,
         governance_line=governance_line,
+        prose_corpus=prose_corpus,
     )
-
-
-def _make_chart_png(
-    rng: random.Random,
-    title: str,
-    printed_value: str,
-    raw_rgb_bytes: int,
-) -> bytes:
-    """Render a bar chart PNG with printed_value drawn on canvas and noisy background payload."""
-    effective_bytes = raw_rgb_bytes + (260 * 64 * 3)
-    pixels = max(96 * 96, math.ceil(effective_bytes / 3))
-    side = max(140, math.ceil(math.sqrt(pixels)))
-    noise = rng.randbytes(side * side * 3)
-    img = Image.frombytes("RGB", (side, side), noise)
-    draw = ImageDraw.Draw(img)
-    card_w = min(side - 8, 260)
-    card_h = min(side - 8, 64)
-    draw.rectangle([4, 4, 4 + card_w, 4 + card_h], fill=(255, 255, 255), outline=(20, 40, 80))
-    draw.text((10, 10), title[:36], fill=(10, 20, 40))
-    draw.text((10, 28), f"Verified Metric: {printed_value}", fill=(0, 100, 40))
-    draw.rectangle([10, 46, 140, 58], fill=(30, 110, 200))
-    buf = BytesIO()
-    img.save(buf, format="PNG", compress_level=1)
-    return buf.getvalue()
 
 
 def _split_image_budgets(target_bytes: int, max_chunk: int | None = None) -> list[int]:
@@ -197,37 +320,138 @@ def _split_image_budgets(target_bytes: int, max_chunk: int | None = None) -> lis
     return chunks
 
 
+def _build_encoded_figures(
+    rng: random.Random,
+    *,
+    corpus: ProseCorpus,
+    header_line: str,
+    chart_title: str,
+    chart_value: str,
+    target_bytes: int,
+    theme: tuple[int, int, int],
+) -> list[FigurePlate]:
+    """Render rich high-resolution chart figures and encode each chunk to hit target_bytes."""
+    chunks = _split_image_budgets(target_bytes)
+    ctx = ChartContext(
+        rng=rng,
+        corpus=corpus,
+        title=header_line,
+        date="14 Oct 2026",
+        theme=theme,
+        chart_title=chart_title,
+        printed_value=chart_value,
+    )
+    preferred = list(CHART_KINDS)
+    rng.shuffle(preferred)
+    figures = make_chart_figures(ctx, count=len(chunks), preferred_kinds=preferred)
+    scales: dict[int, float] = {}
+    for fig, chunk_bytes in zip(figures, chunks):
+        encode_figure_tight(fig, target_bytes=chunk_bytes, scales=scales)
+    return figures
+
+
+def _plan_section_figures(
+    sections: Sequence[str],
+    figures: Sequence[FigurePlate],
+) -> list[list[FigurePlate]]:
+    """Assign figures across document sections while keeping Financial overview text-only."""
+    slots = [i for i, s in enumerate(sections) if s != "Financial overview"]
+    out: list[list[FigurePlate]] = [[] for _ in sections]
+    if not slots:
+        return out
+    for idx, fig in enumerate(figures):
+        out[slots[idx % len(slots)]].append(fig)
+    return out
+
+
 def _render_docx(
     rng: random.Random,
     *,
+    corpus: ProseCorpus,
     header_line: str,
     governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
     target_bytes: int,
+    theme: tuple[int, int, int] = (0, 84, 147),
 ) -> tuple[bytes, int]:
-    """Render a .docx file with the text fact at paragraph index >= 6 and embedded chart PNGs."""
+    """Render a multi-section .docx with headers, risk table, deep fact, and rich chart plates."""
+    figures = _build_encoded_figures(
+        rng,
+        corpus=corpus,
+        header_line=header_line,
+        chart_title=chart_title,
+        chart_value=chart_value,
+        target_bytes=target_bytes,
+        theme=theme,
+    )
     doc = Document()
-    doc.add_heading(header_line, level=1)
-    for idx in range(1, 5):
-        doc.add_paragraph(
-            f"Section {idx}: Operational governance and compliance review for {header_line}. "
-            f"{governance_line}"
-        )
-    doc.add_paragraph(fact_sentence)
+    style = doc.styles["Normal"]
+    style.font.name = "Calibri"
+    style.font.size = Pt(11)
+    doc.sections[0].header.paragraphs[0].text = MARKING
+    doc.sections[0].footer.paragraphs[0].text = f"{header_line[:60]}  |  {corpus.company}"
+
+    doc.add_heading(header_line, 0)
+    owner, role = rng.choice(corpus.people) if corpus.people else ("Tan Wei Jie", "Director")
+    meta = doc.add_paragraph()
+    meta.add_run(f"Prepared by {owner}, {role}. Date: 14 Oct 2026. {governance_line}").italic = True
+    red = doc.add_paragraph().add_run(
+        "This document is synthetic test data. All names and figures are invented."
+    )
+    red.font.color.rgb = RGBColor(0xAA, 0, 0)
+
+    w = Writer(rng, corpus)
+    sections = list(DEFAULT_SECTIONS)
+    planned = _plan_section_figures(sections, figures)
+    fig_no = 0
     text_unit_index = 6
 
-    chunks = _split_image_budgets(target_bytes)
-    for chunk_idx, chunk_bytes in enumerate(chunks):
-        doc.add_paragraph(f"Visual Appendix {chunk_idx + 1}: {header_line} — {chart_title}")
-        png = _make_chart_png(
-            rng,
-            title=f"{chart_title} (Panel {chunk_idx + 1})",
-            printed_value=chart_value,
-            raw_rgb_bytes=chunk_bytes,
-        )
-        doc.add_picture(BytesIO(png), width=Inches(5.5))
+    for heading, sec_figs in zip(sections, planned):
+        doc.add_heading(heading, level=1)
+        if heading == "Financial overview":
+            doc.add_paragraph(
+                "The list below gives the key figures for this document, "
+                "and revenue from agency charges for selected lines of work."
+            )
+            doc.add_paragraph(fact_sentence, style="List Bullet")
+            text_unit_index = len(doc.paragraphs)
+            for (subj, per), (actual, budget) in sorted(corpus.revenue.items())[:4]:
+                name = corpus.names.get(subj, subj)
+                doc.add_paragraph(
+                    f"For {per}, {name} recorded actual revenue of "
+                    f"{format_money(actual, corpus.currency)} against a budget of "
+                    f"{format_money(budget, corpus.currency)}.",
+                    style="List Bullet",
+                )
+            continue
+
+        if heading.startswith("Risk"):
+            table = doc.add_table(rows=1, cols=4)
+            table.style = "Light Grid Accent 1"
+            for cell, txt in zip(table.rows[0].cells, ["Risk", "Rating", "Owner", "Mitigation"]):
+                cell.text = txt
+            sample_count = min(4, len(RISKS))
+            for (risk, rating), mit in rng.sample(list(zip(RISKS, MITIGATIONS)), sample_count):
+                row = table.add_row().cells
+                row[0].text = risk
+                row[1].text = rating
+                row[2].text = rng.choice(corpus.people)[0]
+                row[3].text = mit
+
+        doc.add_paragraph(w.paragraph())
+        for fig in sec_figs:
+            fig_no += 1
+            doc.add_paragraph(
+                f"Visual Appendix {fig_no}: {header_line} — {chart_title} ({fig.caption}). "
+                f"{w.sentence()}"
+            )
+            width = Inches(6.2) if fig.size[0] >= fig.size[1] else Inches(3.6)
+            doc.add_picture(BytesIO(fig.data), width=width)
+            cap = doc.add_paragraph()
+            cap.add_run(f"Figure {fig_no}: {fig.caption}").bold = True
+            doc.add_paragraph(w.paragraph(2))
 
     buf = BytesIO()
     doc.save(buf)
@@ -237,98 +461,239 @@ def _render_docx(
 def _render_xlsx(
     rng: random.Random,
     *,
+    corpus: ProseCorpus,
     header_line: str,
     governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
     target_bytes: int,
+    theme: tuple[int, int, int] = (31, 119, 180),
+    sheet_kind: str = "budget",
 ) -> tuple[bytes, int]:
-    """Render an .xlsx file with at least 6 populated rows before the deep fact and chart PNGs."""
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "AuditLedger"
-    for row_idx in range(1, 6):
-        ws.append(
-            [
-                f"ROW-{row_idx:02d}",
-                header_line,
-                f"Baseline telemetry checkpoint {row_idx} | {governance_line}",
-            ]
-        )
-    ws.append(["ROW-06-DEEP", header_line, fact_sentence])
-    text_unit_index = 6
-
-    chunks = _split_image_budgets(target_bytes)
-    for chunk_idx, chunk_bytes in enumerate(chunks):
-        ws.append(
-            [
-                f"FIG-{chunk_idx + 1:02d}",
-                header_line,
-                f"Visual Appendix {chunk_idx + 1}: {header_line} — {chart_title}",
-            ]
-        )
-        png = _make_chart_png(
-            rng,
-            title=f"{chart_title} (Panel {chunk_idx + 1})",
-            printed_value=chart_value,
-            raw_rgb_bytes=chunk_bytes,
-        )
-        img = XlImage(BytesIO(png))
-        ws.add_image(img, f"A{10 + chunk_idx * 20}")
-
+    """Render a multi-sheet .xlsx workbook (README, Summary, Charts, and operational rows)."""
+    figures = _build_encoded_figures(
+        rng,
+        corpus=corpus,
+        header_line=header_line,
+        chart_title=chart_title,
+        chart_value=chart_value,
+        target_bytes=target_bytes,
+        theme=theme,
+    )
+    cols, make_row, _id_col, _probe_col, _probe_name, noun = sheet_definition(sheet_kind, corpus)
     buf = BytesIO()
-    wb.save(buf)
+    wb = xlsxwriter.Workbook(buf, {"in_memory": True})
+    bold = wb.add_format({"bold": True})
+    head = wb.add_format(
+        {
+            "bold": True,
+            "bg_color": f"#{theme[0]:02x}{theme[1]:02x}{theme[2]:02x}",
+            "font_color": "white",
+        }
+    )
+
+    readme = wb.add_worksheet("README")
+    readme.set_column(0, 0, 110)
+    readme.write(0, 0, MARKING, bold)
+    readme.write(1, 0, header_line, bold)
+    readme.write(
+        2,
+        0,
+        f"{corpus.company}. Extract date: 14 Oct 2026. {governance_line} Synthetic test data.",
+    )
+    readme.write(
+        3,
+        0,
+        f"Sheets: Summary (revenue from agency charges), Charts ({chart_title}), "
+        f"and operational data sheets for {noun}.",
+    )
+    readme.write(4, 0, f"Audit verification notes and financial overview for {header_line}:")
+    readme.write(5, 0, f"Reference telemetry stream: {header_line} | {chart_title}")
+    readme.write(6, 0, fact_sentence)
+    for extra_idx in range(7, 15):
+        readme.write(
+            extra_idx,
+            0,
+            f"Section {extra_idx - 6} verification log for {header_line} — {chart_title}.",
+        )
+    text_unit_index = 7
+
+    summary = wb.add_worksheet("Summary")
+    summary.write_row(
+        0,
+        0,
+        [
+            "Line of work",
+            "Period",
+            f"Actual ({corpus.currency} k)",
+            f"Budget ({corpus.currency} k)",
+        ],
+        head,
+    )
+    items = sorted(corpus.revenue.items())
+    for r_idx, ((subject_id, period), (actual, budget)) in enumerate(items, 1):
+        summary.write_row(
+            r_idx,
+            0,
+            [corpus.names.get(subject_id, subject_id), period, actual, budget],
+        )
+    summary.set_column(0, 0, 44)
+    if items:
+        chart = wb.add_chart({"type": "column"})
+        chart.add_series(
+            {
+                "name": "Actual",
+                "categories": ["Summary", 1, 0, len(items), 0],
+                "values": ["Summary", 1, 2, len(items), 2],
+            }
+        )
+        chart.set_title({"name": "Revenue from agency charges"})
+        summary.insert_chart("F2", chart, {"x_scale": 2.0, "y_scale": 1.5})
+
+    charts_ws = wb.add_worksheet("Charts")
+    row_at = 0
+    for k, fig in enumerate(figures, 1):
+        charts_ws.write(
+            row_at,
+            0,
+            f"Visual Appendix {k}: {header_line} — {chart_title} ({fig.caption})",
+            bold,
+        )
+        scale = 1100.0 / max(1, fig.size[0])
+        charts_ws.insert_image(
+            row_at + 1,
+            0,
+            f"figure{k}.png",
+            {"image_data": BytesIO(fig.data), "x_scale": scale, "y_scale": scale},
+        )
+        row_at += int(fig.size[1] * scale / 20) + 4
+
+    prefix = DATA_SHEET_PREFIX.get(sheet_kind, "Lines")
+    data_ws = wb.add_worksheet(f"{prefix}_1")
+    data_ws.write_row(0, 0, cols, head)
+    data_ws.set_column(0, len(cols) - 1, 18)
+    row_count = 100 if target_bytes >= 100_000 else 25
+    for r_idx in range(1, row_count + 1):
+        data_ws.write_row(r_idx, 0, make_row(rng, r_idx))
+
+    wb.close()
     return buf.getvalue(), text_unit_index
 
 
 def _render_pptx(
     rng: random.Random,
     *,
+    corpus: ProseCorpus,
     header_line: str,
     governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
     target_bytes: int,
+    theme: tuple[int, int, int] = (0, 90, 170),
 ) -> tuple[bytes, int]:
-    """Render a .pptx presentation with the planted fact on slide 6 and chart PNGs on slides."""
-    prs = Presentation()
-    blank_layout = prs.slide_layouts[6]
-
-    for slide_idx in range(1, 6):
-        slide = prs.slides.add_slide(blank_layout)
-        tx = slide.shapes.add_textbox(
-            PptxInches(0.8), PptxInches(0.8), PptxInches(8.0), PptxInches(2.0)
-        )
-        tx.text_frame.text = (
-            f"Slide {slide_idx}: {header_line}\n"
-            f"Preliminary architecture notes {slide_idx}. {governance_line}"
-        )
-
-    fact_slide = prs.slides.add_slide(blank_layout)
-    fact_box = fact_slide.shapes.add_textbox(
-        PptxInches(0.8), PptxInches(0.8), PptxInches(8.0), PptxInches(2.5)
+    """Render a 16:9 .pptx presentation with themed bands, speaker notes, and deep fact slide."""
+    figures = _build_encoded_figures(
+        rng,
+        corpus=corpus,
+        header_line=header_line,
+        chart_title=chart_title,
+        chart_value=chart_value,
+        target_bytes=target_bytes,
+        theme=theme,
     )
-    fact_box.text_frame.text = f"Slide 6 Deep Appendix: {header_line}\n{fact_sentence}"
+    prs = Presentation()
+    prs.slide_width = PptxInches(13.333)
+    prs.slide_height = PptxInches(7.5)
+    theme_rgb = PptxRGBColor(*theme)
+    w = Writer(rng, corpus)
+    owner, role = rng.choice(corpus.people) if corpus.people else ("Tan Wei Jie", "Director")
+
+    def _band(slide: object) -> None:
+        bar = slide.shapes.add_shape(1, 0, 0, prs.slide_width, PptxInches(0.18))  # type: ignore[attr-defined]
+        bar.fill.solid()
+        bar.fill.fore_color.rgb = theme_rgb
+        bar.line.fill.background()
+        tb = slide.shapes.add_textbox(  # type: ignore[attr-defined]
+            PptxInches(0.4), PptxInches(7.05), PptxInches(12.5), PptxInches(0.3)
+        )
+        tb.text_frame.text = f"{MARKING}   |   {header_line[:80]}"
+        tb.text_frame.paragraphs[0].runs[0].font.size = PptxPt(10)
+
+    def _bullets(frame: object, lines: Sequence[str], size: int = 18) -> None:
+        frame.word_wrap = True  # type: ignore[attr-defined]
+        frame.text = lines[0]  # type: ignore[attr-defined]
+        for line in lines[1:]:
+            frame.add_paragraph().text = line  # type: ignore[attr-defined]
+        for p in frame.paragraphs:  # type: ignore[attr-defined]
+            for r in p.runs:
+                r.font.size = PptxPt(size)
+
+    s_title = prs.slides.add_slide(prs.slide_layouts[0])
+    s_title.shapes.title.text = header_line
+    s_title.placeholders[1].text = (
+        f"{owner}, {role}\n14 Oct 2026\n{governance_line}\nSynthetic test data"
+    )
+    _band(s_title)
+
+    sections = list(DEFAULT_SECTIONS)
+    s_agenda = prs.slides.add_slide(prs.slide_layouts[1])
+    s_agenda.shapes.title.text = "Agenda"
+    _bullets(s_agenda.placeholders[1].text_frame, sections, 20)
+    _band(s_agenda)
+
+    planned = _plan_section_figures(sections, figures)
+    fig_no = 0
     text_unit_index = 6
 
-    chunks = _split_image_budgets(target_bytes)
-    for chunk_idx, chunk_bytes in enumerate(chunks):
-        png = _make_chart_png(
-            rng,
-            title=f"{chart_title} (Panel {chunk_idx + 1})",
-            printed_value=chart_value,
-            raw_rgb_bytes=chunk_bytes,
-        )
-        chart_slide = prs.slides.add_slide(blank_layout)
-        lbl = chart_slide.shapes.add_textbox(
-            PptxInches(0.8), PptxInches(0.4), PptxInches(8.0), PptxInches(0.8)
-        )
-        lbl.text_frame.text = f"Visual Appendix {chunk_idx + 1}: {header_line} — {chart_title}"
-        chart_slide.shapes.add_picture(
-            BytesIO(png), PptxInches(0.8), PptxInches(1.3), width=PptxInches(6.0)
-        )
+    for heading, sec_figs in zip(sections, planned):
+        if heading == "Financial overview":
+            s_fin = prs.slides.add_slide(prs.slide_layouts[1])
+            s_fin.shapes.title.text = f"{heading}: {header_line[:50]}"
+            fin_lines = [fact_sentence, w.sentence(), w.sentence()]
+            _bullets(s_fin.placeholders[1].text_frame, fin_lines, 16)
+            _band(s_fin)
+            text_unit_index = len(prs.slides)
+            continue
+
+        s_sec = prs.slides.add_slide(prs.slide_layouts[1])
+        s_sec.shapes.title.text = heading
+        _bullets(s_sec.placeholders[1].text_frame, [w.sentence() for _ in range(4)], 18)
+        _band(s_sec)
+
+        for fig in sec_figs:
+            fig_no += 1
+            s_fig = prs.slides.add_slide(prs.slide_layouts[5])
+            s_fig.shapes.title.text = (
+                f"Visual Appendix {fig_no}: {chart_title} ({fig.caption})"[:90]
+            )
+            s_fig.shapes.title.text_frame.paragraphs[0].runs[0].font.size = PptxPt(22)
+            aspect = fig.size[0] / max(1, fig.size[1])
+            box_w, box_h = (8.4, 5.2) if aspect >= 1 else (4.0, 5.4)
+            pw, ph = (
+                (box_w, box_w / aspect)
+                if box_w / aspect <= box_h
+                else (box_h * aspect, box_h)
+            )
+            s_fig.shapes.add_picture(
+                BytesIO(fig.data),
+                PptxInches(0.5),
+                PptxInches(1.45),
+                PptxInches(pw),
+                PptxInches(ph),
+            )
+            tb = s_fig.shapes.add_textbox(
+                PptxInches(0.9 + pw),
+                PptxInches(1.6),
+                PptxInches(max(2.0, 12.2 - pw)),
+                PptxInches(5.0),
+            )
+            _bullets(tb.text_frame, [w.sentence() for _ in range(3)], 16)
+            s_fig.notes_slide.notes_text_frame.text = (
+                f"Figure {fig_no} ({header_line}). {w.paragraph(2)}"
+            )
+            _band(s_fig)
 
     buf = BytesIO()
     prs.save(buf)
@@ -338,45 +703,130 @@ def _render_pptx(
 def _render_pdf(
     rng: random.Random,
     *,
+    corpus: ProseCorpus,
     header_line: str,
     governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
     target_bytes: int,
+    theme: tuple[int, int, int] = (0, 110, 110),
 ) -> tuple[bytes, int]:
-    """Render a multi-page PDF with the planted text fact on page 6 and embedded chart PNGs."""
-    buf = BytesIO()
-    c = canvas.Canvas(buf, pagesize=letter)
+    """Render an A4 Platypus PDF with page headers, financial table on page >= 6, and charts."""
+    figures = _build_encoded_figures(
+        rng,
+        corpus=corpus,
+        header_line=header_line,
+        chart_title=chart_title,
+        chart_value=chart_value,
+        target_bytes=target_bytes,
+        theme=theme,
+    )
+    styles = getSampleStyleSheet()
+    pw, ph = A4
+    frame_w, frame_h = pw - 4 * cm, ph - 5 * cm
 
-    for page_idx in range(1, 6):
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, 730, f"Page {page_idx}: {header_line}")
-        c.setFont("Helvetica", 10)
-        c.drawString(50, 705, f"Section {page_idx}: {governance_line}")
-        c.showPage()
+    def _decorate(c: object, docobj: object) -> None:
+        c.saveState()  # type: ignore[attr-defined]
+        c.setFillColorRGB(theme[0] / 255.0, theme[1] / 255.0, theme[2] / 255.0)  # type: ignore[attr-defined]
+        c.rect(0, ph - 0.5 * cm, pw, 0.5 * cm, fill=1, stroke=0)  # type: ignore[attr-defined]
+        c.setFillColorRGB(0.65, 0, 0)  # type: ignore[attr-defined]
+        c.setFont("Helvetica", 8)  # type: ignore[attr-defined]
+        c.drawString(2 * cm, ph - 1.2 * cm, MARKING)  # type: ignore[attr-defined]
+        c.setFillColorRGB(0.3, 0.3, 0.3)  # type: ignore[attr-defined]
+        c.drawString(2 * cm, 1.2 * cm, header_line[:90])  # type: ignore[attr-defined]
+        c.drawRightString(pw - 2 * cm, 1.2 * cm, f"Page {docobj.page}")  # type: ignore[attr-defined]
+        c.restoreState()  # type: ignore[attr-defined]
 
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, 730, f"Page 6 Deep Appendix: {header_line}")
-    c.setFont("Helvetica", 10)
-    c.drawString(50, 700, fact_sentence)
-    c.showPage()
+    owner, role = rng.choice(corpus.people) if corpus.people else ("Tan Wei Jie", "Director")
+    story: list[object] = [
+        Spacer(1, 3 * cm),
+        Paragraph(header_line, styles["Title"]),
+        Paragraph(
+            f"{corpus.company}<br/>Prepared by {owner}, {role}<br/>14 Oct 2026<br/>"
+            f"{governance_line}",
+            styles["Normal"],
+        ),
+        Spacer(1, 1 * cm),
+        Paragraph(
+            "<font color='#aa0000'>This document is synthetic test data. All "
+            "names and figures are invented.</font>",
+            styles["Normal"],
+        ),
+        PageBreak(),
+    ]
+    w = Writer(rng, corpus)
+    sections = list(DEFAULT_SECTIONS)
+    planned = _plan_section_figures(sections, figures)
+    fig_no = 0
     text_unit_index = 6
 
-    chunks = _split_image_budgets(target_bytes)
-    for chunk_idx, chunk_bytes in enumerate(chunks):
-        png = _make_chart_png(
-            rng,
-            title=f"{chart_title} (Panel {chunk_idx + 1})",
-            printed_value=chart_value,
-            raw_rgb_bytes=chunk_bytes,
-        )
-        c.setFont("Helvetica-Bold", 11)
-        c.drawString(50, 730, f"Visual Telemetry {chunk_idx + 1}: {header_line} — {chart_title}")
-        c.drawImage(ImageReader(BytesIO(png)), 50, 220, width=440, height=440)
-        c.showPage()
+    for heading, sec_figs in zip(sections, planned):
+        story.append(Paragraph(heading, styles["Heading1"]))
+        if heading == "Financial overview":
+            story.append(Paragraph(fact_sentence, styles["Normal"]))
+            rows = [
+                [
+                    "Line of work",
+                    "Period",
+                    f"Actual ({corpus.currency})",
+                    f"Budget ({corpus.currency})",
+                ]
+            ]
+            for (subj, per), (actual, budget) in sorted(corpus.revenue.items())[:6]:
+                rows.append(
+                    [
+                        corpus.names.get(subj, subj)[:40],
+                        per,
+                        format_money(actual, corpus.currency),
+                        format_money(budget, corpus.currency),
+                    ]
+                )
+            tbl = Table(rows, hAlign="LEFT")
+            tbl.setStyle(
+                TableStyle(
+                    [
+                        ("GRID", (0, 0), (-1, -1), 0.4, colors.grey),
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                        ("FONTSIZE", (0, 0), (-1, -1), 8),
+                    ]
+                )
+            )
+            story += [Spacer(1, 0.3 * cm), tbl, PageBreak()]
+            continue
 
-    c.save()
+        story.append(Paragraph(w.paragraph(), styles["Normal"]))
+        for fig in sec_figs:
+            fig_no += 1
+            aspect = fig.size[0] / max(1, fig.size[1])
+            iw = frame_w if aspect >= 1 else frame_w * 0.55
+            ih = iw / aspect
+            if ih > frame_h * 0.65:
+                ih = frame_h * 0.65
+                iw = ih * aspect
+            story += [
+                Spacer(1, 0.25 * cm),
+                RLImage(BytesIO(fig.data), width=iw, height=ih),
+                Paragraph(
+                    f"<b>Visual Appendix {fig_no}: {header_line} — {chart_title} "
+                    f"({fig.caption})</b>",
+                    styles["Italic"],
+                ),
+                Paragraph(w.paragraph(2), styles["Normal"]),
+            ]
+        story.append(PageBreak())
+
+    buf = BytesIO()
+    SimpleDocTemplate(
+        buf,
+        pagesize=A4,
+        title=header_line,
+        author=owner,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.2 * cm,
+        bottomMargin=2.2 * cm,
+    ).build(story, onFirstPage=_decorate, onLaterPages=_decorate)
     return buf.getvalue(), text_unit_index
 
 
@@ -384,52 +834,64 @@ def _render_by_format(
     fmt: Literal["docx", "xlsx", "pptx", "pdf"],
     rng: random.Random,
     *,
+    corpus: ProseCorpus,
     header_line: str,
     governance_line: str,
     fact_sentence: str,
     chart_title: str,
     chart_value: str,
     target_bytes: int,
+    theme: tuple[int, int, int] = (0, 84, 147),
+    sheet_kind: str = "budget",
 ) -> tuple[bytes, int]:
     if fmt == "docx":
         return _render_docx(
             rng,
+            corpus=corpus,
             header_line=header_line,
             governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
             target_bytes=target_bytes,
+            theme=theme,
         )
     if fmt == "xlsx":
         return _render_xlsx(
             rng,
+            corpus=corpus,
             header_line=header_line,
             governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
             target_bytes=target_bytes,
+            theme=theme,
+            sheet_kind=sheet_kind,
         )
     if fmt == "pptx":
         return _render_pptx(
             rng,
+            corpus=corpus,
             header_line=header_line,
             governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
             target_bytes=target_bytes,
+            theme=theme,
         )
     if fmt == "pdf":
         return _render_pdf(
             rng,
+            corpus=corpus,
             header_line=header_line,
             governance_line=governance_line,
             fact_sentence=fact_sentence,
             chart_title=chart_title,
             chart_value=chart_value,
             target_bytes=target_bytes,
+            theme=theme,
         )
     raise ValueError(f"Unsupported format: {fmt}")
 
@@ -499,6 +961,8 @@ def build_corpus(
             typed_fmt: Literal["docx", "xlsx", "pptx", "pdf"] = fmt  # type: ignore[assignment]
 
             base_topic = topics[item_counter % len(topics)]
+            theme = THEME_PALETTE[item_counter % len(THEME_PALETTE)]
+            sheet_kind = SHEET_KINDS[item_counter % len(SHEET_KINDS)]
             item_counter += 1
             file_id = f"bl-{item_counter:03d}-{fmt}-{size_tag}"
             topic = f"{base_topic} Unit-{item_counter:03d}"
@@ -526,12 +990,15 @@ def build_corpus(
             target_bytes, text_unit_idx = _render_by_format(
                 typed_fmt,
                 rng,
+                corpus=ctx.prose_corpus,
                 header_line=target_header,
                 governance_line=ctx.governance_line,
                 fact_sentence=target_fact,
                 chart_title=image_chart_title,
                 chart_value=image_golden,
                 target_bytes=min_target_bytes,
+                theme=theme,
+                sheet_kind=sheet_kind,
             )
 
             dist_header = f"{topic} {distractor_period} Preliminary Draft Report"
@@ -542,12 +1009,15 @@ def build_corpus(
             dist_bytes, _ = _render_by_format(
                 typed_fmt,
                 rng,
+                corpus=ctx.prose_corpus,
                 header_line=dist_header,
                 governance_line=ctx.governance_line,
                 fact_sentence=dist_fact,
                 chart_title=f"{topic} {distractor_period} Draft Chart",
                 chart_value=image_canary,
                 target_bytes=24_576,
+                theme=theme,
+                sheet_kind=sheet_kind,
             )
 
             target_path = out_dir / target_rel

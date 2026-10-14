@@ -32,11 +32,15 @@ def test_load_env_and_validate_aliases(tmp_path: Path, monkeypatch: pytest.Monke
         "SP_TENANT_ID",
         "SP_CLIENT_ID",
         "SP_CLIENT_SECRET",
+        "SP_TARGET_FOLDER",
+        "SP_DRIVE_NAME",
         "TENANT_ID",
         "CLIENT_ID",
         "CLIENT_SECRET",
         "SHAREPOINT_HOST",
         "SHAREPOINT_SITE_PATH",
+        "SHAREPOINT_FOLDER_PATH",
+        "SHAREPOINT_LIBRARY",
     ):
         monkeypatch.delenv(key, raising=False)
 
