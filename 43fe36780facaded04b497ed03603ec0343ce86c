@@ -1,0 +1,1 @@
+Task: Implement src/bigloom/charts.py and src/bigloom/prose_writer.py. Ported all 13 high-resolution chart and diagram drawers, the 12 percent grain encode_figure_tight byte-budget encoder, Writer prose templates, risk tables, and 4 operational Excel sheet definitions with 99% test coverage.
