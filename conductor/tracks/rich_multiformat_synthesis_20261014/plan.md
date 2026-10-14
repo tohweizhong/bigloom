@@ -5,10 +5,10 @@
   - [x] Verify that each of the 13 chart drawers (`line`, `bar`, `donut`, `stacked`, `heatmap`, `kpi`, `gantt`, `architecture`, `org`, `whiteboard`, `memo`, `floor`, `phone`) renders a high-resolution `PIL.Image` and embeds the requested metric text visibly.
   - [x] Verify that `encode_tight` hits a target byte budget using `Image.LANCZOS` and `Image.blend` at `alpha=0.12` without producing full-frame static noise.
   - [x] Verify that `Writer` generates multi-paragraph prose, risk tables, and financial overview rows grounded in WorldLoom entities.
-- [~] Task: Implement `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` to pass all unit tests in `tests/test_charts_and_prose.py`.
-  - [ ] Port the 13 chart and diagram drawers and `encode_tight` into `src/bigloom/charts.py`.
-  - [ ] Port `Writer`, `SENTENCES`, `RISKS`, `MITIGATIONS`, and the 4 operational Excel sheet definitions (`budget`, `procurement`, `pipeline`, `auth`) into `src/bigloom/prose_writer.py`.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
+- [x] Task: Implement `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` to pass all unit tests in `tests/test_charts_and_prose.py`. (43fe367)
+  - [x] Port the 13 chart and diagram drawers and `encode_tight` into `src/bigloom/charts.py`.
+  - [x] Port `Writer`, `SENTENCES`, `RISKS`, `MITIGATIONS`, and the 4 operational Excel sheet definitions (`budget`, `procurement`, `pipeline`, `auth`) into `src/bigloom/prose_writer.py`.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
 
 ## Phase 2: Rich Multi-Format Renderers in `src/bigloom/build.py` and Pipeline Qualification
 - [ ] Task: Update `tests/test_pipeline.py` with failing assertions for rich multi-section `.docx`, `.pptx`, `.pdf`, and multi-sheet `.xlsx` outputs (`README`, `Summary`, `Charts`, and operational rows).
