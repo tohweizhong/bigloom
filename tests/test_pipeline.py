@@ -56,6 +56,35 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
     report = qualify_corpus(snapshots, cases, check_retrieval=True)
     assert report.passed is True, f"Violations: {report.violations}"
 
+    # Verify rich multi-format structures (.docx risk table/headers, .pptx 16:9 & notes, .xlsx sheets, .pdf A4)
+    from docx import Document
+    from openpyxl import load_workbook
+    from pptx import Presentation
+    from pptx.util import Inches as PptxInches
+
+    docx_entry = next(e for e in entries if e.format == "docx")
+    doc = Document(str(out_dir / docx_entry.target_file))
+    assert len(doc.tables) >= 1
+    assert "OFFICIAL (CLOSED)" in doc.sections[0].header.paragraphs[0].text
+    assert any("Financial overview" in p.text for p in doc.paragraphs)
+
+    xlsx_entry = next(e for e in entries if e.format == "xlsx")
+    wb = load_workbook(str(out_dir / xlsx_entry.target_file))
+    assert {"README", "Summary", "Charts"}.issubset(set(wb.sheetnames))
+    data_sheets = [s for s in wb.sheetnames if s not in {"README", "Summary", "Charts"}]
+    assert len(data_sheets) >= 1
+    assert wb[data_sheets[0]].max_row >= 100
+
+    pptx_entry = next(e for e in entries if e.format == "pptx")
+    prs = Presentation(str(out_dir / pptx_entry.target_file))
+    assert prs.slide_width == PptxInches(13.333)
+    assert snapshots[pptx_entry.target_file].metrics["speaker_notes"] >= 1
+
+    pdf_entry = next(e for e in entries if e.format == "pdf")
+    pdf_text = "\n".join(u.text for u in snapshots[pdf_entry.target_file].units)
+    assert "Financial overview" in pdf_text
+    assert "OFFICIAL (CLOSED)" in pdf_text
+
 
 def test_seed_determinism_and_corpus_dir_input(tmp_path: Path) -> None:
     seed_corpus = tmp_path / "seed_corpus"
