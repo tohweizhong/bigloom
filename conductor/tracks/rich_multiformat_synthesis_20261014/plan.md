@@ -16,8 +16,8 @@
   - [x] Assert that `.pptx` files use `16:9` widescreen layout, title and agenda slides, section slides, speaker notes, and deep fact placement (`slide >= 6`).
   - [x] Assert that `.pdf` files use `reportlab.platypus.SimpleDocTemplate` with A4 page headers, financial tables, and deep fact placement (`page >= 6`).
   - [x] Assert that `.xlsx` files contain `README`, `Summary`, `Charts`, and operational data rows and pass `worldloom.native_artifacts.inspect_artifact` and `bigloom qualify` with zero violations.
-- [~] Task: Upgrade `src/bigloom/build.py` to use `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` across `.docx`, `.xlsx`, `.pptx`, and `.pdf` target and trap files.
-  - [ ] Replace `_make_chart_png` and the stub renderers (`_render_docx`, `_render_xlsx`, `_render_pptx`, `_render_pdf`) in `src/bigloom/build.py`.
-  - [ ] Keep `ManifestEntry`, `cases.json`, and `evals.csv` compatible with `bigloom queries` and `bigloom qualify`.
-- [ ] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`).
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
+- [x] Task: Upgrade `src/bigloom/build.py` to use `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` across `.docx`, `.xlsx`, `.pptx`, and `.pdf` target and trap files. (afca907)
+  - [x] Replace `_make_chart_png` and the stub renderers (`_render_docx`, `_render_xlsx`, `_render_pptx`, `_render_pdf`) in `src/bigloom/build.py`.
+  - [x] Keep `ManifestEntry`, `cases.json`, and `evals.csv` compatible with `bigloom queries` and `bigloom qualify`.
+- [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (afca907)
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
