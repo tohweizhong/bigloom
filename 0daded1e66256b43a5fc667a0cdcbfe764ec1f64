@@ -1,0 +1,1 @@
+Task: Update tests/test_pipeline.py with failing assertions for rich multi-section .docx, .pptx, .pdf, and multi-sheet .xlsx outputs.
