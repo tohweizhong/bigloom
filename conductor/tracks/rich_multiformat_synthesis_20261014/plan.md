@@ -11,12 +11,12 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (43fe367)
 
 ## Phase 2: Rich Multi-Format Renderers in `src/bigloom/build.py` and Pipeline Qualification
-- [~] Task: Update `tests/test_pipeline.py` with failing assertions for rich multi-section `.docx`, `.pptx`, `.pdf`, and multi-sheet `.xlsx` outputs (`README`, `Summary`, `Charts`, and operational rows).
-  - [ ] Assert that `.docx` files contain multi-section headings, a 4-column risk table, deep text fact placement (`unit_index >= 6`), and captioned crisp chart images.
-  - [ ] Assert that `.pptx` files use `16:9` widescreen layout, title and agenda slides, section slides, speaker notes, and deep fact placement (`slide >= 6`).
-  - [ ] Assert that `.pdf` files use `reportlab.platypus.SimpleDocTemplate` with A4 page headers, financial tables, and deep fact placement (`page >= 6`).
-  - [ ] Assert that `.xlsx` files contain `README`, `Summary`, `Charts`, and operational data rows and pass `worldloom.native_artifacts.inspect_artifact` and `bigloom qualify` with zero violations.
-- [ ] Task: Upgrade `src/bigloom/build.py` to use `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` across `.docx`, `.xlsx`, `.pptx`, and `.pdf` target and trap files.
+- [x] Task: Update `tests/test_pipeline.py` with failing assertions for rich multi-section `.docx`, `.pptx`, `.pdf`, and multi-sheet `.xlsx` outputs (`README`, `Summary`, `Charts`, and operational rows). (0daded1)
+  - [x] Assert that `.docx` files contain multi-section headings, a 4-column risk table, deep text fact placement (`unit_index >= 6`), and captioned crisp chart images.
+  - [x] Assert that `.pptx` files use `16:9` widescreen layout, title and agenda slides, section slides, speaker notes, and deep fact placement (`slide >= 6`).
+  - [x] Assert that `.pdf` files use `reportlab.platypus.SimpleDocTemplate` with A4 page headers, financial tables, and deep fact placement (`page >= 6`).
+  - [x] Assert that `.xlsx` files contain `README`, `Summary`, `Charts`, and operational data rows and pass `worldloom.native_artifacts.inspect_artifact` and `bigloom qualify` with zero violations.
+- [~] Task: Upgrade `src/bigloom/build.py` to use `src/bigloom/charts.py` and `src/bigloom/prose_writer.py` across `.docx`, `.xlsx`, `.pptx`, and `.pdf` target and trap files.
   - [ ] Replace `_make_chart_png` and the stub renderers (`_render_docx`, `_render_xlsx`, `_render_pptx`, `_render_pdf`) in `src/bigloom/build.py`.
   - [ ] Keep `ManifestEntry`, `cases.json`, and `evals.csv` compatible with `bigloom queries` and `bigloom qualify`.
 - [ ] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`).
