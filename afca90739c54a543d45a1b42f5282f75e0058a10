@@ -1,0 +1,1 @@
+Task: Upgrade src/bigloom/build.py to use src/bigloom/charts.py and src/bigloom/prose_writer.py across .docx, .xlsx, .pptx, and .pdf target and trap files. All 58 tests pass with 96% coverage and 0 ruff errors.
