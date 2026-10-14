@@ -43,7 +43,7 @@
 
 ---
 
-- [ ] **Track: Rich Multi-Format Document, Chart, and Workbook Synthesis (`bigloom build`)**
+- [~] **Track: Rich Multi-Format Document, Chart, and Workbook Synthesis (`bigloom build`)**
   *Link: [./tracks/rich_multiformat_synthesis_20261014/index.md](./tracks/rich_multiformat_synthesis_20261014/index.md)*
 
 
