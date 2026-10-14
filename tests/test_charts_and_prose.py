@@ -5,7 +5,6 @@ from __future__ import annotations
 import io
 import random
 
-import pytest
 from PIL import Image
 
 from bigloom.charts import (
@@ -13,6 +12,7 @@ from bigloom.charts import (
     ChartContext,
     FigurePlate,
     encode_figure_tight,
+    figure_count_for_target,
     make_chart_figures,
 )
 from bigloom.prose_writer import (
@@ -20,6 +20,7 @@ from bigloom.prose_writer import (
     RISKS,
     ProseCorpus,
     Writer,
+    format_money,
     sheet_definition,
 )
 
@@ -106,14 +107,24 @@ def test_encode_figure_tight_hits_byte_budget_without_static() -> None:
         printed_value="63.19%",
     )
     figures = make_chart_figures(ctx, count=2, preferred_kinds=["line", "memo"])
+    scales: dict[int, float] = {}
     for fig in figures:
-        encode_figure_tight(fig, target_bytes=220_000, seed=101)
+        encode_figure_tight(fig, target_bytes=220_000, seed=101, scales=scales)
         assert len(fig.data) >= 120_000
         decoded = Image.open(io.BytesIO(fig.data))
         assert decoded.size == fig.size
-        # Top header bar pixel must remain close to the theme color, not random static.
-        r, g, b = decoded.getpixel((100, 8))
+        # Top header bar pixel at y=1 must remain close to the theme color, not random static.
+        r, _g, b = decoded.getpixel((decoded.width // 2, 1))
         assert b > r
+
+    # Small budget path (< 90 KB) encodes cleanly without grain
+    small_data = encode_figure_tight(figures[0], target_bytes=24_000, seed=101, scales=scales)
+    assert len(small_data) > 1_000
+    assert figure_count_for_target(24_000) == 1
+    assert figure_count_for_target(2 * 1024 * 1024) >= 2
+    assert figure_count_for_target(20 * 1024 * 1024) >= 4
+    assert figure_count_for_target(200 * 1024 * 1024) >= 12
+    assert format_money(14_250.0, "SGD") == "SGD 14,250k"
 
 
 def test_writer_and_sheet_definitions_ground_in_corpus() -> None:
