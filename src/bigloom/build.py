@@ -56,6 +56,7 @@ from .prose_writer import (
     format_money,
     sheet_definition,
 )
+from .queries import generate_queries
 
 DEFAULT_TOPICS = (
     "Project Aurora Sovereign Grid",
@@ -66,6 +67,14 @@ DEFAULT_TOPICS = (
     "Project Falcon Cryo Substation",
     "Project Gemini Harbor Microgrid",
     "Project Helios Salt Cavern",
+    "Project Icarus Orbital Relay",
+    "Project Janus Quantum Gateway",
+    "Project Kronos Tensor Fabric",
+    "Project Lyra Coastal Sensor",
+    "Project Merlion Vector Vault",
+    "Project Nimbus Edge Mesh",
+    "Project Orion Maritime Twin",
+    "Project Pegasus Transit Core",
 )
 
 SHEET_KINDS: tuple[str, ...] = ("budget", "procurement", "pipeline", "auth")
@@ -212,13 +221,10 @@ def _resolve_world_context(
     company_name = world.company.name
     currency = (world.company.currency or "SGD").strip().upper()
     topics: list[str] = [
-        f"{company_name} {bu.name} Division ({DEFAULT_TOPICS[idx % len(DEFAULT_TOPICS)]})"
-        for idx, bu in enumerate(world.business_units)
+        f"{company_name} {bu.name} Division" for bu in world.business_units
     ]
     if not topics:
-        topics = [
-            f"{company_name} Enterprise Operations ({t})" for t in DEFAULT_TOPICS
-        ]
+        topics = [f"{company_name} Enterprise Operations"]
 
     cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
     sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
@@ -961,11 +967,15 @@ def build_corpus(
             typed_fmt: Literal["docx", "xlsx", "pptx", "pdf"] = fmt  # type: ignore[assignment]
 
             base_topic = topics[item_counter % len(topics)]
+            codename = DEFAULT_TOPICS[item_counter % len(DEFAULT_TOPICS)]
             theme = THEME_PALETTE[item_counter % len(THEME_PALETTE)]
             sheet_kind = SHEET_KINDS[item_counter % len(SHEET_KINDS)]
             item_counter += 1
             file_id = f"bl-{item_counter:03d}-{fmt}-{size_tag}"
-            topic = f"{base_topic} Unit-{item_counter:03d}"
+            if codename not in base_topic:
+                topic = f"{base_topic} ({codename}) Unit-{item_counter:03d}"
+            else:
+                topic = f"{base_topic} Unit-{item_counter:03d}"
             period = "FY2026"
             distractor_period = "FY2025"
 
@@ -1051,4 +1061,5 @@ def build_corpus(
     manifest_path = out_dir / "manifest.jsonl"
     manifest_lines = [entry.model_dump_json() for entry in entries]
     manifest_path.write_text("\n".join(manifest_lines) + "\n", encoding="utf-8")
+    generate_queries(manifest_path, out_dir / "cases.json")
     return entries
