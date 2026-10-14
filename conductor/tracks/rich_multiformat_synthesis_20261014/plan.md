@@ -10,7 +10,7 @@
   - [x] Port `Writer`, `SENTENCES`, `RISKS`, `MITIGATIONS`, and the 4 operational Excel sheet definitions (`budget`, `procurement`, `pipeline`, `auth`) into `src/bigloom/prose_writer.py`.
 - [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (43fe367)
 
-## Phase 2: Rich Multi-Format Renderers in `src/bigloom/build.py` and Pipeline Qualification
+## Phase 2: Rich Multi-Format Renderers in `src/bigloom/build.py` and Pipeline Qualification [checkpoint: afca907]
 - [x] Task: Update `tests/test_pipeline.py` with failing assertions for rich multi-section `.docx`, `.pptx`, `.pdf`, and multi-sheet `.xlsx` outputs (`README`, `Summary`, `Charts`, and operational rows). (0daded1)
   - [x] Assert that `.docx` files contain multi-section headings, a 4-column risk table, deep text fact placement (`unit_index >= 6`), and captioned crisp chart images.
   - [x] Assert that `.pptx` files use `16:9` widescreen layout, title and agenda slides, section slides, speaker notes, and deep fact placement (`slide >= 6`).
@@ -20,4 +20,4 @@
   - [x] Replace `_make_chart_png` and the stub renderers (`_render_docx`, `_render_xlsx`, `_render_pptx`, `_render_pdf`) in `src/bigloom/build.py`.
   - [x] Keep `ManifestEntry`, `cases.json`, and `evals.csv` compatible with `bigloom queries` and `bigloom qualify`.
 - [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (afca907)
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (afca907)
