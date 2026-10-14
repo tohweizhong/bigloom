@@ -41,5 +41,11 @@
 - [x] **Track: Unified Multi-Format Large-File Pipeline (`bigloom build` and `bigloom init`)**
   *Link: [./tracks/unified_pipeline_20261010/index.md](./tracks/unified_pipeline_20261010/index.md)*
 
+---
+
+- [ ] **Track: Rich Multi-Format Document, Chart, and Workbook Synthesis (`bigloom build`)**
+  *Link: [./tracks/rich_multiformat_synthesis_20261014/index.md](./tracks/rich_multiformat_synthesis_20261014/index.md)*
+
+
 
 
