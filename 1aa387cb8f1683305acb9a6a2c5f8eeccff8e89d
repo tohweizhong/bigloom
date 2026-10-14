@@ -1,0 +1,1 @@
+Task: Write failing unit tests in tests/test_charts_and_prose.py. Added Red-phase unit tests covering all 13 chart drawers, encode_figure_tight, Writer prose generation, and sheet_definition.
