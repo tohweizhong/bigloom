@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import calendar
-import itertools
 import random
 import re
 from collections.abc import Callable
@@ -206,9 +205,13 @@ def _extract_world_pools(world: World) -> dict[str, object]:
     skus: list[tuple[str, str, str, float]] = [
         (sku.id, sku.name, sku.category, float(sku.unit_price)) for sku in md.skus
     ]
+    bt_rng = WlRng(int(getattr(w, "seed", 42) or 42)).derive("brand_tokens")
+    quals = bt_rng.derive("qualifiers").shuffled(wl_masterdata._VOCAB["sku_qualifiers"])
+    nouns = bt_rng.derive("nouns").shuffled(wl_masterdata._VOCAB["sku_nouns"])
     brand_tokens: list[str] = [
-        f"{first} {sku_name}"
-        for first, (_, sku_name, _, _) in zip(itertools.cycle(wl_names.COMPANY_FIRST), skus)
+        f"{wl_names.COMPANY_FIRST[i % len(wl_names.COMPANY_FIRST)]} "
+        f"{quals[i % len(quals)]} {nouns[i % len(nouns)]}"
+        for i in range(max(len(wl_names.COMPANY_FIRST), 32))
     ]
 
     facts_by_id = {f.id: f for f in w.facts}
