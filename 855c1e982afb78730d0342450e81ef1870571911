@@ -1,0 +1,1 @@
+Task: Add failing unit tests in tests/test_charts_and_prose.py asserting that prose, Excel sheets, and chart labels use dynamic WorldLoom entities with zero hardcoded government acronyms.
