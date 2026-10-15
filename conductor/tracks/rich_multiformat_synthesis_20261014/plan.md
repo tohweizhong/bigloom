@@ -22,8 +22,8 @@
 - [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (afca907)
 - [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (afca907)
 
-## Phase 3: Domain-Neutral WorldLoom Entity Generalization [checkpoint: 362dcb4]
-- [x] Task: Add failing unit tests in `tests/test_charts_and_prose.py` asserting that prose, Excel sheets, and chart labels use dynamic WorldLoom entities with zero hardcoded government acronyms. (855c1e9)
-- [x] Task: Generalize `src/bigloom/prose_writer.py`, `src/bigloom/charts.py`, and `src/bigloom/build.py` to populate divisions, counterparties, systems, and people dynamically from the active WorldLoom world. (362dcb4)
-- [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (362dcb4)
-- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (362dcb4)
+## Phase 3: Domain-Neutral WorldLoom Entity Generalization [checkpoint: 82cf422]
+- [x] Task: Add failing unit tests in `tests/test_charts_and_prose.py` asserting that prose, Excel sheets, and chart labels use dynamic WorldLoom entities with zero hardcoded pools. (82cf422)
+- [x] Task: Generalize `src/bigloom/prose_writer.py`, `src/bigloom/charts.py`, and `src/bigloom/build.py` to derive all entity, narrative, risk, and chart pools as byproducts of WorldLoom (`World`, `ComposedProvider`, `corpus_locale`, `masterdata.generate`). (82cf422)
+- [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (82cf422)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (82cf422)
