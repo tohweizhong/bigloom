@@ -146,3 +146,74 @@ def test_writer_and_sheet_definitions_ground_in_corpus() -> None:
         assert 0 <= probe_col < len(cols)
         assert probe_name
         assert noun
+
+
+def test_domain_neutral_prose_and_charts_exclude_public_sector_terms() -> None:
+    """Verify private-sector ProseCorpus generates zero hardcoded government acronyms."""
+    corpus = ProseCorpus(
+        company="Junipera Banking Group",
+        currency="USD",
+        periods=["FY2025", "FY2026"],
+        names={
+            "BU-01": "Retail Banking",
+            "BU-02": "Business Banking",
+            "BU-03": "Wealth Management",
+            "BU-04": "Institutional Banking",
+            "CAT-01": "Core Deposits",
+            "CAT-02": "Commercial Lending",
+        },
+        revenue={
+            ("BU-01", "FY2025"): (14_250.0, 13_800.0),
+            ("BU-02", "FY2026"): (22_910.0, 21_500.0),
+        },
+        units=["BU-01", "BU-02", "BU-03", "BU-04"],
+        categories=["CAT-01", "CAT-02"],
+        people=[
+            ("Elena Rostova", "Managing Director, Retail Banking"),
+            ("Marcus Vance", "Head of Core Deposits"),
+        ],
+        systems=["Core Ledger Platform", "Treasury Risk Engine", "Mobile Banking Gateway"],
+        sites=["One Marina Financial Tower", "Harbourfront Operations Centre"],
+    )
+    rng = random.Random(123)
+    writer = Writer(rng, corpus)
+    prose_block = writer.paragraph(n=40)
+
+    forbidden_gov_terms = (
+        "GeBIZ",
+        "IM8",
+        "SHIP-HATS",
+        "SGTS",
+        "Singpass",
+        "LifeSG",
+        "TechPass",
+        "Myinfo",
+        "NRIC",
+        "CPF Board",
+        "IRAS",
+        "SkillsFuture",
+    )
+    for term in forbidden_gov_terms:
+        assert term not in prose_block, f"Found hardcoded public-sector term '{term}' in prose"
+
+    for kind in ("budget", "procurement", "pipeline", "auth"):
+        cols, make_row, *_ = sheet_definition(kind, corpus)
+        joined_rows = " ".join(
+            str(cell) for i in range(1, 25) for cell in [*cols, *make_row(rng, i)]
+        )
+        for term in forbidden_gov_terms:
+            assert term not in joined_rows, f"Found '{term}' in {kind} sheet"
+
+    ctx = ChartContext(
+        rng=rng,
+        corpus=corpus,
+        title="Junipera Banking Group FY2026 Audit Report",
+        date="15 Oct 2026",
+        theme=(0, 84, 147),
+        chart_title="Junipera Banking Group Q4 Efficiency",
+        printed_value="44.12%",
+    )
+    figs = make_chart_figures(ctx, count=13, preferred_kinds=list(CHART_KINDS))
+    for fig in figs:
+        for term in forbidden_gov_terms:
+            assert term not in fig.caption, f"Found '{term}' in chart caption '{fig.caption}'"

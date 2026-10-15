@@ -11,7 +11,7 @@ Replace the stub document renderers and static-noise image generator in `src/big
 
 2. **Grounded Multi-Paragraph Prose and Tables (`src/bigloom/prose_writer.py`)**:
    - Port the deterministic `Writer` prose generator and templates from `make_large_files.py`.
-   - Ground prose sentences, risk tables, and financial overview tables in WorldLoom entities (`units`, `categories`, `people`, `systems`, `sites`, `revenue`, and `currency`).
+   - Ground prose sentences, risk tables, chart labels, and financial overview tables in domain-neutral WorldLoom entities (`units`, `categories`, `part_labels`, `vendors`, `people`, `systems`, `sites`, `revenue`, and `currency`) with zero hardcoded government acronyms (`GeBIZ`, `IM8`, `SHIP-HATS`, `SGTS`, `Singpass`, `LifeSG`, `Myinfo`, `NRIC`).
 
 3. **Rich Multi-Format Document Renderers (`src/bigloom/build.py`)**:
    - **`.docx`**: Render multi-section Word documents with headers, footers, author metadata, synthetic test marking, a 4-column risk mitigation table, a financial overview section at paragraph index `>= 6` containing the golden or canary text fact, and captioned figure plates.

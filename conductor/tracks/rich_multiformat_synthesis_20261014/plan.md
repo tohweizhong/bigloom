@@ -21,3 +21,9 @@
   - [x] Keep `ManifestEntry`, `cases.json`, and `evals.csv` compatible with `bigloom queries` and `bigloom qualify`.
 - [x] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`). (afca907)
 - [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`). (afca907)
+
+## Phase 3: Domain-Neutral WorldLoom Entity Generalization
+- [~] Task: Add failing unit tests in `tests/test_charts_and_prose.py` asserting that prose, Excel sheets, and chart labels use dynamic WorldLoom entities with zero hardcoded government acronyms.
+- [ ] Task: Generalize `src/bigloom/prose_writer.py`, `src/bigloom/charts.py`, and `src/bigloom/build.py` to populate divisions, counterparties, systems, and people dynamically from the active WorldLoom world.
+- [ ] Task: Run full test suite (`pytest --cov=src/bigloom`), linter (`ruff check .`), and git hygiene check (`check_git_hygiene.py .`).
+- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`).
