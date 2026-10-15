@@ -159,10 +159,10 @@ def _default_prose_corpus(currency: str = "SGD") -> ProseCorpus:
             ("Vikram Menon", "Lead, Site Reliability Engineering"),
         ],
         systems=[
-            "Singpass Auth Core",
-            "SHIP-HATS Pipeline",
-            "GCC Landing Zone",
-            "SGTS Observability Stack",
+            "Enterprise Auth Core",
+            "Automated CI/CD Pipeline",
+            "Cloud Landing Zone",
+            "Central Observability Stack",
         ],
         sites=[
             "Mapletree Business City",
@@ -286,6 +286,20 @@ def _resolve_world_context(
             revenue[(u_id, "FY2025")] = (12_400.0 * idx, 12_000.0 * idx)
             revenue[(u_id, "FY2026")] = (14_150.0 * idx, 13_750.0 * idx)
 
+    part_labels: list[str] = []
+    for label in (
+        [bu.name for bu in world.business_units]
+        + [cc.name for cc in world.cost_centres]
+        + [s.name for s in world.sites]
+    ):
+        if label and label not in part_labels:
+            part_labels.append(label)
+    vendors = [
+        cp.name
+        for cp in getattr(world, "counterparties", ())
+        if getattr(cp, "name", "")
+    ]
+
     prose_corpus = ProseCorpus(
         company=company_name,
         currency=currency,
@@ -297,6 +311,8 @@ def _resolve_world_context(
         people=people,
         systems=systems,
         sites=sites,
+        part_labels=part_labels,
+        vendors=vendors,
     )
 
     return _WorldContext(

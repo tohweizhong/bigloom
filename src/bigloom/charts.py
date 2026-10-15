@@ -179,6 +179,10 @@ class ChartContext:
         return choice
 
     def person(self) -> str:
+        for name, _ in self.corpus.people:
+            if name not in self.used:
+                self.used.add(name)
+                return name
         name = "Tan Wei Jie"
         for _ in range(50):
             name = f"{self.rng.choice(GIVEN)} {self.rng.choice(SURNAMES)}"
@@ -188,7 +192,13 @@ class ChartContext:
         return name
 
     def agencies(self, n: int) -> list[str]:
-        return self.rng.sample(AGENCIES, min(n, len(AGENCIES)))
+        pool = list(self.corpus.effective_part_labels())
+        for fallback in AGENCIES:
+            if len(pool) >= max(n, 8):
+                break
+            if fallback not in pool:
+                pool.append(fallback)
+        return self.rng.sample(pool, min(n, len(pool)))
 
     @property
     def short(self) -> str:
@@ -256,12 +266,12 @@ def img_line(ctx: ChartContext) -> tuple[Image.Image, str, str]:
 
 
 BAR_METRICS = [
-    ("Digital services launched by agency", "services", 3, 45),
-    ("Officers onboarded by agency", "officers", 150, 4800),
-    ("Open audit findings by agency", "findings", 2, 36),
-    ("Workloads migrated to GCC by agency", "workloads", 8, 320),
-    ("Support tickets raised by agency", "tickets", 90, 2600),
-    ("Staff with a cloud certification by agency", "staff", 12, 460),
+    ("Digital services launched by division", "services", 3, 45),
+    ("Staff onboarded by division", "staff", 150, 4800),
+    ("Open audit findings by division", "findings", 2, 36),
+    ("Workloads migrated to cloud by division", "workloads", 8, 320),
+    ("Support tickets raised by division", "tickets", 90, 2600),
+    ("Staff with a cloud certification by division", "staff", 12, 460),
 ]
 
 
@@ -429,11 +439,11 @@ def img_stacked(ctx: ChartContext) -> tuple[Image.Image, str, str]:
 
 
 HEAT_SETS = [
-    ("Open vulnerability findings by agency", ["Critical", "High", "Medium", "Low"]),
-    ("IM8 control gaps by agency", ["Access", "Logging", "Encryption", "Backup", "Patching"]),
-    ("Failed logins by agency and hour band", ["00-06", "06-12", "12-18", "18-24"]),
+    ("Open vulnerability findings by division", ["Critical", "High", "Medium", "Low"]),
+    ("Security control gaps by division", ["Access", "Logging", "Encryption", "Backup", "Patching"]),
+    ("Failed logins by division and hour band", ["00-06", "06-12", "12-18", "18-24"]),
     ("Sensor faults by zone and week", ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"]),
-    ("Exercise detections by agency and phase", ["Recon", "Access", "Lateral", "Exfil"]),
+    ("Exercise detections by division and phase", ["Recon", "Access", "Lateral", "Exfil"]),
 ]
 
 
@@ -483,7 +493,7 @@ def img_heatmap(ctx: ChartContext) -> tuple[Image.Image, str, str]:
 
 KPI_APPS = [
     "Service Health Console",
-    "GCC Cost Explorer",
+    "Cloud Cost Explorer",
     "Identity Operations Console",
     "Developer Portal Analytics",
     "Sensor Platform Monitor",
@@ -761,7 +771,7 @@ def img_org(ctx: ChartContext) -> tuple[Image.Image, str, str]:
 
 STICKY_TEXT: dict[str, list[str]] = {
     "Pain points": [
-        "Re-enter NRIC on three forms",
+        "Re-enter customer ID on three forms",
         "No status after I submit",
         "Upload fails on large PDF",
         "SMS OTP arrives late",
@@ -771,7 +781,7 @@ STICKY_TEXT: dict[str, list[str]] = {
         "Payment page times out",
     ],
     "Ideas": [
-        "Pre-fill from Myinfo",
+        "Pre-fill from customer profile",
         "Show a progress tracker",
         "One reminder a week",
         "Chat help in four languages",
@@ -779,7 +789,7 @@ STICKY_TEXT: dict[str, list[str]] = {
     ],
     "Questions": [
         "Who owns the data?",
-        "Can agencies share consent?",
+        "Can divisions share consent?",
         "What is the budget for phase 2?",
         "Offline counter option?",
     ],
@@ -953,10 +963,10 @@ def img_floor(ctx: ChartContext) -> tuple[Image.Image, str, str]:
 
 
 PHONE_APPS = [
-    ("LifeSG", ["Baby Bonus claim", "Infant care subsidy", "Birth registration"]),
-    ("Singpass", ["Face verification", "Myinfo consent", "Device binding"]),
-    ("SG Sensors Field", ["Sensor install check", "Gateway pairing", "Site photo"]),
-    ("TechPass Mobile", ["Access request", "Device posture", "Token reset"]),
+    ("Customer Portal", ["Order status check", "Loyalty claim", "Account registration"]),
+    ("Enterprise SSO", ["Biometric verification", "Profile consent", "Device binding"]),
+    ("Field Telemetry", ["Sensor install check", "Gateway pairing", "Site photo"]),
+    ("Workspace Access", ["Access request", "Device posture", "Token reset"]),
 ]
 
 
