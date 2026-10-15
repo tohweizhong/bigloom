@@ -10,8 +10,8 @@ Replace the stub document renderers and static-noise image generator in `src/big
    - Port the `encode_tight` byte-budget encoder using `Image.LANCZOS` scaling and a 12 percent noise grain (`Image.effect_noise` blended at `alpha=0.12`) so figures stay crisp and readable while reaching the target file size.
 
 2. **Grounded Multi-Paragraph Prose and Tables (`src/bigloom/prose_writer.py`)**:
-   - Port the deterministic `Writer` prose generator and templates from `make_large_files.py`.
-   - Ground prose sentences, risk tables, chart labels, and financial overview tables in domain-neutral WorldLoom entities (`units`, `categories`, `part_labels`, `vendors`, `people`, `systems`, `sites`, `revenue`, and `currency`) with zero hardcoded government acronyms (`GeBIZ`, `IM8`, `SHIP-HATS`, `SGTS`, `Singpass`, `LifeSG`, `Myinfo`, `NRIC`).
+   - Derive all prose sentences, names, divisions, vendors, services, roles, fiscal months, quarters, section headings, risks, mitigations, and chart pools directly from `WorldLoom` (`World`, `corpus_locale(world)`, `ComposedProvider.for_world(world)`, `world.artifact_irs`, `world._masterdata`, `world.events`, `world.lore`, `world.facts`, and `worldloom.divisions.POOLS`) with zero hardcoded static lists.
+   - Ensure zero hardcoded government acronyms (`GeBIZ`, `IM8`, `SHIP-HATS`, `SGTS`, `Singpass`, `LifeSG`, `Myinfo`, `NRIC`) appear in private-sector corpora.
 
 3. **Rich Multi-Format Document Renderers (`src/bigloom/build.py`)**:
    - **`.docx`**: Render multi-section Word documents with headers, footers, author metadata, synthetic test marking, a 4-column risk mitigation table, a financial overview section at paragraph index `>= 6` containing the golden or canary text fact, and captioned figure plates.

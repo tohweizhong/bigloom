@@ -45,37 +45,15 @@ from .charts import (
 )
 from .models import ManifestEntry
 from .prose_writer import (
-    DEFAULT_AGENCY,
-    DEFAULT_SECTIONS,
     MARKING,
-    MITIGATIONS,
-    RISKS,
     THEME_PALETTE,
     ProseCorpus,
     Writer,
+    default_world,
     format_money,
     sheet_definition,
 )
 from .queries import generate_queries
-
-DEFAULT_TOPICS = (
-    "Project Aurora Sovereign Grid",
-    "Project Borealis Thermal Loop",
-    "Project Cygnus Subsea Cable",
-    "Project Draco Vault Storage",
-    "Project Ecliptic Photonics Bus",
-    "Project Falcon Cryo Substation",
-    "Project Gemini Harbor Microgrid",
-    "Project Helios Salt Cavern",
-    "Project Icarus Orbital Relay",
-    "Project Janus Quantum Gateway",
-    "Project Kronos Tensor Fabric",
-    "Project Lyra Coastal Sensor",
-    "Project Merlion Vector Vault",
-    "Project Nimbus Edge Mesh",
-    "Project Orion Maritime Twin",
-    "Project Pegasus Transit Core",
-)
 
 SHEET_KINDS: tuple[str, ...] = ("budget", "procurement", "pipeline", "auth")
 DATA_SHEET_PREFIX: dict[str, str] = {
@@ -96,10 +74,10 @@ class _WorldContext:
     prose_corpus: ProseCorpus
 
 
-def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
+def _extract_seed_topics(corpus_dir: Path | None, fallback_topics: Sequence[str] = ()) -> list[str]:
     """Read topic phrases from markdown or text files in corpus_dir when provided."""
     if corpus_dir is None or not corpus_dir.exists():
-        return list(DEFAULT_TOPICS)
+        return list(fallback_topics)
     found: list[str] = []
     for path in sorted(corpus_dir.rglob("*")):
         if not path.is_file() or path.suffix.lower() not in {".md", ".txt"}:
@@ -109,7 +87,7 @@ def _extract_seed_topics(corpus_dir: Path | None) -> list[str]:
             if len(cleaned) >= 8:
                 found.append(cleaned[:60])
                 break
-    return found + [t for t in DEFAULT_TOPICS if t not in found]
+    return found + [t for t in fallback_topics if t not in found]
 
 
 def _configure_blueprint(
@@ -126,51 +104,6 @@ def _configure_blueprint(
         if blueprint.domain_name != "retail":
             blueprint = replace(blueprint, calendar_name=None, estate_size=None)
     return blueprint
-
-
-def _default_prose_corpus(currency: str = "SGD") -> ProseCorpus:
-    return ProseCorpus(
-        company=DEFAULT_AGENCY,
-        currency=currency,
-        periods=["FY2025", "FY2026"],
-        names={
-            "BU-01": "Smart Nation Platform Solutions",
-            "BU-02": "Cloud and Data Infrastructure",
-            "BU-03": "Cybersecurity Operations",
-            "CAT-01": "Identity and Authentication",
-            "CAT-02": "Whole-of-Government Cloud",
-            "CAT-03": "Developer Platform Services",
-        },
-        revenue={
-            ("BU-01", "FY2025"): (14_250.0, 13_800.0),
-            ("BU-01", "FY2026"): (16_480.0, 15_900.0),
-            ("BU-02", "FY2025"): (21_120.0, 20_500.0),
-            ("BU-02", "FY2026"): (24_650.0, 23_900.0),
-            ("CAT-01", "FY2025"): (8_420.0, 8_100.0),
-            ("CAT-02", "FY2026"): (19_300.0, 18_950.0),
-        },
-        units=["BU-01", "BU-02", "BU-03"],
-        categories=["CAT-01", "CAT-02", "CAT-03"],
-        people=[
-            ("Tan Wei Jie", "Director, Platform Engineering"),
-            ("Lim Hui Ling", "Deputy Director, Cloud Operations"),
-            ("Arun Kumar", "Principal Architect, Identity"),
-            ("Nur Aisyah Rahman", "Senior Director, Service Design"),
-            ("Vikram Menon", "Lead, Site Reliability Engineering"),
-        ],
-        systems=[
-            "Enterprise Auth Core",
-            "Automated CI/CD Pipeline",
-            "Cloud Landing Zone",
-            "Central Observability Stack",
-        ],
-        sites=[
-            "Mapletree Business City",
-            "Sandcrawler Building",
-            "Punggol Digital District",
-            "Changi Business Park",
-        ],
-    )
 
 
 def _resolve_world_context(
@@ -200,9 +133,9 @@ def _resolve_world_context(
             world = blueprint.build().world
         else:
             world = World.load(world_pack)
-    elif domain:
+    elif domain or locale or facets:
         blueprint = _configure_blueprint(
-            sdk.company(domain.strip().lower(), seed=seed),
+            sdk.company((domain or "retail").strip().lower(), seed=seed),
             locale=locale,
             facets=facets,
         )
@@ -211,20 +144,17 @@ def _resolve_world_context(
         world = World.load(corpus_dir)
 
     if world is None:
-        return _WorldContext(
-            topics=tuple(_extract_seed_topics(corpus_dir)),
-            currency="SGD",
-            governance_line="All telemetry streams are logged prior to appendix verification.",
-            prose_corpus=_default_prose_corpus("SGD"),
-        )
+        world = default_world()
 
-    company_name = world.company.name
-    currency = (world.company.currency or "SGD").strip().upper()
-    topics: list[str] = [
-        f"{company_name} {bu.name} Division" for bu in world.business_units
+    prose_corpus = ProseCorpus.from_world(world)
+    company_name = prose_corpus.company
+    currency = prose_corpus.currency
+    wl_topics: list[str] = [
+        f"{company_name} {bu.name}" for bu in world.business_units
+    ] + [
+        f"{company_name} {label}" for label in prose_corpus.effective_part_labels()
     ]
-    if not topics:
-        topics = [f"{company_name} Enterprise Operations"]
+    topics = _extract_seed_topics(corpus_dir, wl_topics)
 
     cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
     sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
@@ -240,80 +170,6 @@ def _resolve_world_context(
     if fact_tags:
         details.append(f"Canonical Facts: {', '.join(fact_tags)}")
     governance_line = " | ".join(details) + "."
-
-    names: dict[str, str] = {}
-    units: list[str] = []
-    for bu in world.business_units:
-        names[bu.id] = bu.name
-        units.append(bu.id)
-    categories: list[str] = []
-    for cat in getattr(world, "categories", ()):
-        names[cat.id] = cat.name
-        categories.append(cat.id)
-    for cc in world.cost_centres:
-        names[cc.id] = cc.name
-        if not categories:
-            categories.append(cc.id)
-
-    people = [
-        (p.name, p.title)
-        for p in getattr(world, "people", ())
-        if getattr(p, "function", "") != "Merchandising"
-    ] or _default_prose_corpus(currency).people
-    systems = [s.name for s in world.systems[:4]] or ["Core Enterprise Platform"]
-    sites = [s.name for s in world.sites] or ["Headquarters"]
-
-    revenue_slots: dict[tuple[str, str], list[float | None]] = {}
-    for fact in world.facts:
-        kind = getattr(fact, "kind", "")
-        if kind not in ("financial.revenue.actual", "financial.revenue.budget"):
-            continue
-        val = getattr(fact, "value", None)
-        amt = val.get("amount") if isinstance(val, Mapping) else val
-        period = getattr(fact, "period", None)
-        subject_id = getattr(fact, "subject", None)
-        if period and subject_id and isinstance(amt, (int, float)):
-            slot = revenue_slots.setdefault((str(subject_id), str(period)), [None, None])
-            slot[0 if kind.endswith("actual") else 1] = float(amt)
-    revenue: dict[tuple[str, str], tuple[float, float]] = {
-        k: (v[0], v[1])
-        for k, v in revenue_slots.items()
-        if v[0] is not None and v[1] is not None
-    }
-    if not revenue:
-        for idx, u_id in enumerate(units[:4] or ["BU-01", "BU-02"], 1):
-            names.setdefault(u_id, f"{company_name} Unit {idx}")
-            revenue[(u_id, "FY2025")] = (12_400.0 * idx, 12_000.0 * idx)
-            revenue[(u_id, "FY2026")] = (14_150.0 * idx, 13_750.0 * idx)
-
-    part_labels: list[str] = []
-    for label in (
-        [bu.name for bu in world.business_units]
-        + [cc.name for cc in world.cost_centres]
-        + [s.name for s in world.sites]
-    ):
-        if label and label not in part_labels:
-            part_labels.append(label)
-    vendors = [
-        cp.name
-        for cp in getattr(world, "counterparties", ())
-        if getattr(cp, "name", "")
-    ]
-
-    prose_corpus = ProseCorpus(
-        company=company_name,
-        currency=currency,
-        periods=sorted({p for _, p in revenue}) or ["FY2025", "FY2026"],
-        names=names,
-        revenue=revenue,
-        units=units or ["BU-01"],
-        categories=categories or units or ["CAT-01"],
-        people=people,
-        systems=systems,
-        sites=sites,
-        part_labels=part_labels,
-        vendors=vendors,
-    )
 
     return _WorldContext(
         topics=tuple(topics),
@@ -372,6 +228,14 @@ def _build_encoded_figures(
     return figures
 
 
+def _document_sections(corpus: ProseCorpus) -> list[str]:
+    """Return 7 document section headings from corpus.sections with Financial overview at slot 4."""
+    others = [s for s in corpus.sections if s != "Financial overview"][:6]
+    while len(others) < 6:
+        others.append(f"Section {len(others) + 1}")
+    return [*others[:4], "Financial overview", *others[4:6]]
+
+
 def _plan_section_figures(
     sections: Sequence[str],
     figures: Sequence[FigurePlate],
@@ -425,12 +289,12 @@ def _render_docx(
     red.font.color.rgb = RGBColor(0xAA, 0, 0)
 
     w = Writer(rng, corpus)
-    sections = list(DEFAULT_SECTIONS)
+    sections = _document_sections(corpus)
     planned = _plan_section_figures(sections, figures)
     fig_no = 0
     text_unit_index = 6
 
-    for heading, sec_figs in zip(sections, planned):
+    for sec_idx, (heading, sec_figs) in enumerate(zip(sections, planned)):
         doc.add_heading(heading, level=1)
         if heading == "Financial overview":
             doc.add_paragraph(
@@ -449,20 +313,21 @@ def _render_docx(
                 )
             continue
 
-        if heading.startswith("Risk"):
+        if sec_idx == 5:
             table = doc.add_table(rows=1, cols=4)
             table.style = "Light Grid Accent 1"
             for cell, txt in zip(table.rows[0].cells, ["Risk", "Rating", "Owner", "Mitigation"]):
                 cell.text = txt
-            sample_count = min(4, len(RISKS))
-            for (risk, rating), mit in rng.sample(list(zip(RISKS, MITIGATIONS)), sample_count):
+            pairs = list(zip(corpus.risks, corpus.mitigations))
+            sample_count = min(4, len(pairs))
+            for (risk, rating), mit in rng.sample(pairs, sample_count):
                 row = table.add_row().cells
                 row[0].text = risk
                 row[1].text = rating
                 row[2].text = rng.choice(corpus.people)[0]
                 row[3].text = mit
 
-        doc.add_paragraph(w.paragraph())
+        doc.add_paragraph(f"{header_line} ({chart_title}) — {w.paragraph()}")
         for fig in sec_figs:
             fig_no += 1
             doc.add_paragraph(
@@ -659,7 +524,7 @@ def _render_pptx(
     )
     _band(s_title)
 
-    sections = list(DEFAULT_SECTIONS)
+    sections = _document_sections(corpus)
     s_agenda = prs.slides.add_slide(prs.slide_layouts[1])
     s_agenda.shapes.title.text = "Agenda"
     _bullets(s_agenda.placeholders[1].text_frame, sections, 20)
@@ -778,15 +643,20 @@ def _render_pdf(
         PageBreak(),
     ]
     w = Writer(rng, corpus)
-    sections = list(DEFAULT_SECTIONS)
+    sections = _document_sections(corpus)
     planned = _plan_section_figures(sections, figures)
     fig_no = 0
     text_unit_index = 6
 
     for heading, sec_figs in zip(sections, planned):
-        story.append(Paragraph(heading, styles["Heading1"]))
+        story.append(Paragraph(heading.replace("&", "&amp;"), styles["Heading1"]))
         if heading == "Financial overview":
-            story.append(Paragraph(fact_sentence, styles["Normal"]))
+            story.append(
+                Paragraph(
+                    fact_sentence.replace("&", "&amp;").replace(": ", ":<br/>"),
+                    styles["Normal"],
+                )
+            )
             rows = [
                 [
                     "Line of work",
@@ -983,7 +853,9 @@ def build_corpus(
             typed_fmt: Literal["docx", "xlsx", "pptx", "pdf"] = fmt  # type: ignore[assignment]
 
             base_topic = topics[item_counter % len(topics)]
-            codename = DEFAULT_TOPICS[item_counter % len(DEFAULT_TOPICS)]
+            codename = ctx.prose_corpus.brand_tokens[
+                item_counter % len(ctx.prose_corpus.brand_tokens)
+            ]
             theme = THEME_PALETTE[item_counter % len(THEME_PALETTE)]
             sheet_kind = SHEET_KINDS[item_counter % len(SHEET_KINDS)]
             item_counter += 1

@@ -217,3 +217,74 @@ def test_domain_neutral_prose_and_charts_exclude_public_sector_terms() -> None:
     for fig in figs:
         for term in forbidden_gov_terms:
             assert term not in fig.caption, f"Found '{term}' in chart caption '{fig.caption}'"
+
+
+def test_prose_and_charts_derive_all_pools_from_worldloom() -> None:
+    """Verify ProseCorpus, Writer, and ChartContext derive all pools from WorldLoom with zero hardcoded lists."""
+    from worldloom import sdk
+    from worldloom.render.values import corpus_locale
+
+    import bigloom.charts as charts_mod
+    import bigloom.prose_writer as pw_mod
+
+    for forbidden_const in ("GIVEN", "SURNAMES", "AGENCIES", "VENDOR_A", "VENDOR_B", "SENTENCES"):
+        assert not hasattr(pw_mod, forbidden_const), (
+            f"prose_writer must not hardcode {forbidden_const}"
+        )
+    for forbidden_chart_const in (
+        "LINE_METRICS",
+        "BAR_METRICS",
+        "DONUT_SETS",
+        "STACK_SETS",
+        "HEAT_SETS",
+        "KPI_APPS",
+        "KPI_TILES",
+        "GANTT_TASKS",
+        "SERVICES",
+        "ORG_ROLES",
+        "STICKY_TEXT",
+        "ROOMS",
+        "PHONE_APPS",
+    ):
+        assert not hasattr(charts_mod, forbidden_chart_const), (
+            f"charts must not hardcode {forbidden_chart_const}"
+        )
+
+    world = (
+        sdk.company("banking", seed=42)
+        .located("united_kingdom")
+        .master_data(vendors=12, customers=12, skus=12)
+        .build()
+        .episodes("2026-01", periods=2)
+        .world
+    )
+    loc = corpus_locale(world)
+    corpus = ProseCorpus.from_world(world)
+
+    assert corpus.company == world.company.name
+    assert corpus.currency == "GBP"
+    assert set(loc.given[:5]).issubset(set(corpus.given_names))
+    assert set(loc.family[:5]).issubset(set(corpus.surnames))
+    assert any(bu.name in corpus.effective_part_labels() for bu in world.business_units)
+    assert any(v.name in corpus.vendors for v in world._masterdata.vendors)
+    assert any(svc.name in corpus.services for svc in world.services)
+    assert len(corpus.narrated_sentences) >= 5
+    assert len(corpus.risks) >= 3
+    assert len(corpus.mitigations) >= 3
+
+    rng = random.Random(42)
+    writer = Writer(rng, corpus)
+    paragraph = writer.paragraph(n=6)
+    assert len(paragraph.split()) >= 35
+
+    ctx = ChartContext(
+        rng=rng,
+        corpus=corpus,
+        title=f"{corpus.company} Return Pack",
+        date="15 Oct 2026",
+        theme=(0, 84, 147),
+        chart_title="CET1 Ratio",
+        printed_value="12.40%",
+    )
+    figs = make_chart_figures(ctx, count=13, preferred_kinds=list(CHART_KINDS))
+    assert len(figs) == 13

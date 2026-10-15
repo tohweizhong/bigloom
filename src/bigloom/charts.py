@@ -1,4 +1,4 @@
-"""Rich high-resolution chart and diagram drawers and tight 12% grain byte encoder."""
+"""Rich high-resolution chart and diagram drawers grounded in WorldLoom entities."""
 
 from __future__ import annotations
 
@@ -12,15 +12,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from .prose_writer import (
-    AGENCIES,
-    FY_MONTHS,
-    GIVEN,
-    QUARTERS,
-    SHORT_MARK,
-    SURNAMES,
-    ProseCorpus,
-)
+from .prose_writer import SHORT_MARK, ProseCorpus
 
 FONT_DIR = Path("/usr/share/fonts/truetype/dejavu")
 GRAIN = 12
@@ -161,7 +153,7 @@ class FigurePlate:
 
 @dataclass
 class ChartContext:
-    """Per-document drawing context that prevents duplicate chart topics in one document."""
+    """Per-document drawing context backed by WorldLoom ProseCorpus entities."""
 
     rng: random.Random
     corpus: ProseCorpus
@@ -183,9 +175,11 @@ class ChartContext:
             if name not in self.used:
                 self.used.add(name)
                 return name
-        name = "Tan Wei Jie"
+        given_pool = self.corpus.given_names
+        surname_pool = self.corpus.surnames
+        name = f"{given_pool[0]} {surname_pool[0]}"
         for _ in range(50):
-            name = f"{self.rng.choice(GIVEN)} {self.rng.choice(SURNAMES)}"
+            name = f"{self.rng.choice(given_pool)} {self.rng.choice(surname_pool)}"
             if name not in self.used:
                 self.used.add(name)
                 return name
@@ -193,34 +187,94 @@ class ChartContext:
 
     def agencies(self, n: int) -> list[str]:
         pool = list(self.corpus.effective_part_labels())
-        for fallback in AGENCIES:
-            if len(pool) >= max(n, 8):
-                break
-            if fallback not in pool:
-                pool.append(fallback)
         return self.rng.sample(pool, min(n, len(pool)))
 
     @property
     def short(self) -> str:
         return self.title.split("|")[0].split(":")[0].strip()[:48]
 
+    def line_metrics(self) -> list[tuple[str, str, int, int, int]]:
+        ccy = self.corpus.currency
+        nouns = self.corpus.measure_nouns
+        svcs = self.corpus.services
+        return [
+            (f"{n.capitalize()} trend", f"{ccy} thousand", 200, 950, 0)
+            for n in nouns[:6]
+        ] + [
+            (f"Throughput on {s}", "thousand events", 150, 800, 1)
+            for s in svcs[:4]
+        ]
 
-LINE_METRICS = [
-    ("Monthly active users", "thousand users", 300, 900, 0),
-    ("Successful logins", "million", 20, 60, 1),
-    ("Cloud spend", "SGD thousand", 1500, 6000, 0),
-    ("Helpdesk tickets resolved", "tickets", 6000, 20000, 0),
-    ("API calls through the API gateway", "million", 150, 800, 1),
-    ("Median page load time", "ms", 700, 1600, 0),
-    ("Open vulnerabilities", "findings", 80, 400, 0),
-    ("Officers trained", "officers", 200, 1500, 0),
-    ("Energy used by the data hall", "MWh", 300, 900, 0),
-]
+    def bar_metrics(self) -> list[tuple[str, str, int, int]]:
+        titles = self.corpus.chart_titles
+        nouns = self.corpus.measure_nouns
+        out = [(t, "units", 12, 460) for t in titles]
+        out.extend(
+            (f"{n.capitalize()} by division", "units", 8, 380)
+            for n in nouns[:6]
+        )
+        return out
+
+    def donut_sets(self) -> list[tuple[str, list[str]]]:
+        parts = self.corpus.effective_part_labels()
+        cats = [self.corpus.names.get(c, c) for c in self.corpus.categories] or parts[:6]
+        systems = self.corpus.systems[:6]
+        services = self.corpus.services[:6]
+        vendors = self.corpus.vendors[:6]
+        return [
+            ("Allocation by category", list(cats[:6])),
+            ("Allocation by division", list(parts[:6])),
+            ("Volume by platform system", list(systems[:6])),
+            ("Activity by service", list(services[:6])),
+            ("Spend by partner", list(vendors[:5])),
+        ]
+
+    def stack_sets(self) -> list[tuple[str, list[str], tuple[int, int]]]:
+        parts = self.corpus.effective_part_labels()
+        cats = [self.corpus.names.get(c, c) for c in self.corpus.categories] or parts[:4]
+        systems = self.corpus.systems[:4]
+        services = self.corpus.services[:4]
+        return [
+            ("Quarterly output by division", list(parts[:4]), (40, 420)),
+            ("Quarterly volume by category", list(cats[:4]), (50, 500)),
+            ("Quarterly events by system", list(systems[:4]), (80, 900)),
+            ("Quarterly runs by service", list(services[:4]), (100, 1200)),
+        ]
+
+    def heat_sets(self) -> list[tuple[str, list[str]]]:
+        cats = [self.corpus.names.get(c, c) for c in self.corpus.categories]
+        cols_a = cats[:5] if len(cats) >= 3 else self.corpus.effective_part_labels()[:5]
+        cols_b = self.corpus.systems[:5]
+        cols_c = self.corpus.services[:5]
+        cols_d = self.corpus.quarters
+        return [
+            ("Variance intensity by division and category", list(cols_a)),
+            ("Control coverage by division and system", list(cols_b)),
+            ("Service activity by division and service", list(cols_c)),
+            ("Quarterly review findings by division", list(cols_d)),
+        ]
+
+    def kpi_tiles(self) -> list[tuple[str, str, float, float]]:
+        ccy = self.corpus.currency
+        nouns = self.corpus.measure_nouns
+        tiles: list[tuple[str, str, float, float]] = [
+            (n.capitalize()[:28], "{:,.1f}", 15.0, 950.0)
+            for n in nouns[:8]
+        ]
+        tiles.extend(
+            [
+                (f"Period total ({ccy})", f"{ccy} {{:,.0f}}k", 300.0, 4200.0),
+                ("Service availability", "{:.2f}%", 99.1, 99.99),
+                ("Active records", "{:,.0f}", 1200.0, 48000.0),
+                ("Response latency", "{:.0f} ms", 140.0, 1200.0),
+            ]
+        )
+        return tiles
 
 
 def img_line(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    name, unit, lo, hi, dp = ctx.pick(LINE_METRICS)
+    name, unit, lo, hi, dp = ctx.pick(ctx.line_metrics())
     start = rng.uniform(lo, (lo + hi) / 2)
     trend = rng.uniform(-0.03, 0.07)
     vals = []
@@ -232,14 +286,15 @@ def img_line(ctx: ChartContext) -> tuple[Image.Image, str, str]:
             * rng.uniform(0.95, 1.05)
         )
         vals.append(round(v, dp))
-    title = f"{name} ({ctx.short}), FY2026"
+    period_label = ctx.corpus.periods[-1]
+    title = f"{name} ({ctx.short}), {period_label}"
     img, d = new_chart(
         2400,
         1600,
         title,
         f"{ctx.short}. Unit: {unit}.",
         ctx.theme,
-        "Operations data warehouse",
+        ctx.corpus.systems[0],
         ctx.chart_title,
         ctx.printed_value,
     )
@@ -257,7 +312,7 @@ def img_line(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         y = bottom - (bottom - top) * v / peak
         pts.append((x, y))
     d.line(pts, fill=ctx.theme, width=7, joint="curve")
-    for (x, y), v, m in zip(pts, vals, FY_MONTHS):
+    for (x, y), v, m in zip(pts, vals, ctx.corpus.fy_months):
         d.ellipse((x - 11, y - 11, x + 11, y + 11), fill="white", outline=ctx.theme, width=5)
         ctext(d, (x, y - 42), f"{v:,.{dp}f}", font(26, bold=True))
         ctext(d, (x, bottom + 34), m.replace(" 20", " '"), font(26))
@@ -265,19 +320,9 @@ def img_line(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, title, "PNG"
 
 
-BAR_METRICS = [
-    ("Digital services launched by division", "services", 3, 45),
-    ("Staff onboarded by division", "staff", 150, 4800),
-    ("Open audit findings by division", "findings", 2, 36),
-    ("Workloads migrated to cloud by division", "workloads", 8, 320),
-    ("Support tickets raised by division", "tickets", 90, 2600),
-    ("Staff with a cloud certification by division", "staff", 12, 460),
-]
-
-
 def img_bar(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    raw_name, unit, lo, hi = ctx.pick(BAR_METRICS)
+    raw_name, unit, lo, hi = ctx.pick(ctx.bar_metrics())
     name = f"{raw_name} ({ctx.short})"
     labels = ctx.agencies(8)
     vals = sorted((rng.randint(lo, hi) for _ in labels), reverse=True)
@@ -287,7 +332,7 @@ def img_bar(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         name,
         f"{ctx.short}. Unit: {unit}. As at {ctx.date}.",
         ctx.theme,
-        "Agency returns",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
@@ -298,8 +343,13 @@ def img_bar(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         y1 = top + (i + 1) * row - row * 0.18
         x1 = left + (right - left) * v / (max(vals) * 1.08)
         d.rectangle((left, y0, x1, y1), fill=shade(ctx.theme, 0.15 * (i % 3)))
-        w, h = text_size(d, lab, font(32))
-        d.text((left - 30 - w, (y0 + y1) / 2 - h / 2 - 4), lab, font=font(32), fill=(40, 40, 40))
+        w, h = text_size(d, lab[:24], font(32))
+        d.text(
+            (left - 30 - w, (y0 + y1) / 2 - h / 2 - 4),
+            lab[:24],
+            font=font(32),
+            fill=(40, 40, 40),
+        )
         d.text(
             (x1 + 18, (y0 + y1) / 2 - 20),
             f"{v:,}",
@@ -310,64 +360,21 @@ def img_bar(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, name, "PNG"
 
 
-DONUT_SETS = [
-    (
-        "Cloud spend by service type",
-        ["Compute", "Storage", "Database", "Networking", "Security services", "AI services"],
-    ),
-    (
-        "Incident root causes",
-        [
-            "Change error",
-            "Capacity",
-            "Third-party fault",
-            "Configuration drift",
-            "Software defect",
-            "Unknown",
-        ],
-    ),
-    (
-        "Helpdesk contacts by channel",
-        ["Live chat", "Email", "Phone", "Walk-in", "Self-service portal"],
-    ),
-    (
-        "Workforce by job family",
-        [
-            "Software engineering",
-            "Product management",
-            "Data science",
-            "Cybersecurity",
-            "Infrastructure",
-            "Corporate",
-        ],
-    ),
-    (
-        "Contract value by procurement mode",
-        [
-            "Small value purchase",
-            "Quotation",
-            "Open tender",
-            "Framework agreement",
-            "Period contract",
-        ],
-    ),
-]
-
-
 def img_donut(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    raw_name, labels = ctx.pick(DONUT_SETS)
+    raw_name, labels = ctx.pick(ctx.donut_sets())
     name = f"{raw_name} ({ctx.short})"
     weights = [rng.uniform(0.5, 3) for _ in labels]
     pct = [max(2, round(100 * w / sum(weights))) for w in weights]
     pct[0] += 100 - sum(pct)
+    period_label = ctx.corpus.periods[-1]
     img, d = new_chart(
         2400,
         1600,
         name,
-        f"{ctx.short}. Share of total, FY2026.",
+        f"{ctx.short}. Share of total, {period_label}.",
         ctx.theme,
-        "Finance and operations reports",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
@@ -380,43 +387,35 @@ def img_donut(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     d.ellipse((470, 490, 910, 930), fill="white")
     total = rng.randint(120, 980)
     ctext(d, (690, 680), f"{total:,}", font(72, bold=True))
-    ctext(d, (690, 760), "total items, FY2026", font(28), fill=(100, 100, 100))
+    ctext(d, (690, 760), f"total items, {period_label}", font(28), fill=(100, 100, 100))
     for i, (lab, p) in enumerate(zip(labels, pct)):
         y = 320 + i * 130
         d.rectangle((1320, y, 1380, y + 60), fill=cols[i % len(cols)])
-        d.text((1410, y + 6), f"{lab}: {p}%", font=font(40), fill=(30, 30, 30))
+        d.text((1410, y + 6), f"{lab[:28]}: {p}%", font=font(40), fill=(30, 30, 30))
     return img, name, "PNG"
-
-
-STACK_SETS = [
-    ("Incidents by severity", ["P1", "P2", "P3", "P4"], (1, 60)),
-    ("Service requests by channel", ["Portal", "Email", "Phone"], (200, 1400)),
-    ("Change requests by type", ["Standard", "Normal", "Emergency"], (20, 400)),
-    ("Pipeline runs by result", ["Passed", "Failed", "Cancelled"], (500, 6000)),
-    ("Audit findings by rating", ["High", "Medium", "Low"], (2, 40)),
-]
 
 
 def img_stacked(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    raw_name, series, (lo, hi) = ctx.pick(STACK_SETS)
+    raw_name, series, (lo, hi) = ctx.pick(ctx.stack_sets())
     name = f"{raw_name} ({ctx.short})"
-    vals = [[rng.randint(max(lo, hi // 6), hi) for _ in QUARTERS] for _ in series]
+    quarters = ctx.corpus.quarters
+    vals = [[rng.randint(max(lo, hi // 6), hi) for _ in quarters] for _ in series]
     img, d = new_chart(
         2400,
         1600,
         f"{name} per quarter",
-        f"{ctx.short}. Count per quarter, FY2026.",
+        f"{ctx.short}. Count per quarter.",
         ctx.theme,
-        "Service management system",
+        ctx.corpus.systems[0],
         ctx.chart_title,
         ctx.printed_value,
     )
     cols = palette(ctx.theme)
     left, top, right, bottom = 260, 230, 1850, 1280
-    peak = max(sum(v[q] for v in vals) for q in range(4)) * 1.1
-    slot = (right - left) / 4
-    for q, label in enumerate(QUARTERS):
+    peak = max(sum(v[q] for v in vals) for q in range(len(quarters))) * 1.1
+    slot = (right - left) / len(quarters)
+    for q, label in enumerate(quarters):
         x0, x1 = left + q * slot + slot * 0.2, left + (q + 1) * slot - slot * 0.2
         y = bottom
         for s in range(len(series)):
@@ -434,22 +433,13 @@ def img_stacked(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     d.line((left, bottom, right, bottom), fill=(60, 60, 60), width=3)
     for s, lab in enumerate(series):
         d.rectangle((1950, 300 + s * 90, 2000, 350 + s * 90), fill=cols[s])
-        d.text((2025, 305 + s * 90), lab, font=font(34), fill=(30, 30, 30))
+        d.text((2025, 305 + s * 90), lab[:20], font=font(34), fill=(30, 30, 30))
     return img, f"{name} per quarter", "PNG"
-
-
-HEAT_SETS = [
-    ("Open vulnerability findings by division", ["Critical", "High", "Medium", "Low"]),
-    ("Security control gaps by division", ["Access", "Logging", "Encryption", "Backup", "Patching"]),
-    ("Failed logins by division and hour band", ["00-06", "06-12", "12-18", "18-24"]),
-    ("Sensor faults by zone and week", ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"]),
-    ("Exercise detections by division and phase", ["Recon", "Access", "Lateral", "Exfil"]),
-]
 
 
 def img_heatmap(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    raw_name, cols = ctx.pick(HEAT_SETS)
+    raw_name, cols = ctx.pick(ctx.heat_sets())
     name = f"{raw_name} ({ctx.short})"
     rows = ctx.agencies(7)
     vals = [[rng.randint(0, 99) for _ in cols] for _ in rows]
@@ -459,17 +449,22 @@ def img_heatmap(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         name,
         f"{ctx.short}. Count in each cell.",
         ctx.theme,
-        "Security operations centre",
+        ctx.corpus.systems[0],
         ctx.chart_title,
         ctx.printed_value,
     )
     left, top = 420, 260
-    cw, ch = min(360, 1850 // len(cols)), 145
+    cw, ch = min(360, 1850 // max(1, len(cols))), 145
     for j, c in enumerate(cols):
-        ctext(d, (left + j * cw + cw / 2, top - 40), c, font(32, bold=True))
+        ctext(d, (left + j * cw + cw / 2, top - 40), c[:16], font(32, bold=True))
     for i, r in enumerate(rows):
-        w, _ = text_size(d, r, font(32))
-        d.text((left - 30 - w, top + i * ch + ch / 2 - 20), r, font=font(32), fill=(40, 40, 40))
+        w, _ = text_size(d, r[:22], font(32))
+        d.text(
+            (left - 30 - w, top + i * ch + ch / 2 - 20),
+            r[:22],
+            font=font(32),
+            fill=(40, 40, 40),
+        )
         for j in range(len(cols)):
             v = vals[i][j]
             col = (
@@ -491,34 +486,11 @@ def img_heatmap(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, name, "PNG"
 
 
-KPI_APPS = [
-    "Service Health Console",
-    "Cloud Cost Explorer",
-    "Identity Operations Console",
-    "Developer Portal Analytics",
-    "Sensor Platform Monitor",
-    "Workforce Dashboard",
-]
-KPI_TILES = [
-    ("Availability (30 days)", "{:.2f}%", 99.1, 99.99),
-    ("P1 incidents open", "{:.0f}", 0, 6),
-    ("Mean time to restore", "{:.0f} min", 12, 95),
-    ("Active users today", "{:,.0f}", 12000, 98000),
-    ("Month-to-date spend", "SGD {:,.0f}k", 300, 4200),
-    ("Error rate", "{:.2f}%", 0.05, 2.5),
-    ("Deployments this week", "{:.0f}", 40, 700),
-    ("Queue depth", "{:,.0f}", 10, 4000),
-    ("Devices online", "{:,.0f}", 800, 5200),
-    ("Tickets breaching SLA", "{:.0f}", 0, 45),
-    ("CSAT score", "{:.1f} / 5", 3.6, 4.9),
-    ("p95 latency", "{:.0f} ms", 180, 1400),
-]
-
-
 def img_kpi(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    app = ctx.pick([(a,) for a in KPI_APPS])[0]
-    tiles = rng.sample(KPI_TILES, 6)
+    app = ctx.pick([(s,) for s in ctx.corpus.systems])[0]
+    tiles_pool = ctx.kpi_tiles()
+    tiles = rng.sample(tiles_pool, min(6, len(tiles_pool)))
     w, h = 2400, 1500
     img = Image.new("RGB", (w, h), (243, 245, 248))
     d = ImageDraw.Draw(img)
@@ -556,7 +528,7 @@ def img_kpi(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         delta = rng.uniform(-12, 12)
         d.text(
             (x0 + 40, y0 + 220),
-            f"{'▲' if delta > 0 else '▼'} {abs(delta):.1f}% vs last week",
+            f"{'▲' if delta > 0 else '▼'} {abs(delta):.1f}% vs prior period",
             font=font(28),
             fill=(30, 140, 60) if delta > 0 else (190, 40, 40),
         )
@@ -566,73 +538,49 @@ def img_kpi(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, f"{app} screenshot", "PNG"
 
 
-GANTT_TASKS = [
-    "Discovery",
-    "Service design",
-    "Build, sprints 1 to 4",
-    "Security test (VAPT)",
-    "User acceptance test",
-    "Data migration",
-    "Agency onboarding",
-    "Go-live",
-    "Hypercare",
-    "Decommission legacy",
-    "Procurement",
-    "Training",
-]
-
-
 def img_gantt(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    tasks = rng.sample(GANTT_TASKS, 8)
+    task_pool = list(
+        dict.fromkeys(
+            [*ctx.corpus.sections, *ctx.corpus.services, *ctx.corpus.effective_part_labels()]
+        )
+    )
+    tasks = rng.sample(task_pool, min(8, len(task_pool)))
     cap = f"Delivery plan: {ctx.short}"
     img, d = new_chart(
         2400,
         1600,
         cap,
-        "FY2025 to FY2026. Diamonds mark milestones.",
+        "Diamonds mark milestones across fiscal months.",
         ctx.theme,
-        "Programme office",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
     left, top, right = 600, 260, 2320
-    mw = (right - left) / 12
-    for m, lab in enumerate(FY_MONTHS):
+    months = ctx.corpus.fy_months
+    mw = (right - left) / len(months)
+    for m, lab in enumerate(months):
         ctext(d, (left + m * mw + mw / 2, top - 40), lab.replace(" 20", " '"), font(24))
         d.line((left + m * mw, top - 10, left + m * mw, 1340), fill=(230, 230, 230), width=2)
     for i, t in enumerate(tasks):
         y = top + i * 128
-        d.text((80, y + 30), t, font=font(32), fill=(40, 40, 40))
+        d.text((80, y + 30), t[:26], font=font(32), fill=(40, 40, 40))
         s = rng.randint(0, 8)
-        e = rng.randint(s + 1, min(12, s + 5))
+        e = rng.randint(s + 1, min(len(months), s + 5))
         d.rounded_rectangle(
             (left + s * mw, y + 25, left + e * mw, y + 80),
             12,
             fill=shade(ctx.theme, 0.1 + 0.1 * (i % 3)),
         )
         day = rng.randint(2, 27)
-        month = FY_MONTHS[e - 1]
-        date = f"{day} {month.split()[0]} {month.split()[1]}"
+        month = months[e - 1]
+        date = f"{day} {month.split()[0]} {month.split()[-1]}"
         cx, cy = left + e * mw, y + 52
         d.polygon([(cx, cy - 30), (cx + 30, cy), (cx, cy + 30), (cx - 30, cy)], fill=(20, 20, 20))
         lx = cx + 40 if cx < right - 300 else cx - 300
         d.text((lx, cy - 18), date, font=font(28, bold=True), fill=(20, 20, 20))
     return img, cap, "PNG"
-
-
-SERVICES = [
-    "profile-service",
-    "notification-service",
-    "document-service",
-    "eligibility-engine",
-    "payment-adapter",
-    "consent-manager",
-    "audit-writer",
-    "search-indexer",
-    "case-router",
-    "sensor-ingest",
-]
 
 
 def _arrow(
@@ -656,15 +604,17 @@ def img_architecture(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
     nodes = rng.randint(6, 48)
     vcpu = rng.choice([8, 16, 32, 64])
-    svcs = rng.sample(SERVICES, 4)
+    svc_pool = ctx.corpus.services
+    svcs = rng.sample(svc_pool, min(4, len(svc_pool)))
+    sys_pool = ctx.corpus.systems
     name = f"Solution architecture: {ctx.short}"
     img, d = new_chart(
         2400,
         1600,
         name,
-        "Logical view. Production environment, Singapore region.",
+        f"Logical view. Primary site: {ctx.corpus.sites[0]}.",
         ctx.theme,
-        "Architecture review board pack",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
@@ -679,25 +629,25 @@ def img_architecture(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         fill: tuple[int, int, int] = (235, 242, 250),
     ) -> None:
         d.rounded_rectangle((x, y, x + w, y + h), 18, fill=fill, outline=(80, 80, 80), width=3)
-        ctext(d, (x + w / 2, y + h / 2 - (18 if sub else 0)), label, font(30, bold=True))
+        ctext(d, (x + w / 2, y + h / 2 - (18 if sub else 0)), label[:24], font(30, bold=True))
         if sub:
-            ctext(d, (x + w / 2, y + h / 2 + 24), sub, font(24), fill=(80, 80, 80))
+            ctext(d, (x + w / 2, y + h / 2 + 24), sub[:26], font(24), fill=(80, 80, 80))
 
-    box(80, 640, 300, 160, "Citizens and", "businesses", (250, 240, 225))
-    box(470, 640, 280, 160, "WAF and CDN")
-    box(840, 640, 280, 160, "API gateway", "internet zone")
+    box(80, 640, 300, 160, ctx.corpus.effective_part_labels()[0][:20], "channels", (250, 240, 225))
+    box(470, 640, 280, 160, sys_pool[0][:20])
+    box(840, 640, 280, 160, sys_pool[1 % len(sys_pool)][:20], "ingress")
     d.rounded_rectangle((1210, 240, 1900, 1240), 24, outline=ctx.theme, width=6)
     d.text(
         (1240, 260),
-        f"Kubernetes cluster: {nodes} worker nodes",
+        f"Service cluster: {nodes} worker nodes",
         font=font(28, bold=True),
         fill=ctx.theme,
     )
     for i, s in enumerate(svcs):
         box(1270, 330 + i * 225, 570, 170, s, f"{rng.randint(2, 12)} replicas")
-    box(2000, 360, 320, 180, "Managed PostgreSQL", f"{vcpu} vCPU", (232, 245, 233))
-    box(2000, 700, 320, 180, "Object storage", "encrypted", (232, 245, 233))
-    box(2000, 1040, 320, 180, "SIEM", "log forwarding", (252, 232, 232))
+    box(2000, 360, 320, 180, sys_pool[2 % len(sys_pool)][:20], f"{vcpu} vCPU", (232, 245, 233))
+    box(2000, 700, 320, 180, sys_pool[3 % len(sys_pool)][:20], "encrypted", (232, 245, 233))
+    box(2000, 1040, 320, 180, sys_pool[4 % len(sys_pool)][:20], "telemetry", (252, 232, 232))
     _arrow(d, (380, 720), (470, 720))
     _arrow(d, (750, 720), (840, 720))
     _arrow(d, (1120, 720), (1270, 720))
@@ -706,25 +656,13 @@ def img_architecture(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, name, "PNG"
 
 
-ORG_ROLES = [
-    "Head, Platform Engineering",
-    "Head, Product Management",
-    "Head, Cybersecurity Operations",
-    "Head, Data Engineering",
-    "Head, Service Design",
-    "Head, Programme Office",
-    "Lead, Site Reliability",
-    "Lead, Vendor Management",
-    "Head, Talent and Capability",
-    "Lead, Exercise Control",
-]
-
-
 def img_org(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    roles = rng.sample(ORG_ROLES, 5)
+    role_pool = ctx.corpus.org_roles
+    roles = rng.sample(role_pool, min(5, len(role_pool)))
     people = [ctx.person() for _ in roles]
     root = ctx.person()
+    root_role = role_pool[0] if role_pool else "Chief Executive"
     name = f"Organisation chart: {ctx.short}"
     img, d = new_chart(
         2400,
@@ -732,7 +670,7 @@ def img_org(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         name,
         f"As at {ctx.date}.",
         ctx.theme,
-        "Human resources",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
@@ -745,13 +683,13 @@ def img_org(ctx: ChartContext) -> tuple[Image.Image, str, str]:
             outline=(80, 80, 80),
             width=3,
         )
-        ctext(d, (cx, y + 58), who, font(32, bold=True))
+        ctext(d, (cx, y + 58), who[:22], font(32, bold=True))
         for k, line in enumerate(textwrap.wrap(role, 24)[:2]):
             ctext(d, (cx, y + 105 + k * 32), line, font(24), fill=(70, 70, 70))
 
-    card(1200, 240, root, "Programme Director", shade(ctx.theme, 0.7))
+    card(1200, 240, root, root_role, shade(ctx.theme, 0.7))
     d.line((1200, 410, 1200, 500), fill=(80, 80, 80), width=4)
-    xs = [260 + i * 470 for i in range(5)]
+    xs = [260 + i * 470 for i in range(len(roles))]
     d.line((xs[0], 500, xs[-1], 500), fill=(80, 80, 80), width=4)
     for x, who, role in zip(xs, people, roles):
         d.line((x, 500, x, 580), fill=(80, 80, 80), width=4)
@@ -763,37 +701,10 @@ def img_org(ctx: ChartContext) -> tuple[Image.Image, str, str]:
                 x,
                 y,
                 ctx.person(),
-                rng.choice(["Engineer", "Product Manager", "Analyst", "Designer", "Specialist"]),
+                rng.choice(role_pool),
                 (255, 255, 255),
             )
     return img, name, "PNG"
-
-
-STICKY_TEXT: dict[str, list[str]] = {
-    "Pain points": [
-        "Re-enter customer ID on three forms",
-        "No status after I submit",
-        "Upload fails on large PDF",
-        "SMS OTP arrives late",
-        "Cannot save and continue",
-        "Jargon on eligibility page",
-        "Two logins for one service",
-        "Payment page times out",
-    ],
-    "Ideas": [
-        "Pre-fill from customer profile",
-        "Show a progress tracker",
-        "One reminder a week",
-        "Chat help in four languages",
-        "Save draft on the phone",
-    ],
-    "Questions": [
-        "Who owns the data?",
-        "Can divisions share consent?",
-        "What is the budget for phase 2?",
-        "Offline counter option?",
-    ],
-}
 
 
 def img_whiteboard(ctx: ChartContext) -> tuple[Image.Image, str, str]:
@@ -807,13 +718,18 @@ def img_whiteboard(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     d.rectangle((110, 110, 2310, 1470), fill=(90, 90, 90))
     d.rectangle((90, 90, 2290, 1450), fill=(246, 247, 245))
     d.text((140, 120), f"Workshop: {ctx.short}", font=font(46, style="hand"), fill=(30, 60, 150))
-    cols = list(STICKY_TEXT)
+    sticky_columns: dict[str, list[str]] = {
+        "Constraints": [r[0][:44] for r in ctx.corpus.risks],
+        "Actions": [m[:44] for m in ctx.corpus.mitigations],
+        "Focus areas": [s[:44] for s in ctx.corpus.effective_part_labels()],
+    }
+    cols = list(sticky_columns)
     colours = [(255, 238, 120), (255, 170, 200), (160, 215, 255), (180, 240, 170)]
     for ci, col in enumerate(cols):
         x0 = 150 + ci * 720
         d.text((x0, 220), col, font=font(44, style="hand"), fill=(40, 40, 40))
         d.line((x0, 280, x0 + 600, 280), fill=(40, 40, 40), width=4)
-        pool = [s for s in STICKY_TEXT[col] if s not in ctx.used] or STICKY_TEXT[col]
+        pool = [s for s in sticky_columns[col] if s not in ctx.used] or sticky_columns[col]
         notes = rng.sample(pool, min(4, len(pool)))
         ctx.used.update(notes)
         for ni, text in enumerate(notes):
@@ -821,7 +737,7 @@ def img_whiteboard(ctx: ChartContext) -> tuple[Image.Image, str, str]:
             nd = ImageDraw.Draw(note)
             for li, line in enumerate(textwrap.wrap(text, 14)[:4]):
                 nd.text((18, 20 + li * 40), line, font=font(30, style="hand"), fill=(30, 30, 30))
-            if col == "Pain points":
+            if ci == 0:
                 votes = rng.randint(3, 29)
                 nd.text((18, 200), f"{votes} votes", font=font(28, bold=True), fill=(180, 0, 0))
             note = note.rotate(rng.uniform(-7, 7), expand=True, resample=Image.BICUBIC)
@@ -850,25 +766,21 @@ def img_memo(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     d.text((140, 120), ctx.corpus.company.upper(), font=font(36, bold=True), fill=(30, 30, 30))
     d.line((140, 180, 1560, 180), fill=(30, 30, 30), width=3)
     d.text((140, 220), "MEMORANDUM", font=font(44, bold=True), fill=(30, 30, 30))
-    dept = rng.choice(["PROC", "FIN", "CSG", "PEO", "GDT"])
-    ref = f"GT/{dept}/26/{rng.randint(100, 9999):04d}"
+    dept = rng.choice(ctx.corpus.effective_part_labels())[:4].upper()
+    ref = f"WL/{dept}/26/{rng.randint(100, 9999):04d}"
     author, approver = ctx.person(), ctx.person()
     lines = [
         f"Our ref : {ref}",
         f"Date    : {ctx.date}",
-        "To      : Chief Executive (Synthetic)",
+        f"To      : {ctx.corpus.org_roles[0]}",
         f"From    : {author}",
     ]
     subject = textwrap.wrap(f"Approval to proceed, {ctx.short}", 50)
     lines += [f"Subject : {subject[0]}"] + [f"          {s}" for s in subject[1:]] + [""]
+    body_pool = ctx.corpus.narrated_sentences[:4]
     paras = [
-        (
-            f"1. This memo seeks approval to proceed with the next phase of "
-            f"{ctx.short}. The estimated cost is within the approved budget."
-        ),
-        "2. The evaluation committee reviewed the proposal and supports it.",
-        "3. The team will report progress to the steering committee each month.",
-        "4. Please indicate your approval below.",
+        f"{idx}. {sent}"
+        for idx, sent in enumerate(body_pool, 1)
     ]
     for para in paras:
         lines += textwrap.wrap(para, 60, subsequent_indent="   ") + [""]
@@ -902,26 +814,10 @@ def img_memo(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return page, cap, "JPEG"
 
 
-ROOMS = [
-    "Meeting Room Merlion",
-    "Meeting Room Orchid",
-    "Collab Zone A",
-    "Collab Zone B",
-    "Training Room",
-    "Operations Centre",
-    "Focus Pods",
-    "Quiet Room",
-    "Huddle Room 1",
-    "Huddle Room 2",
-    "Exercise Control Room",
-    "Server Room",
-]
-
-
 def img_floor(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
     level = rng.randint(2, 18)
-    site = rng.choice(ctx.corpus.sites) if ctx.corpus.sites else "Headquarters"
+    site = rng.choice(ctx.corpus.sites)
     name = f"Level {level} floor plan, {site}"
     if name in ctx.used:
         level += 1
@@ -933,11 +829,12 @@ def img_floor(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         name,
         f"{ctx.short}. Seat counts are design capacity.",
         ctx.theme,
-        "Facilities management",
+        ctx.corpus.company,
         ctx.chart_title,
         ctx.printed_value,
     )
-    rooms = rng.sample(ROOMS, 8)
+    room_pool = [f"{u} Suite" for u in ctx.corpus.effective_part_labels()]
+    rooms = rng.sample(room_pool, min(8, len(room_pool)))
     seats = [rng.randint(4, 60) for _ in rooms]
     d.rectangle((120, 220, 2280, 1380), outline=(30, 30, 30), width=10)
     d.rectangle((120, 740, 2280, 860), fill=(238, 238, 238))
@@ -954,7 +851,7 @@ def img_floor(ctx: ChartContext) -> tuple[Image.Image, str, str]:
         )
         door_y = y1 if i < 4 else y0
         d.line(((x0 + x1) / 2 - 60, door_y, (x0 + x1) / 2 + 60, door_y), fill="white", width=10)
-        for k, line in enumerate(textwrap.wrap(room, 16)):
+        for k, line in enumerate(textwrap.wrap(room, 16)[:2]):
             ctext(d, ((x0 + x1) / 2, (y0 + y1) / 2 - 50 + k * 42), line, font(34, bold=True))
         ctext(d, ((x0 + x1) / 2, (y0 + y1) / 2 + 60), f"Seats: {n}", font(32))
     d.polygon([(2180, 250), (2210, 330), (2150, 330)], fill=(30, 30, 30))
@@ -962,17 +859,13 @@ def img_floor(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     return img, name, "PNG"
 
 
-PHONE_APPS = [
-    ("Customer Portal", ["Order status check", "Loyalty claim", "Account registration"]),
-    ("Enterprise SSO", ["Biometric verification", "Profile consent", "Device binding"]),
-    ("Field Telemetry", ["Sensor install check", "Gateway pairing", "Site photo"]),
-    ("Workspace Access", ["Access request", "Device posture", "Token reset"]),
-]
-
-
 def img_phone(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     rng = ctx.rng
-    app, items = ctx.pick(PHONE_APPS)
+    app_pool = [
+        (sys_name, [s for s in ctx.corpus.services[:3]])
+        for sys_name in ctx.corpus.systems[:4]
+    ]
+    app, items = ctx.pick(app_pool)
     w, h = 1180, 2400
     img = Image.new("RGB", (w, h), (30, 30, 30))
     d = ImageDraw.Draw(img)
@@ -980,9 +873,9 @@ def img_phone(ctx: ChartContext) -> tuple[Image.Image, str, str]:
     d.rectangle((0, 0, w, 16), fill=ctx.theme)
     d.text((110, 90), f"{rng.randint(7, 11)}:{rng.randint(10, 59)}", font=font(38, bold=True))
     d.rectangle((40, 170, w - 40, 330), fill=ctx.theme)
-    d.text((100, 220), app, font=font(56, bold=True), fill="white")
-    statuses = ["Submitted", "In review", "Approved", "Action needed"]
-    for k, item in enumerate(items):
+    d.text((100, 220), app[:24], font=font(56, bold=True), fill="white")
+    statuses = ["Verified", "In review", "Approved", "Attention"]
+    for k, item in enumerate(items[:3]):
         y = 400 + k * 260
         d.rounded_rectangle(
             (90, y, w - 90, y + 220),
@@ -991,7 +884,7 @@ def img_phone(ctx: ChartContext) -> tuple[Image.Image, str, str]:
             outline=(220, 220, 225),
             width=3,
         )
-        d.text((130, y + 40), item, font=font(40, bold=True), fill=(30, 30, 30))
+        d.text((130, y + 40), item[:28], font=font(40, bold=True), fill=(30, 30, 30))
         st = rng.choice(statuses)
         d.rounded_rectangle(
             (130, y + 120, 130 + 30 * len(st), y + 175),
@@ -999,7 +892,7 @@ def img_phone(ctx: ChartContext) -> tuple[Image.Image, str, str]:
             fill=shade(ctx.theme, 0.8),
         )
         d.text((150, y + 127), st, font=font(30), fill=(40, 40, 40))
-    y = 400 + len(items) * 260 + 40
+    y = 400 + len(items[:3]) * 260 + 40
     d.rounded_rectangle(
         (90, y, w - 90, y + 320),
         30,
@@ -1079,7 +972,6 @@ def encode_figure_tight(
             new_h = max(1, int(img.height * scale))
             img = img.resize((new_w, new_h), Image.LANCZOS)
         if grain > 0:
-            # Build a small deterministic tile and resize with NEAREST/BILINEAR or effect_noise
             noise = Image.merge("RGB", [Image.effect_noise(img.size, 64) for _ in range(3)])
             img = Image.blend(img, noise, grain / 100.0)
         buf = io.BytesIO()
