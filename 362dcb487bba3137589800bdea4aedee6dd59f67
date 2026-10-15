@@ -1,0 +1,1 @@
+Task: Generalize prose_writer.py, charts.py, and build.py to domain-neutral WorldLoom entities (59 passed, 96% coverage).
