@@ -40,6 +40,12 @@ class ManifestEntry(FrozenModel):
     image_chart_title: str
     image_golden_value: str
     image_canary_value: str
+    worldloom_commit: str = ""
+    world_seed: int | None = None
+    recipe_digest: str = ""
+    narration: str = ""
+    model_id: str = ""
+    prompt_version: str = ""
 
 
 class EvalCase(FrozenModel):

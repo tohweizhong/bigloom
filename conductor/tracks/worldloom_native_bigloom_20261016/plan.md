@@ -24,15 +24,15 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 1: Corpus as Input (FR1)
 
-- [ ] Task: Update `tech-stack.md`. Record the WorldLoom pin `3fcf194`, the enterprise renderers, and `ComposedProvider`.
-- [ ] Task: Write failing tests for `bigloom build --corpus <dir>`.
-    - [ ] Loads a corpus with `World.load`.
-    - [ ] With no corpus, builds one into `<out>/corpus/`.
-    - [ ] With incomplete narration, fills the open sections and records `narration: partial`.
-    - [ ] With no WorldLoom package, stops with the install command.
-    - [ ] The manifest records the commit, seed, recipe digest, model ID, and prompt version.
-- [ ] Task: Implement the corpus loader and the new manifest fields.
-- [ ] Task: Remove `default_world()` and `_extract_world_pools` from `prose_writer.py`.
+- [x] Task: Update `tech-stack.md`. Record the WorldLoom pin `3fcf194`, the enterprise renderers, and `ComposedProvider`.
+- [x] Task: Write failing tests for `bigloom build --corpus-dir <dir>` (the existing flag now reads a WorldLoom corpus with `world.json`).
+    - [x] Loads a corpus with `World.load`.
+    - [x] With no corpus, builds one into `<out>/corpus/`.
+    - [x] With incomplete narration, fills the open sections and records `narration: partial`.
+    - [x] With no WorldLoom package, stops with the install command.
+    - [x] The manifest records the commit, seed, recipe digest, model ID, and prompt version.
+- [x] Task: Implement the corpus loader and the new manifest fields.
+- [ ] Task: Remove `default_world()` from `prose_writer.py`. (`_extract_world_pools` moves to Phase 4, because the old renderers still read its pools.)
 - [ ] Task: Change the wizard so that it writes a pack or company specification and runs `worldloom build`.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
@@ -77,6 +77,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Keep only the main file of each target. Do not upload revision files.
 - [ ] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
 - [ ] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
+- [ ] Task: Remove `_extract_world_pools` and the pool code that only the old renderers use (moved from Phase 1).
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 5: Qualification v2 (FR5)

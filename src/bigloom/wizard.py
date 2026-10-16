@@ -13,6 +13,7 @@ import yaml
 from worldloom import packs
 
 from .build import build_corpus
+from .corpus import months_before, worldloom_default_period
 from .proposal.facts import DEFAULT_GIVEN, DEFAULT_SURNAMES
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries
@@ -147,11 +148,15 @@ def build_org_pack_dict(
     lore_target = DEFAULT_LORE_TARGET_BY_DOMAIN.get(
         domain_key, "data_quality_incident/inventory"
     )
-    lore_entries: list[dict[str, Any]] = [
+    # The lore date is 12 months before the WorldLoom build period. A fixed founding year
+    # (2018) came before the join date of the author WorldLoom picks for the founding
+    # document, and `worldloom build` then refused the corpus (author_not_yet_employed).
+    lore_from = months_before(worldloom_default_period(), 12)
+    lore_entries: list[dict[str, Any]] = [] if not lore_assertion.strip() else [
         {
             "kind": "decision",
             "assertion": lore_assertion.strip(),
-            "effective_from": "2018-06",
+            "effective_from": lore_from,
             "constrains": [
                 {
                     "kind": "event_likelihood",

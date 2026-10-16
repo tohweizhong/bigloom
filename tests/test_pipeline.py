@@ -6,9 +6,11 @@ import json
 from pathlib import Path
 
 from typer.testing import CliRunner
+from worldloom.world import World
 
 from bigloom.build import build_corpus
 from bigloom.cli import app
+from bigloom.corpus import build_worldloom_corpus
 from bigloom.models import EvalCase, EvalResponse, LeakageVerdict
 from bigloom.qualify import load_corpus_snapshots, qualify_corpus
 from bigloom.queries import generate_queries
@@ -87,12 +89,8 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
 
 
 def test_seed_determinism_and_corpus_dir_input(tmp_path: Path) -> None:
-    seed_corpus = tmp_path / "seed_corpus"
-    seed_corpus.mkdir()
-    (seed_corpus / "note1.md").write_text(
-        "# Sovereign Cloud Cooling\n Reserve capacity planning for Marina Bay Data Center.\n",
-        encoding="utf-8",
-    )
+    seed_corpus = build_worldloom_corpus(tmp_path / "seed_corpus", seed=21, locale="singapore")
+    company = World.load(seed_corpus).company.name
 
     out_a = tmp_path / "out_a"
     out_b = tmp_path / "out_b"
@@ -113,6 +111,8 @@ def test_seed_determinism_and_corpus_dir_input(tmp_path: Path) -> None:
     assert [e.text_golden_value for e in entries_a] == [e.text_golden_value for e in entries_b]
     assert [e.image_golden_value for e in entries_a] == [e.image_golden_value for e in entries_b]
     assert [e.text_canary_value for e in entries_a] == [e.text_canary_value for e in entries_b]
+    assert all(company in e.topic for e in entries_a)
+    assert all(e.world_seed == 21 for e in entries_a)
 
 
 def test_cli_four_step_pipeline(tmp_path: Path) -> None:

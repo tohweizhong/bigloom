@@ -81,6 +81,7 @@ def test_custom_org_pack_json_resolves_in_build_and_proposal_with_locale_and_fac
 
     ctx = _resolve_world_context(
         seed=42,
+        out_dir=tmp_path / "ctx_out",
         world_pack=str(pack_path),
         locale="singapore",
         facets={"listing": "state_owned", "scale": "enterprise"},

@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import random
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
@@ -33,8 +32,6 @@ from reportlab.platypus import (
     Table,
     TableStyle,
 )
-from worldloom import sdk
-from worldloom.world import World
 
 from .charts import (
     CHART_KINDS,
@@ -43,13 +40,13 @@ from .charts import (
     encode_figure_tight,
     make_chart_figures,
 )
+from .corpus import CorpusProvenance, resolve_corpus
 from .models import ManifestEntry
 from .prose_writer import (
     MARKING,
     THEME_PALETTE,
     ProseCorpus,
     Writer,
-    default_world,
     format_money,
     sheet_definition,
 )
@@ -72,79 +69,29 @@ class _WorldContext:
     currency: str
     governance_line: str
     prose_corpus: ProseCorpus
-
-
-def _extract_seed_topics(corpus_dir: Path | None, fallback_topics: Sequence[str] = ()) -> list[str]:
-    """Read topic phrases from markdown or text files in corpus_dir when provided."""
-    if corpus_dir is None or not corpus_dir.exists():
-        return list(fallback_topics)
-    found: list[str] = []
-    for path in sorted(corpus_dir.rglob("*")):
-        if not path.is_file() or path.suffix.lower() not in {".md", ".txt"}:
-            continue
-        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-            cleaned = line.strip().lstrip("#").strip()
-            if len(cleaned) >= 8:
-                found.append(cleaned[:60])
-                break
-    return found + [t for t in fallback_topics if t not in found]
-
-
-def _configure_blueprint(
-    blueprint: sdk.Blueprint,
-    *,
-    locale: str | None = None,
-    facets: Mapping[str, str] | None = None,
-) -> sdk.Blueprint:
-    """Apply optional locale and facet claims onto a WorldLoom Blueprint."""
-    if locale:
-        blueprint = blueprint.located(locale.strip().lower())
-    if facets:
-        blueprint = blueprint.facets(**facets)
-        if blueprint.domain_name != "retail":
-            blueprint = replace(blueprint, calendar_name=None, estate_size=None)
-    return blueprint
+    provenance: CorpusProvenance
 
 
 def _resolve_world_context(
     *,
     seed: int,
+    out_dir: Path,
     corpus_dir: Path | None = None,
     world_pack: str | None = None,
     domain: str | None = None,
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
 ) -> _WorldContext:
-    """Resolve WorldLoom company, business units, cost centres, systems, facts, and currency."""
-    if world_pack and domain:
-        raise ValueError("Specify at most one of world_pack or domain.")
-
-    world: World | None = None
-    if world_pack:
-        candidate = Path(world_pack)
-        if candidate.is_file() and candidate.suffix.lower() == ".json":
-            pack_meta = json.loads(candidate.read_text(encoding="utf-8"))
-            base_domain = str(pack_meta.get("base", "retail")).strip().lower()
-            blueprint = _configure_blueprint(
-                sdk.company(base_domain, seed=seed).pack(str(candidate)),
-                locale=locale,
-                facets=facets,
-            )
-            world = blueprint.build().world
-        else:
-            world = World.load(world_pack)
-    elif domain or locale or facets:
-        blueprint = _configure_blueprint(
-            sdk.company((domain or "retail").strip().lower(), seed=seed),
-            locale=locale,
-            facets=facets,
-        )
-        world = blueprint.build().world
-    elif corpus_dir is not None and (corpus_dir / "company.json").is_file():
-        world = World.load(corpus_dir)
-
-    if world is None:
-        world = default_world()
+    """Load or build the WorldLoom corpus, then extract company, entities, and currency."""
+    world, provenance = resolve_corpus(
+        corpus_dir=corpus_dir,
+        out_dir=out_dir,
+        seed=seed,
+        world_pack=world_pack,
+        domain=domain,
+        locale=locale,
+        facets=facets,
+    )
 
     prose_corpus = ProseCorpus.from_world(world)
     company_name = prose_corpus.company
@@ -154,7 +101,7 @@ def _resolve_world_context(
     ] + [
         f"{company_name} {label}" for label in prose_corpus.effective_part_labels()
     ]
-    topics = _extract_seed_topics(corpus_dir, wl_topics)
+    topics = list(wl_topics)
 
     cc_tags = [f"{cc.id} ({cc.name})" for cc in world.cost_centres[:3]]
     sys_tags = [f"{sys.id} ({sys.name})" for sys in world.systems[:3]]
@@ -176,6 +123,7 @@ def _resolve_world_context(
         currency=currency,
         governance_line=governance_line,
         prose_corpus=prose_corpus,
+        provenance=provenance,
     )
 
 
@@ -824,6 +772,7 @@ def build_corpus(
     rng = random.Random(seed)
     ctx = _resolve_world_context(
         seed=seed,
+        out_dir=out_dir,
         corpus_dir=corpus_dir,
         world_pack=world_pack,
         domain=domain,
@@ -943,6 +892,12 @@ def build_corpus(
                     image_chart_title=image_chart_title,
                     image_golden_value=image_golden,
                     image_canary_value=image_canary,
+                    worldloom_commit=ctx.provenance.worldloom_commit,
+                    world_seed=ctx.provenance.world_seed,
+                    recipe_digest=ctx.provenance.recipe_digest,
+                    narration=ctx.provenance.narration,
+                    model_id=ctx.provenance.model_id,
+                    prompt_version=ctx.provenance.prompt_version,
                 )
             )
 
