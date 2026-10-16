@@ -5,7 +5,9 @@ from __future__ import annotations
 import io
 import random
 
+import pytest
 from PIL import Image
+from worldloom.world import World
 
 from bigloom.charts import (
     CHART_KINDS,
@@ -15,9 +17,8 @@ from bigloom.charts import (
     figure_count_for_target,
     make_chart_figures,
 )
+from bigloom.corpus import build_worldloom_corpus
 from bigloom.prose_writer import (
-    MITIGATIONS,
-    RISKS,
     ProseCorpus,
     Writer,
     format_money,
@@ -25,36 +26,23 @@ from bigloom.prose_writer import (
 )
 
 
-def _sample_corpus() -> ProseCorpus:
-    return ProseCorpus(
-        company="Government Technology Agency (Synthetic)",
-        currency="SGD",
-        periods=["FY2025", "FY2026"],
-        names={
-            "BU-01": "Smart Nation Platform Solutions",
-            "BU-02": "Cloud and Data Infrastructure",
-            "CAT-01": "Identity and Authentication",
-            "CAT-02": "Whole-of-Government Cloud",
-        },
-        revenue={
-            ("BU-01", "FY2025"): (14_250.0, 13_800.0),
-            ("BU-02", "FY2026"): (22_910.0, 21_500.0),
-            ("CAT-01", "FY2025"): (8_420.0, 8_100.0),
-            ("CAT-02", "FY2026"): (19_300.0, 18_950.0),
-        },
-        units=["BU-01", "BU-02"],
-        categories=["CAT-01", "CAT-02"],
-        people=[
-            ("Tan Wei Jie", "Director, Platform Engineering"),
-            ("Lim Hui Ling", "Deputy Director, Cloud Operations"),
-            ("Arun Kumar", "Principal Architect, Identity"),
-        ],
-        systems=["Singpass Auth Core", "SHIP-HATS Pipeline", "GCC Landing Zone"],
-        sites=["Mapletree Business City", "Sandcrawler Building", "Punggol Digital District"],
+@pytest.fixture(scope="module")
+def retail_corpus(tmp_path_factory: pytest.TempPathFactory) -> ProseCorpus:
+    """Return a ProseCorpus from a WorldLoom retail corpus in the Singapore locale."""
+    path = build_worldloom_corpus(tmp_path_factory.mktemp("retail") / "corpus", seed=42, locale="singapore")
+    return ProseCorpus.from_world(World.load(path))
+
+
+@pytest.fixture(scope="module")
+def banking_corpus(tmp_path_factory: pytest.TempPathFactory) -> ProseCorpus:
+    """Return a ProseCorpus from a WorldLoom banking corpus in the United Kingdom locale."""
+    path = build_worldloom_corpus(
+        tmp_path_factory.mktemp("banking") / "corpus", seed=42, domain="banking", locale="united_kingdom"
     )
+    return ProseCorpus.from_world(World.load(path))
 
 
-def test_all_13_chart_drawers_render_high_res_images() -> None:
+def test_all_13_chart_drawers_render_high_res_images(retail_corpus: ProseCorpus) -> None:
     assert len(CHART_KINDS) == 13
     expected_kinds = {
         "line",
@@ -73,7 +61,7 @@ def test_all_13_chart_drawers_render_high_res_images() -> None:
     }
     assert set(CHART_KINDS) == expected_kinds
 
-    corpus = _sample_corpus()
+    corpus = retail_corpus
     ctx = ChartContext(
         rng=random.Random(42),
         corpus=corpus,
@@ -95,8 +83,8 @@ def test_all_13_chart_drawers_render_high_res_images() -> None:
         assert fig.caption
 
 
-def test_encode_figure_tight_hits_byte_budget_without_static() -> None:
-    corpus = _sample_corpus()
+def test_encode_figure_tight_hits_byte_budget_without_static(retail_corpus: ProseCorpus) -> None:
+    corpus = retail_corpus
     ctx = ChartContext(
         rng=random.Random(99),
         corpus=corpus,
@@ -127,15 +115,15 @@ def test_encode_figure_tight_hits_byte_budget_without_static() -> None:
     assert format_money(14_250.0, "SGD") == "SGD 14,250k"
 
 
-def test_writer_and_sheet_definitions_ground_in_corpus() -> None:
-    corpus = _sample_corpus()
+def test_writer_and_sheet_definitions_ground_in_corpus(retail_corpus: ProseCorpus) -> None:
+    corpus = retail_corpus
     rng = random.Random(7)
     writer = Writer(rng, corpus)
 
     para = writer.paragraph(n=4)
     assert len(para.split()) >= 40
-    assert len(RISKS) >= 4
-    assert len(MITIGATIONS) >= 4
+    assert len(corpus.risks) >= 4
+    assert len(corpus.mitigations) >= 4
 
     for kind in ("budget", "procurement", "pipeline", "auth"):
         cols, make_row, id_col, probe_col, probe_name, noun = sheet_definition(kind, corpus)
@@ -148,33 +136,9 @@ def test_writer_and_sheet_definitions_ground_in_corpus() -> None:
         assert noun
 
 
-def test_domain_neutral_prose_and_charts_exclude_public_sector_terms() -> None:
-    """Verify private-sector ProseCorpus generates zero hardcoded government acronyms."""
-    corpus = ProseCorpus(
-        company="Junipera Banking Group",
-        currency="USD",
-        periods=["FY2025", "FY2026"],
-        names={
-            "BU-01": "Retail Banking",
-            "BU-02": "Business Banking",
-            "BU-03": "Wealth Management",
-            "BU-04": "Institutional Banking",
-            "CAT-01": "Core Deposits",
-            "CAT-02": "Commercial Lending",
-        },
-        revenue={
-            ("BU-01", "FY2025"): (14_250.0, 13_800.0),
-            ("BU-02", "FY2026"): (22_910.0, 21_500.0),
-        },
-        units=["BU-01", "BU-02", "BU-03", "BU-04"],
-        categories=["CAT-01", "CAT-02"],
-        people=[
-            ("Elena Rostova", "Managing Director, Retail Banking"),
-            ("Marcus Vance", "Head of Core Deposits"),
-        ],
-        systems=["Core Ledger Platform", "Treasury Risk Engine", "Mobile Banking Gateway"],
-        sites=["One Marina Financial Tower", "Harbourfront Operations Centre"],
-    )
+def test_domain_neutral_prose_and_charts_exclude_public_sector_terms(banking_corpus: ProseCorpus) -> None:
+    """Verify a private-sector WorldLoom corpus gives zero public-sector acronyms."""
+    corpus = banking_corpus
     rng = random.Random(123)
     writer = Writer(rng, corpus)
     prose_block = writer.paragraph(n=40)
@@ -207,10 +171,10 @@ def test_domain_neutral_prose_and_charts_exclude_public_sector_terms() -> None:
     ctx = ChartContext(
         rng=rng,
         corpus=corpus,
-        title="Junipera Banking Group FY2026 Audit Report",
+        title=f"{corpus.company} FY2026 Audit Report",
         date="15 Oct 2026",
         theme=(0, 84, 147),
-        chart_title="Junipera Banking Group Q4 Efficiency",
+        chart_title=f"{corpus.company} Q4 Efficiency",
         printed_value="44.12%",
     )
     figs = make_chart_figures(ctx, count=13, preferred_kinds=list(CHART_KINDS))

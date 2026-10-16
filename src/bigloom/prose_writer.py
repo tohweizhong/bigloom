@@ -7,12 +7,9 @@ import random
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from functools import lru_cache
 
 from worldloom import divisions as wl_divisions
-from worldloom import domains as wl_domains
 from worldloom import roles as wl_roles
-from worldloom import sdk
 from worldloom.generators import masterdata as wl_masterdata
 from worldloom.generators import names as wl_names
 from worldloom.narrative import references
@@ -36,25 +33,6 @@ THEME_PALETTE: list[tuple[int, int, int]] = [
     (230, 120, 0),
     (0, 110, 110),
 ]
-
-
-@lru_cache(maxsize=8)
-def default_world(
-    seed: int = 42,
-    domain: str = "retail",
-    locale: str = "singapore",
-) -> World:
-    """Build and narrate a cached WorldLoom World with masterdata and episodes."""
-    dom = domain.strip().lower() or "retail"
-    reg = wl_domains.by_name(dom) or wl_domains.by_name("retail")
-    periods = min(2, (reg.max_periods if reg else 2) or 2)
-    bp = sdk.company(dom, seed=seed).located(locale).master_data(
-        vendors=20,
-        customers=20,
-        skus=20,
-    )
-    w0 = bp.build().episodes("2026-01", periods=periods).world
-    return w0.narrate(ComposedProvider.for_world(w0))
 
 
 def ensure_narrated_world(world: World) -> World:
@@ -346,13 +324,6 @@ def _extract_world_pools(world: World) -> dict[str, object]:
     }
 
 
-_DEFAULT_POOLS = _extract_world_pools(default_world())
-DEFAULT_AGENCY: str = str(_DEFAULT_POOLS["company"])
-DEFAULT_SECTIONS: list[str] = list(_DEFAULT_POOLS["sections"])  # type: ignore[arg-type]
-RISKS: list[tuple[str, str]] = list(_DEFAULT_POOLS["risks"])  # type: ignore[arg-type]
-MITIGATIONS: list[str] = list(_DEFAULT_POOLS["mitigations"])  # type: ignore[arg-type]
-
-
 @dataclass
 class ProseCorpus:
     """Grounded WorldLoom entities, locale pools, and narrated prose."""
@@ -386,75 +357,19 @@ class ProseCorpus:
     brand_tokens: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
-        """Populate any omitted fields from the cached default WorldLoom World."""
-        defaults = _DEFAULT_POOLS
-        if not self.company:
-            self.company = str(defaults["company"])
-        if not self.currency:
-            self.currency = str(defaults["currency"])
-        if not self.periods:
-            self.periods = list(defaults["periods"])  # type: ignore[arg-type]
-        if not self.given_names:
-            for p_name, _ in self.people:
-                parts = p_name.split()
-                if parts and parts[0] not in self.given_names:
-                    self.given_names.append(parts[0])
-            for g in defaults["given_names"]:  # type: ignore[union-attr]
-                if g not in self.given_names:
-                    self.given_names.append(g)
-        if not self.surnames:
-            for p_name, _ in self.people:
-                parts = p_name.split()
-                if len(parts) >= 2 and parts[-1] not in self.surnames:
-                    self.surnames.append(parts[-1])
-            for s in defaults["surnames"]:  # type: ignore[union-attr]
-                if s not in self.surnames:
-                    self.surnames.append(s)
-        if not self.people:
-            self.people = list(defaults["people"])  # type: ignore[arg-type]
-        if not self.org_roles:
-            for _, title in self.people:
-                if title and title not in self.org_roles:
-                    self.org_roles.append(title)
-            for r in defaults["org_roles"]:  # type: ignore[union-attr]
-                if r not in self.org_roles:
-                    self.org_roles.append(r)
-        if not self.systems:
-            self.systems = list(defaults["systems"])  # type: ignore[arg-type]
-        if not self.services:
-            for sys_name in self.systems:
-                slug = re.sub(r"[^a-z0-9]+", "-", sys_name.lower()).strip("-")
-                if slug and slug not in self.services:
-                    self.services.append(slug)
-            for svc in defaults["services"]:  # type: ignore[union-attr]
-                if svc not in self.services:
-                    self.services.append(svc)
-        if not self.sites:
-            self.sites = list(defaults["sites"])  # type: ignore[arg-type]
-        if not self.vendors:
-            self.vendors = list(defaults["vendors"])  # type: ignore[arg-type]
-        if not self.fy_months:
-            self.fy_months = list(defaults["fy_months"])  # type: ignore[arg-type]
-        if not self.quarters:
-            self.quarters = list(defaults["quarters"])  # type: ignore[arg-type]
-        if not self.narrated_sentences:
-            self.narrated_sentences = list(defaults["narrated_sentences"])  # type: ignore[arg-type]
-        if not self.sections:
-            self.sections = list(defaults["sections"])  # type: ignore[arg-type]
-        if not self.risks:
-            self.risks = list(defaults["risks"])  # type: ignore[arg-type]
-        if not self.mitigations:
-            self.mitigations = list(defaults["mitigations"])  # type: ignore[arg-type]
-        if not self.measure_nouns:
-            self.measure_nouns = list(defaults["measure_nouns"])  # type: ignore[arg-type]
-        if not self.chart_titles:
-            self.chart_titles = list(defaults["chart_titles"])  # type: ignore[arg-type]
-        if not self.lore_items:
-            self.lore_items = list(defaults["lore_items"])  # type: ignore[arg-type]
-        if not self.skus:
-            self.skus = list(defaults["skus"])  # type: ignore[arg-type]
-        if not self.brand_tokens:
-            self.brand_tokens = list(defaults["brand_tokens"])  # type: ignore[arg-type]
+        """Derive name and service pools from the given people and systems. Add no default content."""
+        for p_name, title in self.people:
+            parts = p_name.split()
+            if parts and parts[0] not in self.given_names:
+                self.given_names.append(parts[0])
+            if len(parts) >= 2 and parts[-1] not in self.surnames:
+                self.surnames.append(parts[-1])
+            if title and title not in self.org_roles:
+                self.org_roles.append(title)
+        for sys_name in self.systems:
+            slug = re.sub(r"[^a-z0-9]+", "-", sys_name.lower()).strip("-")
+            if slug and slug not in self.services:
+                self.services.append(slug)
 
     @classmethod
     def from_world(cls, world: World) -> ProseCorpus:
@@ -475,11 +390,6 @@ class ProseCorpus:
         for site in self.sites:
             if site and site not in seen:
                 seen.append(site)
-        for fallback in _DEFAULT_POOLS["part_labels"]:  # type: ignore[union-attr]
-            if len(seen) >= 12:
-                break
-            if fallback not in seen:
-                seen.append(fallback)
         return seen
 
 
