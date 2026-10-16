@@ -102,3 +102,9 @@ Script: `phase0/t6_fix_deck_layout.py`. Review file: SharePoint `building-bigloo
 2. FR5: passage ranking and the workbook text filter.
 3. Phase 2: run T5 again after the pack adds its document types.
 4. Phase 4: the PPTX evidence slide, the PPTX layout fix, and the second render pass for traps.
+
+## Addendum: Phase 2 Results (16 Oct 2026 15:05 SGT)
+
+- **T5 again with the GovTech pack (one period, 35 documents):** repeated sentences in each document are 0.027 on average. Every pack type is under 0.2. Across the corpus the rate is 0.44, because the template writer uses the same sentence forms for the same facts in different document types. Decision: the realism gate checks each document (FR5). The corpus-level rate needs the roadmap agent writers.
+- **WorldLoom gaps found:** `pack check` does not catch an undeclared artifact domain (`technology`), an author function that cannot own a domain (Audit and `finance`), or an author who cannot open their own document. The build catches them. A corpus loaded after its build does not register the pack document types again, so renderers skip them. BigLoom now installs them from the recipe record (`corpus.install_pack_types`).
+- **Subject limit:** all 16 GovTech types draw on the retail month-end facts (revenue, margin, close, incident). WorldLoom has no public-sector engine, so subjects such as Singpass or LifeSG need pack episodes (`worldloom-process` skill), which is a roadmap item.

@@ -1,0 +1,1137 @@
+{
+  "name": "govtech",
+  "base": "retail",
+  "description": "SYNTHETIC. A Singapore statutory board under MDDI that builds and runs Whole-of-Government digital services, cloud and cybersecurity. All figures are invented.",
+  "company_name": "Government Technology Agency (Synthetic)",
+  "industry": "Public sector",
+  "currency": "SGD",
+  "currency_unit": "thousands",
+  "fiscal_year_start_month": 4,
+  "annual_revenue": 1700000,
+  "employees": 3900,
+  "headquarters": "Mapletree Business City, Singapore",
+  "regions": [
+    "Central",
+    "East",
+    "North",
+    "North-East",
+    "West"
+  ],
+  "seasonality": "flat",
+  "estate": "large",
+  "name_pools": {
+    "given": [
+      "Wei Ming",
+      "Hui Min",
+      "Jun Jie",
+      "Xin Yi",
+      "Kai Wen",
+      "Li Ting",
+      "Muhammad",
+      "Nurul",
+      "Hafiz",
+      "Siti",
+      "Farhan",
+      "Aisyah",
+      "Arjun",
+      "Priya",
+      "Rajesh",
+      "Kavitha",
+      "Suresh",
+      "Divya",
+      "Daniel",
+      "Rachel",
+      "Marcus",
+      "Michelle",
+      "Ryan",
+      "Sarah"
+    ],
+    "family": [
+      "Tan",
+      "Lim",
+      "Lee",
+      "Ng",
+      "Ong",
+      "Wong",
+      "Goh",
+      "Chua",
+      "Koh",
+      "Teo",
+      "Chan",
+      "Yeo",
+      "Ho",
+      "Low",
+      "Sim",
+      "Toh",
+      "Abdullah",
+      "Rahman",
+      "Ismail",
+      "Hassan",
+      "Kumar",
+      "Nair",
+      "Pillai",
+      "Raj"
+    ]
+  },
+  "system_brands": {
+    "erp": "WOG Finance and Procurement System",
+    "mdm": "Agency Reference Data Register",
+    "platform": "GCC Data Platform",
+    "commerce": "Citizen Services Portal",
+    "pos": "Service Centre Counter System"
+  },
+  "voices": {
+    "cfo": {
+      "voice": "formal and precise, British spelling, acronym-heavy, writes about the agency in the third person",
+      "phrases": [
+        "within the approved FY budget",
+        "on a Whole-of-Government basis",
+        "in line with IM8 requirements"
+      ]
+    }
+  },
+  "units": [
+    {
+      "key": "product_engineering",
+      "name": "Product & Engineering",
+      "kind": "public_service",
+      "share": 0.45,
+      "categories": [
+        {
+          "name": "Citizen and Business Digital Services",
+          "share": 0.45,
+          "margin": 0.05
+        },
+        {
+          "name": "Singapore Government Tech Stack",
+          "share": 0.3,
+          "margin": 0.05
+        },
+        {
+          "name": "Data Science and AI",
+          "share": 0.25,
+          "margin": 0.05
+        }
+      ],
+      "site_formats": [
+        {
+          "name": "Headquarters Office",
+          "count": 1,
+          "revenue_weight": 1.0
+        }
+      ]
+    },
+    {
+      "key": "services_governance_cyber",
+      "name": "Services, Governance & Cybersecurity",
+      "kind": "public_service",
+      "share": 0.35,
+      "categories": [
+        {
+          "name": "Government on Commercial Cloud",
+          "share": 0.45,
+          "margin": 0.05
+        },
+        {
+          "name": "Cyber Security Operations",
+          "share": 0.35,
+          "margin": 0.05
+        },
+        {
+          "name": "ICT Governance and IM8",
+          "share": 0.2,
+          "margin": 0.05
+        }
+      ],
+      "site_formats": [
+        {
+          "name": "Operations Centre",
+          "count": 1,
+          "revenue_weight": 1.0
+        }
+      ]
+    },
+    {
+      "key": "digital_transformation",
+      "name": "Government Digital Transformation",
+      "kind": "public_service",
+      "share": 0.2,
+      "categories": [
+        {
+          "name": "Economic and National Development Cluster",
+          "share": 0.5,
+          "margin": 0.05
+        },
+        {
+          "name": "Central Administration and Social Cluster",
+          "share": 0.5,
+          "margin": 0.05
+        }
+      ],
+      "site_formats": [
+        {
+          "name": "Agency Co-location Office",
+          "count": 2,
+          "revenue_weight": 1.0
+        }
+      ]
+    }
+  ],
+  "lore": [
+    {
+      "kind": "decision",
+      "assertion": "Under the 2018 cloud-first policy, most eligible systems moved to Government on Commercial Cloud. The mapping between legacy agency codes and the cloud data platform is still maintained by hand.",
+      "effective_from": "2025-03",
+      "constrains": [
+        {
+          "kind": "event_likelihood",
+          "target": "data_quality_incident/inventory",
+          "effect": "A hand-maintained code mapping drifts, so reconciliation failures recur after each migration wave",
+          "magnitude": 2.0
+        },
+        {
+          "kind": "terminology",
+          "target": "agency_code",
+          "effect": "Legacy and cloud agency codes are both in use and are not interchangeable"
+        }
+      ]
+    },
+    {
+      "kind": "norm",
+      "assertion": "Since the public sector data security reforms were completed, every document carries a security classification and a sensitivity marking, and data access is logged.",
+      "effective_from": "2024-06",
+      "constrains": [
+        {
+          "kind": "terminology",
+          "target": "classification_marking",
+          "effect": "Documents are marked, for example, OFFICIAL (CLOSED) and SENSITIVE NORMAL"
+        }
+      ]
+    },
+    {
+      "kind": "norm",
+      "assertion": "The agency keeps a full set of monthly governance papers, because statutory boards answer to their Board, their Minister, and the Auditor-General for every reporting commitment.",
+      "effective_from": "2025-03",
+      "constrains": [
+        {
+          "kind": "artifact_density",
+          "target": "filing/board_paper",
+          "effect": "The agency files a board paper every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/exco_update",
+          "effect": "The agency files a exco update every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/steering_committee_update",
+          "effect": "The agency files a steering committee update every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/major_incident_review",
+          "effect": "The agency files a major incident review every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/post_implementation_review",
+          "effect": "The agency files a post implementation review every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/budget_utilisation_report",
+          "effect": "The agency files a budget utilisation report every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/cluster_performance_review",
+          "effect": "The agency files a cluster performance review every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/finance_committee_paper",
+          "effect": "The agency files a finance committee paper every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/audit_observations_response",
+          "effect": "The agency files a audit observations response every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/risk_register_update",
+          "effect": "The agency files a risk register update every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/service_status_report",
+          "effect": "The agency files a service status report every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/ministerial_update_brief",
+          "effect": "The agency files a ministerial update brief every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/close_readiness_memo",
+          "effect": "The agency files a close readiness memo every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/data_quality_review",
+          "effect": "The agency files a data quality review every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/townhall_brief",
+          "effect": "The agency files a townhall brief every period",
+          "magnitude": 1.0
+        },
+        {
+          "kind": "artifact_density",
+          "target": "filing/management_accounts_commentary",
+          "effect": "The agency files a management accounts commentary every period",
+          "magnitude": 1.0
+        }
+      ]
+    }
+  ],
+  "artifact_types": [
+    {
+      "key": "board_paper",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Financial position",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "group",
+          "purpose": "Set out the agency's month against the approved budget, with the variance stated plainly and attributed. Formal register, British spelling, no promotional language.",
+          "moves": [
+            "headline",
+            "comparison",
+            "attribution",
+            "implication"
+          ]
+        },
+        {
+          "heading": "Close and assurance",
+          "kinds": [
+            "close.",
+            "financial.incident_pl_impact"
+          ],
+          "scope": "any",
+          "purpose": "Tell the Board whether the books closed on the committed date and whether the result was affected, in terms a director can repeat."
+        },
+        {
+          "heading": "Matters for decision",
+          "kinds": [
+            "metric."
+          ],
+          "scope": "any",
+          "purpose": "Name the one decision or watch item the Board should take away, and why it matters now. Open with what the Board is asked to note and decide.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "cfo",
+        "fallback_role": "ceo",
+        "domain": "finance",
+        "audience": "executive_committee",
+        "size": "long",
+        "facts": [
+          "headline",
+          "close_status"
+        ],
+        "rationale": "The Board receives a monthly paper on the agency's financial position and the assurance behind it."
+      }
+    },
+    {
+      "key": "exco_update",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "In brief",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "group",
+          "purpose": "Three sentences for the executive committee: the result, the direction, and whether anything needs them."
+        },
+        {
+          "heading": "Results for {{var:unit.name}}",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit."
+          ],
+          "scope": "unit",
+          "purpose": "{{var:unit.name}}'s month in one argued paragraph, so its cluster head can find their own line quickly.",
+          "repeat": "unit"
+        },
+        {
+          "heading": "Operations",
+          "kinds": [
+            "ops.feed_status",
+            "ops.remediation",
+            "close."
+          ],
+          "scope": "any",
+          "purpose": "What happened in operations that the committee should know, and what is already being done about it.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "cfo",
+        "fallback_role": "controller",
+        "domain": "finance",
+        "audience": "executive_committee",
+        "size": "medium",
+        "facts": [
+          "headline",
+          "close_status"
+        ],
+        "rationale": "ExCo takes a short monthly update, presented as slides at the meeting."
+      },
+      "deck": true
+    },
+    {
+      "key": "steering_committee_update",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Status",
+          "kinds": [
+            "ops.feed_status",
+            "ops.valuation_status"
+          ],
+          "scope": "any",
+          "purpose": "Give the steering committee the current status of the affected service in one paragraph, without technical detail."
+        },
+        {
+          "heading": "Remediation",
+          "kinds": [
+            "ops.remediation",
+            "ops.remediation_addresses",
+            "ops.workaround"
+          ],
+          "scope": "any",
+          "purpose": "Explain what the programme team is doing, what it fixes, and what remains open."
+        },
+        {
+          "heading": "Ownership",
+          "kinds": [
+            "ops.mapping_table_owner",
+            "ops.root_cause_classification"
+          ],
+          "scope": "any",
+          "purpose": "Say who owns the component and whether that ownership is settled; an unassigned owner is a finding."
+        }
+      ],
+      "filing": {
+        "author_role": "cio",
+        "fallback_role": "platform_lead",
+        "domain": "operations",
+        "audience": "technology",
+        "size": "medium",
+        "facts": [
+          "control_failure",
+          "close_status"
+        ],
+        "rationale": "A steering committee oversees remediation of any incident that delayed the close."
+      },
+      "deck": true
+    },
+    {
+      "key": "major_incident_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 6,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Incident summary",
+          "kinds": [
+            "ops.feed_status",
+            "ops.affected_records",
+            "ops.incident_opened"
+          ],
+          "scope": "any",
+          "purpose": "What failed, how much was affected, and what it stopped, for a reader who reads only this section."
+        },
+        {
+          "heading": "Sequence of events",
+          "kinds": [
+            "ops.incident_opened",
+            "ops.valuation_status",
+            "close."
+          ],
+          "scope": "any",
+          "purpose": "The order of events, with the point at which the close was put at risk made explicit. Carry the sequence without clock times."
+        },
+        {
+          "heading": "Root cause",
+          "kinds": [
+            "ops.cause",
+            "ops.root_cause_classification",
+            "ops.cause_ruled_out"
+          ],
+          "scope": "any",
+          "purpose": "The confirmed cause, the hypothesis that was ruled out, and the condition that let the cause persist."
+        },
+        {
+          "heading": "Corrective actions",
+          "kinds": [
+            "ops.remediation",
+            "ops.remediation_addresses",
+            "ops.previous_similar_incident"
+          ],
+          "scope": "any",
+          "purpose": "What will stop a recurrence, and why the previous similar incident did not."
+        }
+      ],
+      "filing": {
+        "author_role": "svc_incident",
+        "fallback_role": "svc_lead",
+        "domain": "operations",
+        "audience": "technology",
+        "size": "long",
+        "facts": [
+          "control_failure"
+        ],
+        "rationale": "Every P2 incident that touches a statutory close receives a formal major incident review."
+      }
+    },
+    {
+      "key": "post_implementation_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "What was changed",
+          "kinds": [
+            "ops.remediation",
+            "ops.workaround"
+          ],
+          "scope": "any",
+          "purpose": "Describe the change that was put in, and the interim workaround it replaced."
+        },
+        {
+          "heading": "Did it work",
+          "kinds": [
+            "ops.remediation_addresses",
+            "ops.feed_status"
+          ],
+          "scope": "any",
+          "purpose": "Judge whether the change fixed the condition it was meant to fix, on the evidence given."
+        },
+        {
+          "heading": "Lessons learnt",
+          "kinds": [
+            "ops.previous_similar_incident",
+            "ops.root_cause_classification"
+          ],
+          "scope": "any",
+          "purpose": "State what the agency should do differently next time, in two or three plain points.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "platform_lead",
+        "fallback_role": "cio",
+        "domain": "operations",
+        "audience": "technology",
+        "size": "medium",
+        "facts": [
+          "control_failure"
+        ],
+        "rationale": "A post-implementation review closes out every remediation that followed a major incident."
+      }
+    },
+    {
+      "key": "budget_utilisation_report",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Overall utilisation",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit."
+          ],
+          "scope": "group",
+          "purpose": "Report how much of the approved budget the agency used in the month, and the gap to plan."
+        },
+        {
+          "heading": "Utilisation for {{var:unit.name}}",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "unit",
+          "purpose": "Report {{var:unit.name}}'s use of its budget against plan, and the reason for the gap, for its cluster finance partner.",
+          "repeat": "unit"
+        }
+      ],
+      "filing": {
+        "author_role": "controller",
+        "fallback_role": "reporting_manager",
+        "domain": "finance",
+        "audience": "finance",
+        "size": "long",
+        "facts": [
+          "headline"
+        ],
+        "rationale": "Finance tracks budget utilisation by cluster every month."
+      }
+    },
+    {
+      "key": "cluster_performance_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Performance of {{var:unit.name}}",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "unit",
+          "purpose": "Argue {{var:unit.name}}'s month against plan in a business partner's commercial register.",
+          "moves": [
+            "headline",
+            "attribution",
+            "implication"
+          ],
+          "repeat": "unit"
+        },
+        {
+          "heading": "Watch items",
+          "kinds": [
+            "metric."
+          ],
+          "scope": "any",
+          "purpose": "Name what clusters should watch next period, if the measures warrant it.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "reporting_manager",
+        "fallback_role": "controller",
+        "domain": "finance",
+        "audience": "finance",
+        "size": "medium",
+        "facts": [
+          "headline"
+        ],
+        "rationale": "Each cluster receives a monthly performance review from its finance partner."
+      }
+    },
+    {
+      "key": "audit_observations_response",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Observation",
+          "kinds": [
+            "ops.cause",
+            "close.delay"
+          ],
+          "scope": "any",
+          "purpose": "State the audit observation plainly: what control did not operate and what it caused."
+        },
+        {
+          "heading": "Management response",
+          "kinds": [
+            "ops.remediation",
+            "ops.remediation_addresses"
+          ],
+          "scope": "any",
+          "purpose": "Give management's response and the action already taken, in the register of a formal reply to an auditor."
+        },
+        {
+          "heading": "Owner and status",
+          "kinds": [
+            "ops.mapping_table_owner",
+            "ops.root_cause_classification"
+          ],
+          "scope": "any",
+          "purpose": "Name the owner of the action and say whether the ownership is settled."
+        }
+      ],
+      "filing": {
+        "author_role": "audit",
+        "fallback_role": "controller",
+        "domain": "risk",
+        "audience": "finance",
+        "size": "medium",
+        "facts": [
+          "control_failure",
+          "close_status"
+        ],
+        "rationale": "Internal Audit records every control failure that delays a close, with management's response."
+      }
+    },
+    {
+      "key": "risk_register_update",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Risks that moved",
+          "kinds": [
+            "metric.",
+            "ops.previous_similar_incident"
+          ],
+          "scope": "any",
+          "purpose": "Report which risks moved this month and why, for the Finance and Risk Committee."
+        },
+        {
+          "heading": "Control risk",
+          "kinds": [
+            "ops.root_cause_classification",
+            "ops.mapping_table_owner"
+          ],
+          "scope": "any",
+          "purpose": "Describe the control risk the month exposed and whether it is now owned.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "audit",
+        "fallback_role": "cfo",
+        "domain": "risk",
+        "audience": "finance",
+        "size": "small",
+        "facts": [
+          "control_failure"
+        ],
+        "rationale": "The risk register is updated monthly for the Finance and Risk Committee."
+      }
+    },
+    {
+      "key": "service_status_report",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 4,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Service status",
+          "kinds": [
+            "ops.feed_status",
+            "ops.valuation_status"
+          ],
+          "scope": "any",
+          "purpose": "Report the status of the affected service for service owners who depend on it."
+        },
+        {
+          "heading": "Workaround in place",
+          "kinds": [
+            "ops.workaround"
+          ],
+          "scope": "any",
+          "purpose": "Explain the workaround users should follow until the fix is complete.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "svc_lead",
+        "fallback_role": "svc_incident",
+        "domain": "operations",
+        "audience": "technology",
+        "size": "small",
+        "facts": [
+          "control_failure"
+        ],
+        "rationale": "Service operations publishes a status report whenever a service the close depends on degrades."
+      }
+    },
+    {
+      "key": "ministerial_update_brief",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Key message",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "group",
+          "purpose": "Give the Minister's office one clear message about the agency's month, in plain language a press secretary can reuse."
+        },
+        {
+          "heading": "Delivery and assurance",
+          "kinds": [
+            "close.status",
+            "close.delay",
+            "financial.incident_pl_impact"
+          ],
+          "scope": "any",
+          "purpose": "Say whether the agency met its reporting commitment and whether the result was affected. Do not raise operational detail."
+        }
+      ],
+      "filing": {
+        "author_role": "ceo",
+        "fallback_role": "cfo",
+        "domain": "finance",
+        "audience": "executive_committee",
+        "size": "small",
+        "facts": [
+          "group",
+          "close_status"
+        ],
+        "rationale": "The Chief Executive sends a short monthly brief to the Minister's office."
+      }
+    },
+    {
+      "key": "close_readiness_memo",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 8,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Close timetable",
+          "kinds": [
+            "close.due_date",
+            "close.revised_date",
+            "close.status"
+          ],
+          "scope": "any",
+          "purpose": "Tell finance teams the committed close date, any revision, and the current status."
+        },
+        {
+          "heading": "Risks to the close",
+          "kinds": [
+            "close.delay",
+            "ops.valuation_status"
+          ],
+          "scope": "any",
+          "purpose": "Name what could still move the close, and what finance teams must do now.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "controller",
+        "fallback_role": "reporting_manager",
+        "domain": "finance",
+        "audience": "finance",
+        "size": "small",
+        "facts": [
+          "close_status"
+        ],
+        "rationale": "The Financial Controller issues a close readiness memo before every month-end close."
+      }
+    },
+    {
+      "key": "data_quality_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Records affected",
+          "kinds": [
+            "ops.affected_records",
+            "ops.feed_status"
+          ],
+          "scope": "any",
+          "purpose": "State how many records were affected and which downstream reports relied on them."
+        },
+        {
+          "heading": "Cause and classification",
+          "kinds": [
+            "ops.root_cause_classification",
+            "ops.cause"
+          ],
+          "scope": "any",
+          "purpose": "Classify the data quality failure and explain how it arose."
+        },
+        {
+          "heading": "Ownership of reference data",
+          "kinds": [
+            "ops.mapping_table_owner"
+          ],
+          "scope": "any",
+          "purpose": "Say who owns the reference data behind the failure. An unowned table is a finding."
+        }
+      ],
+      "filing": {
+        "author_role": "platform_lead",
+        "fallback_role": "cio",
+        "domain": "operations",
+        "audience": "technology",
+        "size": "medium",
+        "facts": [
+          "control_failure"
+        ],
+        "rationale": "The data platform team reviews every data quality failure that reaches a statutory report."
+      }
+    },
+    {
+      "key": "townhall_brief",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "How the agency did",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "group",
+          "purpose": "Tell all staff how the agency did this month, in plain words and without jargon."
+        },
+        {
+          "heading": "What happened in operations",
+          "kinds": [
+            "ops.feed_status",
+            "ops.remediation"
+          ],
+          "scope": "any",
+          "purpose": "Explain to staff what went wrong in operations this month and what was fixed, without blame.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "ceo",
+        "fallback_role": "cfo",
+        "domain": "finance",
+        "audience": "all_staff",
+        "size": "small",
+        "facts": [
+          "group"
+        ],
+        "rationale": "The Chief Executive briefs all staff at a monthly town hall."
+      },
+      "deck": true
+    },
+    {
+      "key": "management_accounts_commentary",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Group commentary",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "group",
+          "purpose": "Comment on the management accounts for the month, the way a reporting manager writes for the CFO's review.",
+          "moves": [
+            "headline",
+            "comparison",
+            "driver",
+            "implication"
+          ]
+        },
+        {
+          "heading": "Commentary for {{var:unit.name}}",
+          "kinds": [
+            "financial.revenue.",
+            "financial.gross_profit.",
+            "financial.gross_margin_pct."
+          ],
+          "scope": "unit",
+          "purpose": "Comment on {{var:unit.name}}'s figures and the main driver of its variance.",
+          "repeat": "unit"
+        }
+      ],
+      "filing": {
+        "author_role": "reporting_manager",
+        "fallback_role": "controller",
+        "domain": "finance",
+        "audience": "group_cfo",
+        "size": "long",
+        "facts": [
+          "headline"
+        ],
+        "rationale": "The reporting team writes commentary on the management accounts every month."
+      }
+    },
+    {
+      "key": "finance_committee_paper",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 20,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Margin position",
+          "kinds": [
+            "financial.gross_margin_pct.",
+            "financial.gross_profit."
+          ],
+          "scope": "group",
+          "purpose": "Report the agency's margin for the month against plan, for the Finance Committee, with the cause of any gap.",
+          "moves": [
+            "headline",
+            "comparison",
+            "driver"
+          ]
+        },
+        {
+          "heading": "Measures to watch",
+          "kinds": [
+            "metric."
+          ],
+          "scope": "any",
+          "purpose": "Name the measures the Finance Committee should watch next month, and why.",
+          "required": false
+        }
+      ],
+      "filing": {
+        "author_role": "cfo",
+        "fallback_role": "controller",
+        "domain": "finance",
+        "audience": "finance",
+        "size": "small",
+        "facts": [
+          "headline"
+        ],
+        "rationale": "The Finance Committee receives a short monthly paper on margin."
+      }
+    }
+  ],
+  "episode_text": {
+    "event.close_started": "{period} month-end close commenced; the finance orchestrator began the overnight sequence on the WOG Finance and Procurement System.",
+    "event.pipeline_failed": "The asset valuation pipeline failed. Agency asset and service charge balances could not be valued for the period.",
+    "event.incident_opened": "Service operations opened incident {incident_ref} at priority P2 against the asset valuation service.",
+    "event.hypothesis_recorded": "Initial triage attributed the failure to an overnight outage of the finance system.",
+    "event.hypothesis_superseded": "The finance system outage hypothesis was ruled out; system logs showed no interruption in the window.",
+    "event.root_cause_confirmed": "Root cause confirmed as a stale legacy-to-new agency code mapping, leaving {affected:,} records unmapped and unvaluable.",
+    "event.workaround_applied": "A manual agency code mapping override was applied so valuation could complete for the period.",
+    "event.valuation_available": "Asset valuation completed for {period} following the manual override.",
+    "event.close_delayed": "Final close was pushed by one business day and escalated to the Chief Financial Officer.",
+    "event.control_failure_identified": "Review established the underlying failure as a control failure: the agency code mapping table has no registered owner and no required reviewer.",
+    "event.remediation_created": "Two remediation tickets raised: automate the code mapping validation, and assign ownership of the mapping table with a mandatory reviewer.",
+    "fact.cause": "Stale legacy-to-new agency code mapping in the reference data register",
+    "fact.workaround": "Manual agency code mapping override applied to complete valuation for the period",
+    "fact.valuation_status": "Asset valuation completed",
+    "fact.remediation": "One ticket automates code mapping validation; one assigns mapping table ownership with a mandatory reviewer"
+  },
+  "evaluation_text": {
+    "q.direct.group_revenue": "What was the agency's total revenue for {period}?",
+    "q.direct.group_gross_profit": "What was the agency's gross profit for {period}?",
+    "q.direct.group_gross_margin": "What was the agency's gross margin for {period}?",
+    "q.direct.unit_revenue": "What revenue did the {name} cluster report for {period}?",
+    "q.numerical.revenue_vs_budget": "By how much did the agency's revenue miss budget in {period}, in absolute terms and as a percentage?",
+    "q.numerical.worst_unit_variance": "Which cluster carried the {superlative} adverse {label} variance in {period}?"
+  }
+}

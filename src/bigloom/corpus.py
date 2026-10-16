@@ -178,6 +178,23 @@ def _recipe_digest(world: World) -> str:
     return hashlib.sha256(payload.encode()).hexdigest()
 
 
+def install_pack_types(world: World) -> int:
+    """Register the document types of the company pack that the corpus recipe records.
+
+    `worldloom build` registers pack document types while it builds. A corpus loaded later
+    does not register them again, so its renderers skip every pack type. This installs
+    them from the recipe record. Return the number of types in the record.
+    """
+    record = world.recipe.get("pack") if isinstance(world.recipe, dict) else None
+    if not isinstance(record, dict) or not record.get("artifact_types"):
+        return 0
+    from worldloom import doctypes, packs
+
+    pack = packs.Pack.model_validate(record)
+    doctypes.install(pack.artifact_types)
+    return len(pack.artifact_types)
+
+
 def _narrate_open_sections(world: World) -> tuple[World, bool]:
     """Fill sections with no prose with `ComposedProvider`. Return the world and True when it filled any."""
     from worldloom.narrative.composer import ComposedProvider
@@ -230,6 +247,7 @@ def resolve_corpus(
     except (OSError, ValueError) as exc:
         raise CorpusError(f"Cannot load the WorldLoom corpus '{source}': {exc}") from exc
 
+    install_pack_types(world)
     world, filled = _narrate_open_sections(world)
     ledger = list(world.ledger)
     model_ids = sorted({e.model_id for e in ledger})

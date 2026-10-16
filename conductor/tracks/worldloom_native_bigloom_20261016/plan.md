@@ -38,15 +38,15 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 2: Company Pack with Document Types (FR2)
 
-- [ ] Task: Write failing tests.
-    - [ ] `worldloom pack check` and `pack lint` pass on the GovTech pack.
-    - [ ] A GovTech build makes at least 16 distinct document types.
-    - [ ] No GovTech term appears in a `retail` build.
-- [ ] Task: Write the GovTech company pack: company, units, name pools, system brands, voices, lore.
-- [ ] Task: Add at least 16 `artifact_types` to the pack, based on the catalogue in `make_large_files.py` and `make_100mb_files.py`.
-- [ ] Task: Add `episode_text` and `evaluation_text` to the pack.
-- [ ] Task: Run the Phase 0 T5 check again with one period and the new document types. `repeated_sentence_rate` must be 0.2 or less.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Write failing tests.
+    - [x] `worldloom pack check` and `pack lint` pass on the GovTech pack.
+    - [x] A GovTech build makes at least 16 distinct document types.
+    - [x] No GovTech term appears in a `retail` build.
+- [x] Task: Write the GovTech company pack: company, units, name pools, system brands, voices, lore.
+- [x] Task: Add at least 16 `artifact_types` to the pack, based on the catalogue in `make_large_files.py` and `make_100mb_files.py`.
+- [x] Task: Add `episode_text` and `evaluation_text` to the pack.
+- [x] Task: Run the Phase 0 T5 check again with one period and the new document types. `repeated_sentence_rate` must be 0.2 or less. Result: 0.027 mean and all pack types under 0.2 in each document; 0.44 across the corpus (template writer limit, see phase0_findings.md).
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 3: Template Writer Flag (FR3)
 
