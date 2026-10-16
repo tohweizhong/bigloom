@@ -48,7 +48,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Run the Phase 0 T5 check again with one period and the new document types. `repeated_sentence_rate` must be 0.2 or less. Result: 0.027 mean and all pack types under 0.2 in each document; 0.44 across the corpus (template writer limit, see phase0_findings.md).
 - [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
-## Phase 3: Template Writer Flag (FR3)
+## Phase 3: Template Writer Flag (FR3) [checkpoint: e0fd6d3]
 
 - [x] Task: Write failing tests.
     - [x] `--writer template` is the default and narrates every section with `ComposedProvider`.
