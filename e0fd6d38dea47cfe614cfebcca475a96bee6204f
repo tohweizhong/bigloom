@@ -1,0 +1,1 @@
+Phase 3 (FR3). Files: corpus.py, build.py, cli.py, wizard.py, tests/test_writer_flag.py, plan.md. Writer class removal moved to Phase 4. 81 tests pass.
