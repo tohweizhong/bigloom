@@ -49,3 +49,8 @@
 
 
 
+
+---
+
+- [ ] **Track: WorldLoom-Native BigLoom (content and layout from WorldLoom, test design in BigLoom)**
+  *Link: [./tracks/worldloom_native_bigloom_20261016/index.md](./tracks/worldloom_native_bigloom_20261016/index.md)*
