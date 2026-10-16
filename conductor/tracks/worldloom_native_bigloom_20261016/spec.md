@@ -24,6 +24,7 @@ This track makes BigLoom take all content and layout from WorldLoom. BigLoom kee
 | Retrieval gate | Target and trap both in positions 1 to 3, in BM25 or TF-IDF | 16 Oct 2026 13:41 SGT |
 | Retrieval unit | Rank passages, not whole files. A file takes the position of its best passage (page, slide, sheet, or about 250 words). | 16 Oct 2026 14:24 SGT |
 | PPTX evidence | BigLoom adds an evidence slide after rendering. The deck does not show added IR sections. | 16 Oct 2026 14:14 SGT |
+| PPTX layout fix | The enterprise deck template gives title and body boxes a width of 16 in and a height of 0 on a 13.33 in slide. BigLoom fixes every broken box after rendering. Approved after visual review. | 16 Oct 2026 14:36 SGT |
 | Revision files | BigLoom uploads only the main file of each target. Revision files stay local. | 16 Oct 2026 14:14 SGT |
 | Periods and test sets | One period for each world. One test set uses one world, with one document of each type. The template writer repeats sentence forms across months and across worlds. | 16 Oct 2026 14:30 SGT |
 | Trap rule | Word: the `v0.1` revision from a second render pass with the canary. PDF, slides, workbook: the same document from a second pass with the canary, no padding, marked as a draft. | 16 Oct 2026 14:16 SGT |

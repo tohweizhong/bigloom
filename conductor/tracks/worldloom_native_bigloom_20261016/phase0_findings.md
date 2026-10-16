@@ -14,6 +14,7 @@
 | T2 | Does a superseded draft exist for each target type? | Distractor drafts: 4 documents only. Revision files `v0.1` and `v0.2`: every DOCX document. | New trap rule. |
 | T3 | Do the target and its trap rank in positions 1 to 3? | Whole-file ranking fails for the workbook. Passage ranking passes for all four formats. | Rank passages, not whole files. |
 | T4 | Can BigLoom add a picture and a slide after rendering? | Pass for DOCX, PPTX, and PDF. | Post-render picture and evidence slide. |
+| T6 | Does the enterprise deck lay out correctly in PowerPoint? | Fail. Titles run off the slide, and text sits over titles. A post-render fix corrects 106 boxes on 23 slides. | BigLoom fixes broken boxes after rendering. |
 | T5 | Does template prose pass the quality checks? | Pass with one period. Fail with three periods (repeated sentences). | One period for each world, one document of each type in a test set. |
 
 ## T1. Section added to the IR
@@ -86,9 +87,18 @@ Script: `phase0/t5_prose_quality.py`.
 
 The template writer repeats sentence forms for one document type every month, and across worlds. Examples: "Taken division by division, the picture is clearer." and "Close is now expected on <date>."
 
+## T6. Deck layout (found in visual review)
+
+Script: `phase0/t6_fix_deck_layout.py`. Review file: SharePoint `building-bigloom/phase0/t6-deck-layout-fixed`.
+
+- The user reviewed the deck in PowerPoint Online. The agenda title sat outside the slide, slides 3 and 4 had the title over the text, and the slide 5 title ran past the edge.
+- Cause: the template layouts give the title and body boxes a width of 16.00 in and a height of 0.00 in, on a slide 13.33 in wide. The date, footer, and slide number boxes on each slide also have a height of 0. The renderer scales 4:3 template layouts to 16:9 (`render/enterprise/pptx.py:44`), and this step does not give valid sizes.
+- Fix: BigLoom sets valid sizes on every layout and slide box with no height or with a width greater than the slide. The fix changed 106 boxes on 23 slides. No broken box remained. The user approved the look on 16 Oct 2026 14:36 SGT.
+- WorldLoom is not changed. An upstream report is not part of this track.
+
 ## Changes to the Plan
 
 1. Spec decisions table: PPTX evidence slide, main file only, trap rule, passage ranking, one period for each world, and one document of each type in a test set.
 2. FR5: passage ranking and the workbook text filter.
 3. Phase 2: run T5 again after the pack adds its document types.
-4. Phase 4: the PPTX evidence slide and the second render pass for traps.
+4. Phase 4: the PPTX evidence slide, the PPTX layout fix, and the second render pass for traps.

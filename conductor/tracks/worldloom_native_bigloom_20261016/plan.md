@@ -73,6 +73,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Implement picture insertion for DOCX, PPTX, and PDF.
 - [ ] Task: Implement the trap by the Phase 0 trap rule: a second render pass with the canary value (`v0.1` revision for Word, the unpadded main file for other formats).
 - [ ] Task: Implement the PPTX evidence slide after rendering.
+- [ ] Task: Implement the PPTX layout fix after rendering: give a valid size to every layout and slide placeholder with no height or with a width greater than the slide (Phase 0 T6).
 - [ ] Task: Keep only the main file of each target. Do not upload revision files.
 - [ ] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
 - [ ] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
