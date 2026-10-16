@@ -1,0 +1,1 @@
+Phase 1 task: corpus loader and manifest provenance. Files: src/bigloom/corpus.py (new), build.py, models.py, wizard.py, tests/test_corpus_input.py (new), tests/conftest.py (new), tests/test_pipeline.py, tests/test_wizard.py. Why: FR1, BigLoom reads WorldLoom corpora instead of building worlds in process. All 74 tests pass.
