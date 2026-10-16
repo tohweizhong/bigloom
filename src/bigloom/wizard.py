@@ -13,7 +13,7 @@ import yaml
 from worldloom import packs
 
 from .build import build_corpus
-from .corpus import months_before, worldloom_default_period
+from .corpus import WRITERS, CorpusError, months_before, worldloom_default_period
 from .proposal.facts import DEFAULT_GIVEN, DEFAULT_SURNAMES
 from .qualify import load_corpus_snapshots, qualify_corpus
 from .queries import generate_queries
@@ -319,8 +319,11 @@ def run_interactive_wizard(
     seed: int = 2026,
     default_sizes_mb: str = "18,50,100",
     default_formats: str = "docx,xlsx,pptx,pdf",
+    writer: str = "template",
 ) -> dict[str, Any]:
     """Prompt the user for company, file sizes (up to 1 GiB), and formats, then run BigLoom."""
+    if writer not in WRITERS:
+        raise CorpusError(f"Unknown writer '{writer}'. Writers that work: {', '.join(WRITERS)}.")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     source = (
@@ -537,6 +540,7 @@ def run_interactive_wizard(
         locale=locale,
         facets=facets,
         subject=subject,
+        writer=writer,
     )
     cases_path = out_dir / "cases.json"
     cases = generate_queries(manifest_path=out_dir / "manifest.jsonl", out_path=cases_path)

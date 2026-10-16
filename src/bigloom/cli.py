@@ -31,6 +31,7 @@ def init(
     sizes_mb: Annotated[str, typer.Option("--sizes-mb")] = "18,50,100",
     formats: Annotated[str, typer.Option("--formats")] = "docx,xlsx,pptx,pdf",
     seed: Annotated[int, typer.Option("--seed")] = 2026,
+    writer: Annotated[str, typer.Option("--writer", help="Narration writer. This release supports: template.")] = "template",
 ) -> None:
     """Interactive wizard that asks for company details and runs WorldLoom and BigLoom."""
     summary = run_interactive_wizard(
@@ -38,6 +39,7 @@ def init(
         seed=seed,
         default_sizes_mb=sizes_mb,
         default_formats=formats,
+        writer=writer,
     )
     typer.echo(json.dumps(summary, indent=2))
     if summary.get("executed") and summary.get("qualified") is False:
@@ -81,6 +83,7 @@ def build(
     locale: Annotated[str | None, typer.Option("--locale")] = None,
     facets: Annotated[str | None, typer.Option("--facets")] = None,
     subject: Annotated[str | None, typer.Option("--subject")] = None,
+    writer: Annotated[str, typer.Option("--writer", help="Narration writer. This release supports: template.")] = "template",
 ) -> None:
     """Synthesize large target files (up to 1 GiB) and paired < 1 MB distractor trap files."""
     parsed_sizes = tuple(float(x.strip()) for x in sizes_mb.split(",") if x.strip())
@@ -97,6 +100,7 @@ def build(
         locale=locale,
         facets=parsed_facets,
         subject=subject,
+        writer=writer,
     )
     summary = {
         "out_dir": str(out_dir),

@@ -81,6 +81,7 @@ def _resolve_world_context(
     domain: str | None = None,
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
+    writer: str = "template",
 ) -> _WorldContext:
     """Load or build the WorldLoom corpus, then extract company, entities, and currency."""
     world, provenance = resolve_corpus(
@@ -91,6 +92,7 @@ def _resolve_world_context(
         domain=domain,
         locale=locale,
         facets=facets,
+        writer=writer,
     )
 
     prose_corpus = ProseCorpus.from_world(world)
@@ -764,6 +766,7 @@ def build_corpus(
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
     subject: str | None = None,
+    writer: str = "template",
 ) -> list[ManifestEntry]:
     """Build large native documents (up to 1 GiB) and paired < 1 MB distractor trap files."""
     if not sizes_mb or any(s <= 0 or s > 1024.0 for s in sizes_mb):
@@ -778,6 +781,7 @@ def build_corpus(
         domain=domain,
         locale=locale,
         facets=facets,
+        writer=writer,
     )
     topics = (
         tuple(f"{t} — {subject.strip()}" for t in ctx.topics)

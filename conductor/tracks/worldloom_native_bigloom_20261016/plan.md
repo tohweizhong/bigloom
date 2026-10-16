@@ -50,14 +50,14 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 3: Template Writer Flag (FR3)
 
-- [ ] Task: Write failing tests.
-    - [ ] `--writer template` is the default and narrates every section with `ComposedProvider`.
-    - [ ] The manifest records `narration: composed` and the provider ID.
-    - [ ] An unknown `--writer` value stops the run with the list of values that work.
-    - [ ] Two builds give the same text.
-- [ ] Task: Implement the `--writer` flag on `bigloom build` and the wizard, with `enterprise/v2` as the realism profile.
-- [ ] Task: Remove the `Writer` class and its 4 sentence templates from `prose_writer.py`.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Write failing tests.
+    - [x] `--writer template` is the default and narrates every section with `ComposedProvider`.
+    - [x] The manifest records `narration: composed` and the provider ID.
+    - [x] An unknown `--writer` value stops the run with the list of values that work.
+    - [x] Two builds give the same text.
+- [x] Task: Implement the `--writer` flag on `bigloom build` and the wizard, with `enterprise/v2` as the realism profile.
+- [x] Task: Remove the `Writer` class and its 4 sentence templates from `prose_writer.py`. (Moved to Phase 4, because the old renderers call `Writer` until Phase 4 replaces them.)
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 4: Render through WorldLoom, then Add Test Evidence (FR4)
 
@@ -78,6 +78,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
 - [ ] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
 - [ ] Task: Remove `_extract_world_pools` and the pool code that only the old renderers use (moved from Phase 1).
+- [ ] Task: Remove the `Writer` class and its 4 sentence templates (moved from Phase 3).
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 5: Qualification v2 (FR5)

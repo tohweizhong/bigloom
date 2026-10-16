@@ -27,6 +27,9 @@ WORLDLOOM_REPO = "https://github.com/vamsiramakrishnan/worldloom"
 INSTALL_COMMAND = f"pip install 'worldloom[all] @ git+{WORLDLOOM_REPO}@{WORLDLOOM_PIN}'"
 COMPOSED_MODEL_ID = "composed-prose-2"
 CACHE_ENV = "BIGLOOM_CORPUS_CACHE"
+#: Narration writers that this track supports. The roadmap adds "handshake", "claude", and "codex".
+WRITERS: tuple[str, ...] = ("template",)
+DEFAULT_WRITER = "template"
 
 
 class CorpusError(ValueError):
@@ -214,12 +217,15 @@ def resolve_corpus(
     domain: str | None = None,
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
+    writer: str = DEFAULT_WRITER,
 ) -> tuple[World, CorpusProvenance]:
     """Return the WorldLoom world for a run and its provenance.
 
     Order: an explicit corpus folder, then a named or bundled corpus in `world_pack`,
     then a new corpus that `worldloom build` writes into `out_dir/corpus`.
     """
+    if writer not in WRITERS:
+        raise CorpusError(f"Unknown writer '{writer}'. Writers that work: {', '.join(WRITERS)}.")
     require_worldloom()
     from worldloom.world import World
 
