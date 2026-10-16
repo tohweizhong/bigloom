@@ -1,0 +1,1 @@
+Phase 1 task: remove default_world(). _extract_world_pools stays until Phase 4. All tests pass.
