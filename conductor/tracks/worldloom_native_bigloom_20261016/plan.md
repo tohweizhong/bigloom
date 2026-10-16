@@ -59,7 +59,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Remove the `Writer` class and its 4 sentence templates from `prose_writer.py`. (Moved to Phase 4, because the old renderers call `Writer` until Phase 4 replaces them.)
 - [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
-## Phase 4: Render through WorldLoom, then Add Test Evidence (FR4)
+## Phase 4: Render through WorldLoom, then Add Test Evidence (FR4) [checkpoint: 7efa2d2]
 
 - [x] Task: Write failing tests.
     - [x] Each target has a cover, contents, numbered sections, and native charts.
@@ -81,7 +81,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Remove the `Writer` class and its 4 sentence templates (moved from Phase 3).
 - [x] Task: Each target uses its own render pass, so a planted value reaches no other document (found in Phase 4 testing).
 - [x] Task: Each document gets its own `style_seed` in IR metadata. The enterprise renderers read it through `_genome_for`.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 5: Qualification v2 (FR5)
 
