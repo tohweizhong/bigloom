@@ -22,7 +22,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Write `phase0_findings.md` with the result of T1 to T5 and the changes they cause to Phases 1 to 8.
 - [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`). **Stop for your decision if any test fails.**
 
-## Phase 1: Corpus as Input (FR1)
+## Phase 1: Corpus as Input (FR1) [checkpoint: e22f989]
 
 - [x] Task: Update `tech-stack.md`. Record the WorldLoom pin `3fcf194`, the enterprise renderers, and `ComposedProvider`.
 - [x] Task: Write failing tests for `bigloom build --corpus-dir <dir>` (the existing flag now reads a WorldLoom corpus with `world.json`).
@@ -34,7 +34,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Implement the corpus loader and the new manifest fields.
 - [x] Task: Remove `default_world()` from `prose_writer.py`. (`_extract_world_pools` moves to Phase 4, because the old renderers still read its pools.)
 - [x] Task: Change the wizard so that it writes a pack or company specification and runs `worldloom build`.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`). (coverage 96 percent, corpus.py 87 percent, ruff clean)
 
 ## Phase 2: Company Pack with Document Types (FR2)
 
