@@ -8,19 +8,19 @@
 
 No production code changes in this phase. Test scripts go in the track folder under `phase0/`.
 
-- [~] Task: Build one small WorldLoom corpus at commit `3fcf194` with `--realism enterprise --distractors 4` and the `ComposedProvider` narration.
-- [ ] Task: T1. Add a table section to a copy of one IR and render it with the enterprise DOCX, PDF, and PPTX renderers.
-    - [ ] Confirm that each file opens and that the section appears at unit 6 or deeper.
-- [ ] Task: T2. List the target document types that have a superseded draft, and the types that do not.
-    - [ ] Propose one fallback trap for each type without a draft.
-- [ ] Task: T3. Write one natural question for each of 4 targets and run BM25 and TF-IDF over targets and traps.
-    - [ ] Confirm that each target and its trap rank in positions 1 to 3.
-- [ ] Task: T4. Add a picture to a rendered DOCX, PPTX, and PDF.
-    - [ ] Confirm that each file opens, the layout does not change, and the image value is not in the text.
-- [ ] Task: T5. Run `prose_quality` on the template prose and build the corpus two times.
-    - [ ] Confirm the thresholds and that both builds give the same text.
-- [ ] Task: Write `phase0_findings.md` with the result of T1 to T5 and the changes they cause to Phases 1 to 8.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`). **Stop for your decision if any test fails.**
+- [x] Task: Build one small WorldLoom corpus at commit `3fcf194` with `--realism enterprise --distractors 4` and the `ComposedProvider` narration.
+- [x] Task: T1. Add a table section to a copy of one IR and render it with the enterprise DOCX, PDF, and PPTX renderers.
+    - [x] Confirm that each file opens and that the section appears at unit 6 or deeper.
+- [x] Task: T2. List the target document types that have a superseded draft, and the types that do not.
+    - [x] Propose one fallback trap for each type without a draft.
+- [x] Task: T3. Write one natural question for each of 4 targets and run BM25 and TF-IDF over targets and traps.
+    - [x] Confirm that each target and its trap rank in positions 1 to 3.
+- [x] Task: T4. Add a picture to a rendered DOCX, PPTX, and PDF.
+    - [x] Confirm that each file opens, the layout does not change, and the image value is not in the text.
+- [x] Task: T5. Run `prose_quality` on the template prose and build the corpus two times.
+    - [x] Confirm the thresholds and that both builds give the same text.
+- [x] Task: Write `phase0_findings.md` with the result of T1 to T5 and the changes they cause to Phases 1 to 8.
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`). **Stop for your decision if any test fails.**
 
 ## Phase 1: Corpus as Input (FR1)
 
@@ -45,6 +45,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Write the GovTech company pack: company, units, name pools, system brands, voices, lore.
 - [ ] Task: Add at least 16 `artifact_types` to the pack, based on the catalogue in `make_large_files.py` and `make_100mb_files.py`.
 - [ ] Task: Add `episode_text` and `evaluation_text` to the pack.
+- [ ] Task: Run the Phase 0 T5 check again with one period and the new document types. `repeated_sentence_rate` must be 0.2 or less.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 3: Template Writer Flag (FR3)
@@ -70,7 +71,9 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Implement the text fact section in a copy of the IR.
 - [ ] Task: Implement rendering through the enterprise DOCX, PDF, and PPTX renderers, and `render/xlsx.py` with detail tables.
 - [ ] Task: Implement picture insertion for DOCX, PPTX, and PDF.
-- [ ] Task: Implement the trap from the superseded draft, with the fallback for other types.
+- [ ] Task: Implement the trap by the Phase 0 trap rule: a second render pass with the canary value (`v0.1` revision for Word, the unpadded main file for other formats).
+- [ ] Task: Implement the PPTX evidence slide after rendering.
+- [ ] Task: Keep only the main file of each target. Do not upload revision files.
 - [ ] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
 - [ ] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).

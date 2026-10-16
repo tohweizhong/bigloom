@@ -22,6 +22,11 @@ This track makes BigLoom take all content and layout from WorldLoom. BigLoom kee
 | :--- | :--- | :--- |
 | Seven specs | Approved | 16 Oct 2026 13:46 SGT |
 | Retrieval gate | Target and trap both in positions 1 to 3, in BM25 or TF-IDF | 16 Oct 2026 13:41 SGT |
+| Retrieval unit | Rank passages, not whole files. A file takes the position of its best passage (page, slide, sheet, or about 250 words). | 16 Oct 2026 14:24 SGT |
+| PPTX evidence | BigLoom adds an evidence slide after rendering. The deck does not show added IR sections. | 16 Oct 2026 14:14 SGT |
+| Revision files | BigLoom uploads only the main file of each target. Revision files stay local. | 16 Oct 2026 14:14 SGT |
+| Periods and test sets | One period for each world. One test set uses one world, with one document of each type. The template writer repeats sentence forms across months and across worlds. | 16 Oct 2026 14:30 SGT |
+| Trap rule | Word: the `v0.1` revision from a second render pass with the canary. PDF, slides, workbook: the same document from a second pass with the canary, no padding, marked as a draft. | 16 Oct 2026 14:16 SGT |
 | Test phase before the full build | Approved | 16 Oct 2026 13:46 SGT |
 | `bigloom proposal` | Fold in as a WorldLoom document type | 16 Oct 2026 13:47 SGT |
 | Restore path for the old proposal code | Git tag `proposal-v1`, pushed before the fold-in | 16 Oct 2026 13:52 SGT |
@@ -81,7 +86,8 @@ Phase 0 writes `phase0_findings.md` in the track folder. If a question fails, th
 
 ### FR5. Qualification v2 (Spec 5)
 
-1. A new violation code replaces `TARGET_NOT_RANKED_FIRST`. The target and its trap must both rank in positions 1 to 3.
+1. A new violation code replaces `TARGET_NOT_RANKED_FIRST`. The best passage of the target and the best passage of its trap must both rank in positions 1 to 3, in BM25 or TF-IDF. A passage is one PDF page, one slide, one sheet, or about 250 words of a Word file. Long sheets split into passages of about 250 words.
+1a. The text reader drops workbook type markers, sheet states, and formulas before ranking.
 2. Fact depth comes from renderer locators.
 3. New realism checks fail a file for repeated sentences, template openers, header repeats, cut words, or pages with fewer than 40 words.
 4. A second reader handles files above 512 MiB and PDF files.
