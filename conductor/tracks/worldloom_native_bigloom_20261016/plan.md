@@ -8,7 +8,7 @@
 
 No production code changes in this phase. Test scripts go in the track folder under `phase0/`.
 
-- [ ] Task: Build one small WorldLoom corpus at commit `3fcf194` with `--realism enterprise --distractors 4` and the `ComposedProvider` narration.
+- [~] Task: Build one small WorldLoom corpus at commit `3fcf194` with `--realism enterprise --distractors 4` and the `ComposedProvider` narration.
 - [ ] Task: T1. Add a table section to a copy of one IR and render it with the enterprise DOCX, PDF, and PPTX renderers.
     - [ ] Confirm that each file opens and that the section appears at unit 6 or deeper.
 - [ ] Task: T2. List the target document types that have a superseded draft, and the types that do not.
