@@ -21,6 +21,10 @@ from .models import (
 )
 
 SUPPORTED_EXTENSIONS = {".docx", ".pptx", ".xlsx", ".pdf"}
+#: The best passage of a target and of its trap must rank in positions 1 to TOP_K.
+TOP_K = 3
+#: A Word passage, and a long sheet passage, holds about this many words.
+WORDS_PER_PASSAGE = 250
 _LOW_ENTROPY_RE = re.compile(r"^\d{1,3}(?:\.0+)?%?$")
 
 
@@ -65,6 +69,56 @@ def load_corpus_snapshots(corpus_dir: Path) -> dict[str, NativeSnapshot]:
     return snapshots
 
 
+def _reader_units(snap: NativeSnapshot) -> list[NativeUnit]:
+    """Return the units a reader sees: no workbook type markers, sheet states, or formulas."""
+    return [
+        u
+        for u in snap.units
+        if u.text and not u.locator.endswith(("/type", "/state")) and not u.text.startswith("=")
+    ]
+
+
+def _chunk(lines: Sequence[str]) -> list[str]:
+    out: list[str] = []
+    buf: list[str] = []
+    count = 0
+    for line in lines:
+        buf.append(line)
+        count += len(line.split())
+        if count >= WORDS_PER_PASSAGE:
+            out.append("\n".join(buf))
+            buf, count = [], 0
+    if buf:
+        out.append("\n".join(buf))
+    return out
+
+
+def passages_of(snap: NativeSnapshot) -> list[str]:
+    """Split one file into passages: a page for PDF, a slide for PPTX, a sheet for XLSX, word chunks for DOCX.
+
+    Search systems index passages, not whole files. A file then takes the position of its
+    best passage, so a long workbook competes with its relevant sheet, not with all its cells.
+    """
+    units = _reader_units(snap)
+    if snap.format in ("pdf", "pptx", "xlsx"):
+        groups: dict[str, list[str]] = {}
+        for u in units:
+            groups.setdefault(u.locator.split("/")[0], []).append(u.text)
+        result: list[str] = []
+        for lines in groups.values():
+            result.extend(_chunk(lines))
+        return result
+    return _chunk([u.text for u in units])
+
+
+def _file_order(engine: Bm25 | TfIdf, query: str, owners: Sequence[str]) -> list[str]:
+    order: list[str] = []
+    for idx, _score in engine.rank(query, limit=len(owners)):
+        if owners[idx] not in order:
+            order.append(owners[idx])
+    return order
+
+
 def _unit_matches(units: Sequence[NativeUnit], needle: str) -> list[tuple[int, str]]:
     """Return 1-based unit indices and locators where needle appears on word boundaries."""
     low_needle = needle.strip().lower()
@@ -89,13 +143,15 @@ def qualify_corpus(
     """Run all build-time anti-leakage checks across snapshots and evaluation cases."""
     violations: list[QualificationViolation] = []
     file_names = sorted(snapshots.keys())
-    full_texts = {
-        rel: "\n".join(u.text for u in snap.units if u.text)
-        for rel, snap in snapshots.items()
-    }
-
-    bm25 = Bm25([full_texts[f] for f in file_names]) if (check_retrieval and file_names) else None
-    tfidf = TfIdf([full_texts[f] for f in file_names]) if (check_retrieval and file_names) else None
+    owners: list[str] = []
+    passage_texts: list[str] = []
+    for rel in file_names:
+        for passage in passages_of(snapshots[rel]):
+            owners.append(rel)
+            passage_texts.append(passage)
+    use_retrieval = check_retrieval and len(file_names) > 1 and bool(passage_texts)
+    bm25 = Bm25(passage_texts) if use_retrieval else None
+    tfidf = TfIdf(passage_texts) if use_retrieval else None
 
     for case in cases:
         for val in case.all_golden_values:
@@ -226,20 +282,27 @@ def qualify_corpus(
                     )
                 )
 
-        # Retrieval check using WorldLoom BM25 and TF-IDF.
-        if check_retrieval and bm25 is not None and tfidf is not None and len(file_names) > 1:
-            bm25_top = bm25.rank(case.query, limit=1)
-            tfidf_top = tfidf.rank(case.query, limit=1)
-            bm25_winner = file_names[bm25_top[0][0]] if bm25_top else None
-            tfidf_winner = file_names[tfidf_top[0][0]] if tfidf_top else None
-            if bm25_winner != case.target_file and tfidf_winner != case.target_file:
+        # Retrieval check: the best passage of the target and of its trap must rank in 1..TOP_K.
+        if bm25 is not None and tfidf is not None:
+            wanted = [case.target_file]
+            if case.canary_trap is not None and case.canary_trap.distractor_file in snapshots:
+                wanted.append(case.canary_trap.distractor_file)
+            positions: dict[str, dict[str, int | None]] = {}
+            passed = False
+            for name, engine in (("bm25", bm25), ("tfidf", tfidf)):
+                order = _file_order(engine, case.query, owners)
+                pos = {f: (order.index(f) + 1 if f in order else None) for f in wanted}
+                positions[name] = pos
+                if all(p is not None and p <= TOP_K for p in pos.values()):
+                    passed = True
+            if not passed:
                 violations.append(
                     QualificationViolation(
                         case_id=case.id,
-                        code=ViolationCode.TARGET_NOT_RANKED_FIRST,
+                        code=ViolationCode.TARGET_OR_TRAP_NOT_IN_TOP3,
                         detail=(
-                            f"Target '{case.target_file}' did not rank first in BM25 "
-                            f"('{bm25_winner}') or TF-IDF ('{tfidf_winner}')."
+                            f"Target and trap must both rank in positions 1 to {TOP_K}. "
+                            f"BM25 positions: {positions['bm25']}. TF-IDF positions: {positions['tfidf']}."
                         ),
                     )
                 )

@@ -111,12 +111,13 @@ def test_inspect_all_four_formats_and_load_snapshots(tmp_path: Path) -> None:
 
 
 def test_qualify_passes_clean_corpus(tmp_path: Path) -> None:
+    # A natural document: the topic appears in the title, not in every paragraph.
     target_paras = [
-        "Payment gateway migration architecture review FY2026 overview.",
-        "Section 1 background on payment gateway migration.",
-        "Section 2 system components for payment gateway migration.",
-        "Section 3 security review for payment gateway migration.",
-        "Section 4 schedule for payment gateway migration.",
+        "Payment gateway migration architecture review FY2026.",
+        "Background and the reasons the programme started this year.",
+        "System components, interfaces, and the hosting choices made.",
+        "Security review findings and the controls that close them.",
+        "Delivery schedule, milestones, and the dependencies between teams.",
         "Section 5 approved Phase 3 contingency budget is SGD 4,827,319 for FY2026.",
     ]
     trap_paras = [
@@ -163,6 +164,10 @@ def test_qualify_catches_all_violation_codes(tmp_path: Path) -> None:
     (tmp_path / "other.pdf").write_bytes(
         _make_pdf_bytes(["Other document repeating SGD 9,123,456 and ranking for quantum ledger migration."])
     )
+    for n in range(3):
+        (tmp_path / f"noise{n}.pdf").write_bytes(
+            _make_pdf_bytes([f"Quantum ledger migration notes {n}: quantum ledger migration plan and ledger cutover."])
+        )
     snapshots = load_corpus_snapshots(tmp_path)
 
     cases = [
@@ -218,7 +223,7 @@ def test_qualify_catches_all_violation_codes(tmp_path: Path) -> None:
         ViolationCode.DUPLICATE_GOLDEN_IN_OTHER_FILE,
         ViolationCode.CANARY_MISSING_IN_DISTRACTOR,
         ViolationCode.CANARY_COLLIDES_WITH_TARGET,
-        ViolationCode.TARGET_NOT_RANKED_FIRST,
+        ViolationCode.TARGET_OR_TRAP_NOT_IN_TOP3,
         ViolationCode.IMAGE_FACT_LEAKED_IN_TEXT,
     }
 
@@ -243,3 +248,25 @@ def test_word_boundary_no_false_duplicate(tmp_path: Path) -> None:
     report = qualify_corpus(snapshots, [case])
     assert report.passed is True
     assert report.violations == ()
+
+
+def test_passages_drop_workbook_markers_and_formulas() -> None:
+    from bigloom.qualify import passages_of
+
+    data = _make_xlsx_bytes([["Measure", "Value"], ["Approved reserve", "SGD 4,827,319"], ["Total", "=SUM(B2:B2)"]])
+    snap = inspect_file_bytes(data, ".xlsx")
+    texts = passages_of(snap)
+    joined = " ".join(texts)
+    assert "Approved reserve" in joined
+    assert "SGD 4,827,319" in joined
+    assert "=SUM" not in joined
+    assert not any(t.strip() in {"s", "n", "f", "visible"} for t in joined.split("\n"))
+
+
+def test_passages_split_pdf_by_page_and_pptx_by_slide() -> None:
+    from bigloom.qualify import passages_of
+
+    pdf = inspect_file_bytes(_make_pdf_bytes(["Page one words here", "Page two words here"]), ".pdf")
+    assert len(passages_of(pdf)) == 2
+    deck = inspect_file_bytes(_make_pptx_bytes(["First slide text", "Second slide text"]), ".pptx")
+    assert len(passages_of(deck)) == 2

@@ -84,14 +84,14 @@ No production code changes in this phase. Test scripts go in the track folder un
 ## Phase 5: Qualification v2 (FR5)
 
 - [ ] Task: Write failing tests.
-    - [ ] The new top 3 code fires when the target or the trap ranks below position 3.
+    - [x] The new top 3 code fires when the target or the trap ranks below position 3.
     - [ ] Fact depth comes from renderer locators.
     - [ ] Each realism check fires on a file with that defect: repeated sentences, template openers, header repeats, cut words, pages with fewer than 40 words.
     - [ ] The second reader reads a PDF and a file above 512 MiB.
-- [ ] Task: Replace `TARGET_NOT_RANKED_FIRST` with the top 3 code in `qualify.py` and `models.py`.
+- [x] Task: Replace `TARGET_NOT_RANKED_FIRST` with the top 3 code in `qualify.py` and `models.py`. (Done before Phase 4, so that each Phase 4 commit keeps the tests green. Passage ranking and the workbook text filter included.)
 - [ ] Task: Implement locator-based depth and the realism checks.
 - [ ] Task: Implement the second reader.
-- [ ] Task: Rewrite the clean fixture in `tests/test_qualify.py` so that it does not repeat the topic in every paragraph.
+- [x] Task: Rewrite the clean fixture in `tests/test_qualify.py` so that it does not repeat the topic in every paragraph.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 6: Natural Questions (FR6)

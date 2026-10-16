@@ -80,7 +80,7 @@ class ViolationCode(StrEnum):
     SHALLOW_PLACEMENT_SNIPPET_RISK = "shallow_placement_snippet_risk"
     CANARY_MISSING_IN_DISTRACTOR = "canary_missing_in_distractor"
     CANARY_COLLIDES_WITH_TARGET = "canary_collides_with_target"
-    TARGET_NOT_RANKED_FIRST = "target_not_ranked_first"
+    TARGET_OR_TRAP_NOT_IN_TOP3 = "target_or_trap_not_in_top3"
     LOW_ENTROPY_GOLDEN_VALUE = "low_entropy_golden_value"
 
 
