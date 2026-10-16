@@ -32,8 +32,8 @@ No production code changes in this phase. Test scripts go in the track folder un
     - [x] With no WorldLoom package, stops with the install command.
     - [x] The manifest records the commit, seed, recipe digest, model ID, and prompt version.
 - [x] Task: Implement the corpus loader and the new manifest fields.
-- [ ] Task: Remove `default_world()` from `prose_writer.py`. (`_extract_world_pools` moves to Phase 4, because the old renderers still read its pools.)
-- [ ] Task: Change the wizard so that it writes a pack or company specification and runs `worldloom build`.
+- [x] Task: Remove `default_world()` from `prose_writer.py`. (`_extract_world_pools` moves to Phase 4, because the old renderers still read its pools.)
+- [x] Task: Change the wizard so that it writes a pack or company specification and runs `worldloom build`.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 2: Company Pack with Document Types (FR2)

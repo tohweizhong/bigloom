@@ -166,6 +166,11 @@ def test_cli_init_custom_company_default_and_run(tmp_path: Path) -> None:
     )
     assert result.exit_code == 0, result.stdout
     assert (out_dir / "org-pack.json").is_file()
+    # The wizard writes a pack, and `worldloom build` turns it into a corpus in <out>/corpus.
+    assert (out_dir / "corpus" / "world.json").is_file()
+    manifest_row = json.loads((out_dir / "manifest.jsonl").read_text(encoding="utf-8").splitlines()[0])
+    assert manifest_row["narration"] == "composed"
+    assert manifest_row["world_seed"] == 2026
     assert (out_dir / "manifest.jsonl").is_file()
     assert (out_dir / "cases.json").is_file()
     assert (out_dir / "evals.csv").is_file()
