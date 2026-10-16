@@ -36,7 +36,7 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Change the wizard so that it writes a pack or company specification and runs `worldloom build`.
 - [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`). (coverage 96 percent, corpus.py 87 percent, ruff clean)
 
-## Phase 2: Company Pack with Document Types (FR2)
+## Phase 2: Company Pack with Document Types (FR2) [checkpoint: 545683b]
 
 - [x] Task: Write failing tests.
     - [x] `worldloom pack check` and `pack lint` pass on the GovTech pack.
