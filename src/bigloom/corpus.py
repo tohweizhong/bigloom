@@ -218,11 +218,12 @@ def resolve_corpus(
     locale: str | None = None,
     facets: Mapping[str, str] | None = None,
     writer: str = DEFAULT_WRITER,
+    corpus_name: str = "corpus",
 ) -> tuple[World, CorpusProvenance]:
     """Return the WorldLoom world for a run and its provenance.
 
     Order: an explicit corpus folder, then a named or bundled corpus in `world_pack`,
-    then a new corpus that `worldloom build` writes into `out_dir/corpus`.
+    then a new corpus that `worldloom build` writes into `out_dir/<corpus_name>`.
     """
     if writer not in WRITERS:
         raise CorpusError(f"Unknown writer '{writer}'. Writers that work: {', '.join(WRITERS)}.")
@@ -245,7 +246,7 @@ def resolve_corpus(
     else:
         pack_file = world_pack
         source = build_worldloom_corpus(
-            out_dir / "corpus", seed=seed, locale=locale, pack=pack_file, domain=domain, facets=facets
+            out_dir / corpus_name, seed=seed, locale=locale, pack=pack_file, domain=domain, facets=facets
         )
 
     try:

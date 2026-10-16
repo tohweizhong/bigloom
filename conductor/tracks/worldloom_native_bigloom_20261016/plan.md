@@ -61,24 +61,26 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 4: Render through WorldLoom, then Add Test Evidence (FR4)
 
-- [ ] Task: Write failing tests.
-    - [ ] Each target has a cover, contents, numbered sections, and native charts.
-    - [ ] The text fact sits at unit 6 or deeper.
-    - [ ] The image fact is in a picture and not in the text.
-    - [ ] The trap is the superseded draft of the same document, or the Phase 0 fallback, and holds the canary.
-    - [ ] Each file reaches its target size.
-    - [ ] Two documents in one world have different `style_seed` values.
-- [ ] Task: Implement the text fact section in a copy of the IR.
-- [ ] Task: Implement rendering through the enterprise DOCX, PDF, and PPTX renderers, and `render/xlsx.py` with detail tables.
-- [ ] Task: Implement picture insertion for DOCX, PPTX, and PDF.
-- [ ] Task: Implement the trap by the Phase 0 trap rule: a second render pass with the canary value (`v0.1` revision for Word, the unpadded main file for other formats).
-- [ ] Task: Implement the PPTX evidence slide after rendering.
-- [ ] Task: Implement the PPTX layout fix after rendering: give a valid size to every layout and slide placeholder with no height or with a width greater than the slide (Phase 0 T6).
-- [ ] Task: Keep only the main file of each target. Do not upload revision files.
-- [ ] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
-- [ ] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
-- [ ] Task: Remove `_extract_world_pools` and the pool code that only the old renderers use (moved from Phase 1).
-- [ ] Task: Remove the `Writer` class and its 4 sentence templates (moved from Phase 3).
+- [x] Task: Write failing tests.
+    - [x] Each target has a cover, contents, numbered sections, and native charts.
+    - [x] The text fact sits at unit 6 or deeper.
+    - [x] The image fact is in a picture and not in the text.
+    - [x] The trap is the superseded draft of the same document, or the Phase 0 fallback, and holds the canary.
+    - [x] Each file reaches its target size.
+    - [x] Two documents in one world have different `style_seed` values.
+- [x] Task: Implement the text fact section in a copy of the IR.
+- [x] Task: Implement rendering through the enterprise DOCX, PDF, and PPTX renderers, and `render/xlsx.py` with detail tables.
+- [x] Task: Implement picture insertion for DOCX, PPTX, and PDF.
+- [x] Task: Implement the trap by the Phase 0 trap rule: a second render pass with the canary value (`v0.1` revision for Word, the unpadded main file for other formats).
+- [x] Task: Implement the PPTX evidence slide after rendering.
+- [x] Task: Implement the PPTX layout fix after rendering: give a valid size to every layout and slide placeholder with no height or with a width greater than the slide (Phase 0 T6).
+- [x] Task: Keep only the main file of each target. Do not upload revision files.
+- [x] Task: Implement byte padding: media or an unreferenced ZIP member for OOXML, an embedded file stream for PDF.
+- [x] Task: Remove `_render_docx`, `_render_pdf`, `_render_pptx`, `_render_xlsx`, and the unused parts of `charts.py`.
+- [x] Task: Remove `_extract_world_pools` and the pool code that only the old renderers use (moved from Phase 1).
+- [x] Task: Remove the `Writer` class and its 4 sentence templates (moved from Phase 3).
+- [x] Task: Each target uses its own render pass, so a planted value reaches no other document (found in Phase 4 testing).
+- [x] Task: Each document gets its own `style_seed` in IR metadata. The enterprise renderers read it through `_genome_for`.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 5: Qualification v2 (FR5)
@@ -96,12 +98,12 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 6: Natural Questions (FR6)
 
-- [ ] Task: Write failing tests.
-    - [ ] The subject comes from the document title and type.
-    - [ ] The metric label comes from the fact kind.
-    - [ ] The wording comes from the pack `evaluation_text`.
-    - [ ] No two questions in one set share a fixed label.
-- [ ] Task: Rewrite `queries.py`. Remove "Authorized Capital Reserve", "Q4 Peak Thermal Efficiency", and "Final Audit Report".
+- [x] Task: Write failing tests. (Moved into Phase 4: the Phase 4 build needs the new questions to pass the gate. Tests in `tests/test_build_worldloom.py`.)
+    - [x] The subject comes from the document title and type.
+    - [x] The metric label comes from the fact kind.
+    - [x] The wording comes from the pack `evaluation_text`.
+    - [x] No two questions in one set share a fixed label.
+- [x] Task: Rewrite `queries.py`. Remove "Authorized Capital Reserve", "Q4 Peak Thermal Efficiency", and "Final Audit Report".
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 7: Fold in `bigloom proposal` (FR7)

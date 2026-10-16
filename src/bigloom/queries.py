@@ -1,4 +1,8 @@
-"""Generate evaluation questions and canary trap specifications from manifest.jsonl."""
+"""Generate evaluation questions and canary trap specifications from manifest.jsonl.
+
+The build writes each question into the manifest from the WorldLoom evaluation text (see
+`questions.py`). This module pairs each question with its golden value and its trap.
+"""
 
 from __future__ import annotations
 
@@ -34,12 +38,13 @@ def generate_queries(manifest_path: Path, out_path: Path | None = None) -> list[
     cases: list[EvalCase] = []
 
     for entry in entries:
+        if not entry.text_question or not entry.image_question:
+            raise ValueError(
+                f"Manifest entry '{entry.file_id}' has no questions. Rebuild the corpus with `bigloom build`."
+            )
         text_case = EvalCase(
             id=f"{entry.file_id}-text",
-            query=(
-                f"What is the {entry.text_metric_label} in the "
-                f"{entry.topic} {entry.period} Final Audit Report?"
-            ),
+            query=entry.text_question,
             target_file=entry.target_file,
             modality="text",
             golden_value=entry.text_golden_value,
@@ -52,10 +57,7 @@ def generate_queries(manifest_path: Path, out_path: Path | None = None) -> list[
         )
         image_case = EvalCase(
             id=f"{entry.file_id}-image",
-            query=(
-                f"What is the verified metric on the {entry.image_chart_title} "
-                f"chart in the {entry.topic} {entry.period} Final Audit Report?"
-            ),
+            query=entry.image_question,
             target_file=entry.target_file,
             modality="image",
             golden_value=entry.image_golden_value,

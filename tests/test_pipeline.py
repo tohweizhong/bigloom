@@ -41,7 +41,7 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
         assert entry.target_size_bytes >= min_bytes
         assert entry.distractor_size_bytes == dist_path.stat().st_size
         assert entry.distractor_size_bytes < 1024 * 1024
-        assert entry.text_unit_index >= 5
+        assert entry.text_unit_index >= 6
 
     # Generate cases.json and verify two questions per large file
     cases_path = out_dir / "cases.json"
@@ -58,7 +58,8 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
     report = qualify_corpus(snapshots, cases, check_retrieval=True)
     assert report.passed is True, f"Violations: {report.violations}"
 
-    # Verify rich multi-format structures (.docx risk table/headers, .pptx 16:9 & notes, .xlsx sheets, .pdf A4)
+    # Verify the WorldLoom structures: Word cover and tables, workbook detail sheets and
+    # native charts, 16:9 deck with notes, and a PDF cover page.
     from docx import Document
     from openpyxl import load_workbook
     from pptx import Presentation
@@ -66,16 +67,14 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
 
     docx_entry = next(e for e in entries if e.format == "docx")
     doc = Document(str(out_dir / docx_entry.target_file))
-    assert len(doc.tables) >= 1
-    assert "OFFICIAL (CLOSED)" in doc.sections[0].header.paragraphs[0].text
-    assert any("Financial overview" in p.text for p in doc.paragraphs)
+    assert len(doc.tables) >= 3
+    assert any(p.style.name == "Title" and p.text == docx_entry.document_title for p in doc.paragraphs)
 
     xlsx_entry = next(e for e in entries if e.format == "xlsx")
     wb = load_workbook(str(out_dir / xlsx_entry.target_file))
-    assert {"README", "Summary", "Charts"}.issubset(set(wb.sheetnames))
-    data_sheets = [s for s in wb.sheetnames if s not in {"README", "Summary", "Charts"}]
-    assert len(data_sheets) >= 1
-    assert wb[data_sheets[0]].max_row >= 100
+    assert "Summary" in wb.sheetnames and "Chart" in wb.sheetnames
+    detail = [ws for ws in wb.worksheets if ws.max_row >= 10]
+    assert len(detail) >= 3
 
     pptx_entry = next(e for e in entries if e.format == "pptx")
     prs = Presentation(str(out_dir / pptx_entry.target_file))
@@ -83,9 +82,8 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
     assert snapshots[pptx_entry.target_file].metrics["speaker_notes"] >= 1
 
     pdf_entry = next(e for e in entries if e.format == "pdf")
-    pdf_text = "\n".join(u.text for u in snapshots[pdf_entry.target_file].units)
-    assert "Financial overview" in pdf_text
-    assert "OFFICIAL (CLOSED)" in pdf_text
+    first_page = snapshots[pdf_entry.target_file].units[0].text
+    assert pdf_entry.document_title in first_page
 
 
 def test_seed_determinism_and_corpus_dir_input(tmp_path: Path) -> None:

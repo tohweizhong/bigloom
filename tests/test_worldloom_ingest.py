@@ -9,36 +9,20 @@ from typer.testing import CliRunner
 
 from bigloom.build import build_corpus
 from bigloom.cli import app
+from bigloom.corpus import CorpusError
 from bigloom.qualify import load_corpus_snapshots, qualify_corpus
 from bigloom.queries import generate_queries
 
 runner = CliRunner()
 
 
-def test_build_corpus_with_world_pack(tmp_path: Path) -> None:
-    out_dir = tmp_path / "pack_out"
-    entries = build_corpus(
-        out_dir=out_dir,
-        sizes_mb=(0.1,),
-        seed=42,
-        formats=("docx", "pdf"),
-        world_pack="retail-close",
-    )
-    assert len(entries) == 2
-    assert all(e.text_golden_value.startswith("AUD ") for e in entries)
-    assert all("Southern Cross Retail Group" in e.topic for e in entries)
+def test_bundled_corpus_without_documents_is_refused(tmp_path: Path) -> None:
+    """The bundled `retail-close` corpus holds facts but no planned documents.
 
-    snapshots = load_corpus_snapshots(out_dir)
-    target_snap = snapshots[entries[0].target_file]
-    joined_text = "\n".join(u.text for u in target_snap.units)
-    assert "Southern Cross Retail Group" in joined_text
-    assert "CC-1000" in joined_text
-    assert "Helios ERP" in joined_text
-    assert "FACT-0001" in joined_text
-
-    cases = generate_queries(out_dir / "manifest.jsonl", out_dir / "cases.json")
-    report = qualify_corpus(snapshots, cases, check_retrieval=True)
-    assert report.passed is True, f"Violations: {report.violations}"
+    BigLoom takes all content from WorldLoom documents, so it stops with a clear error.
+    """
+    with pytest.raises(CorpusError, match="no planned documents"):
+        build_corpus(out_dir=tmp_path / "pack_out", sizes_mb=(0.1,), seed=42, formats=("docx", "pdf"), world_pack="retail-close")
 
     with pytest.raises(ValueError, match="Specify at most one"):
         build_corpus(
@@ -60,7 +44,7 @@ def test_cli_build_with_sdk_domain(tmp_path: Path) -> None:
             "--sizes-mb",
             "0.1",
             "--formats",
-            "xlsx,pptx",
+            "xlsx,docx",
             "--domain",
             "banking",
             "--seed",
@@ -74,3 +58,9 @@ def test_cli_build_with_sdk_domain(tmp_path: Path) -> None:
     snapshots = load_corpus_snapshots(out_dir)
     report = qualify_corpus(snapshots, cases, check_retrieval=True)
     assert report.passed is True, f"Violations: {report.violations}"
+
+
+def test_format_with_no_document_in_the_domain_is_refused(tmp_path: Path) -> None:
+    """The banking engine plans no deck, so a PPTX target stops with a clear error."""
+    with pytest.raises(CorpusError, match="renders as pptx"):
+        build_corpus(out_dir=tmp_path / "out", sizes_mb=(0.1,), seed=42, formats=("pptx",), domain="banking")

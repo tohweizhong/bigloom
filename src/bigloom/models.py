@@ -40,6 +40,11 @@ class ManifestEntry(FrozenModel):
     image_chart_title: str
     image_golden_value: str
     image_canary_value: str
+    text_question: str = ""
+    image_question: str = ""
+    document_title: str = ""
+    document_type: str = ""
+    style_seed: int | None = None
     worldloom_commit: str = ""
     world_seed: int | None = None
     recipe_digest: str = ""

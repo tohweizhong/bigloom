@@ -9,8 +9,9 @@ import pytest
 from typer.testing import CliRunner
 from worldloom import packs
 
-from bigloom.build import _resolve_world_context, _split_image_budgets, build_corpus
+from bigloom.build import build_corpus
 from bigloom.cli import app
+from bigloom.corpus import resolve_corpus
 from bigloom.proposal.facts import load_world_entities
 from bigloom.proposal.spec import ProposalSpec
 from bigloom.wizard import (
@@ -23,17 +24,8 @@ from bigloom.wizard import (
 runner = CliRunner()
 
 
-def test_split_image_budgets_up_to_one_gib(tmp_path: Path) -> None:
-    """Verify _split_image_budgets scales chunk size up to 1024 MiB (1 GiB) and rejects > 1024 MiB."""
-    one_gib = 1024 * 1024 * 1024
-    chunks = _split_image_budgets(one_gib)
-    assert sum(chunks) >= one_gib
-    assert max(chunks) <= 32_000_000
-    assert len(chunks) <= 40
-
-    mid_chunks = _split_image_budgets(100 * 1024 * 1024)
-    assert max(mid_chunks) <= 16_000_000
-
+def test_build_rejects_sizes_above_one_gib(tmp_path: Path) -> None:
+    """Verify that build_corpus rejects a size above 1024 MiB (1 GiB)."""
     with pytest.raises(ValueError, match="1024 MiB"):
         build_corpus(tmp_path, sizes_mb=[2048.0])
 
@@ -79,16 +71,17 @@ def test_custom_org_pack_json_resolves_in_build_and_proposal_with_locale_and_fac
     )
     assert pack_path.is_file()
 
-    ctx = _resolve_world_context(
+    world, _ = resolve_corpus(
+        corpus_dir=None,
         seed=42,
         out_dir=tmp_path / "ctx_out",
         world_pack=str(pack_path),
         locale="singapore",
         facets={"listing": "state_owned", "scale": "enterprise"},
     )
-    assert ctx.currency == "SGD"
-    assert any("Merlion Sovereign Cloud Core Compute Division" in t for t in ctx.topics)
-    assert "Company: Merlion Sovereign Cloud" in ctx.governance_line
+    assert world.company.currency == "SGD"
+    assert world.company.name == "Merlion Sovereign Cloud"
+    assert any("Core Compute Division" in bu.name for bu in world.business_units)
 
     spec = ProposalSpec(
         subject="Merlion Sovereign Cloud Expansion",
