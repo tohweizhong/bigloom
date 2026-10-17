@@ -63,7 +63,7 @@ def test_xlsx_keeps_native_charts_and_adds_picture_sheet(built: tuple[Path, list
     assert any(n.startswith("xl/media/") and n.endswith(".png") for n in names)
     sheets = load_workbook(BytesIO(data), read_only=True).sheetnames
     assert sheets[-1] == "Chart"
-    assert e.text_metric_label.capitalize()[:31] in sheets
+    assert (e.text_metric_label[:1].upper() + e.text_metric_label[1:])[:31] in sheets
     assert len(sheets) >= 8
 
 

@@ -91,14 +91,17 @@ No production code changes in this phase. Test scripts go in the track folder un
 
 ## Phase 5: Qualification v2 (FR5)
 
-- [ ] Task: Write failing tests.
+- [x] Task: Write failing tests.
     - [x] The new top 3 code fires when the target or the trap ranks below position 3.
-    - [ ] Fact depth comes from renderer locators.
-    - [ ] Each realism check fires on a file with that defect: repeated sentences, template openers, header repeats, cut words, pages with fewer than 40 words.
-    - [ ] The second reader reads a PDF and a file above 512 MiB.
+    - [x] Fact depth comes from renderer locators. (A PDF unit is one text line, as a DOCX unit is one paragraph or cell. User decision, 17 Oct 2026.)
+    - [x] Each realism check fires on a file with that defect: repeated sentences, template openers, header repeats, cut words, pages with fewer than 40 words.
+    - [x] The second reader reads a PDF and a file above 512 MiB. (pypdf for PDF. For OOXML, the reader drops the padding member before `inspect_artifact`.)
 - [x] Task: Replace `TARGET_NOT_RANKED_FIRST` with the top 3 code in `qualify.py` and `models.py`. (Done before Phase 4, so that each Phase 4 commit keeps the tests green. Passage ranking and the workbook text filter included.)
-- [ ] Task: Implement locator-based depth and the realism checks.
-- [ ] Task: Implement the second reader.
+- [x] Task: Implement locator-based depth and the realism checks. DOCX and PDF first (user request). The PDF reading uses prose and headings only (body font size or larger) and skips the cover.
+- [x] Task: Implement the second reader.
+- [x] Task: The build tries the next document when a document fails the prose check, a realism check, or the depth check.
+- [x] Task: The caption names the chart and its bars. The Word picture sits after the text fact table.
+- [ ] Task: Realism checks for PPTX and XLSX.
 - [x] Task: Rewrite the clean fixture in `tests/test_qualify.py` so that it does not repeat the topic in every paragraph.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
@@ -129,6 +132,11 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [ ] Task: Write the static test: no module-level list or tuple of content strings in `src/bigloom/`, with an allow-list for test design constants.
 - [ ] Task: Remove any content that the static test finds.
 - [ ] Task: Build the 1 MB and 18 MB sets in all four formats for the `retail` and GovTech packs. Run `bigloom qualify`.
+- [ ] Task: Add a corpus-level vocabulary metric to the build report (user request, 17 Oct 2026). Information only, not a gate check.
+    - [ ] Type-token ratio of the body prose over all targets in a set.
+    - [ ] Heaps curve: vocabulary size against running word count, over all targets in the set, with the fitted exponent.
+    - [ ] The cross-document repeated-sentence rate (Phase 0 measured 0.44 for the template writer).
+    - [ ] Test: a set of copies of one document gives a lower type-token ratio and a lower Heaps exponent than a set of different documents.
 - [ ] Task: Run the full test suite with coverage, `ruff check .`, and the Git hygiene check.
 - [ ] Task: Upload the 1 MB set to SharePoint `BigLoom-Eval` and share the links for your review.
 - [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).

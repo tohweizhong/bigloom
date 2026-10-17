@@ -40,3 +40,11 @@ def test_pad_pdf_reaches_size_and_stays_readable() -> None:
     assert "Page 1 text" in reader.pages[0].extract_text()
     assert PDF_BALLAST_NAME in reader.attachments
     assert pad_pdf(raw, 10, seed=5) == raw
+
+
+def test_pdf_units_are_text_lines_and_pages_join_again() -> None:
+    from bigloom.qualify import inspect_file_bytes, pdf_pages
+
+    snap = inspect_file_bytes(pdf_bytes(3), ".pdf")
+    assert [u.locator for u in snap.units] == ["page:1/line:1", "page:2/line:1", "page:3/line:1"]
+    assert pdf_pages(snap) == ["Page 1 text", "Page 2 text", "Page 3 text"]

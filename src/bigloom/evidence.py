@@ -51,10 +51,21 @@ def evidence_section(heading: str, rows: Sequence[tuple[str, str]]) -> ArtifactS
     return ArtifactSection(heading=heading, table=table)
 
 
+def evidence_position(ir: ArtifactIR, depth: int) -> int:
+    """Return where the text fact section goes: at `depth`, but never after the prose body.
+
+    A document ends with sign-off and appendix sections (approval tables, hidden supporting
+    facts). A person expects a figure inside the body, so the section goes before them.
+    """
+    body = [i for i, sec in enumerate(ir.sections) if not sec.hidden and sec.body]
+    end = body[-1] + 1 if body else len(ir.sections)
+    return min(depth, end)
+
+
 def with_evidence(ir: ArtifactIR, section: ArtifactSection, *, depth: int = 6, title_suffix: str = "") -> ArtifactIR:
-    """Return a copy of the IR with the section inserted at position `depth`, or at the end."""
+    """Return a copy of the IR with the section inserted at `evidence_position(ir, depth)`."""
     sections = list(ir.sections)
-    sections.insert(min(depth, len(sections)), section)
+    sections.insert(evidence_position(ir, depth), section)
     update: dict[str, object] = {"sections": sections}
     if title_suffix:
         update["title"] = f"{ir.title}{title_suffix}"

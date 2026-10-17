@@ -42,7 +42,7 @@ class Target:
 
     @property
     def heading(self) -> str:
-        return self.label.capitalize()
+        return self.label[:1].upper() + self.label[1:]
 
     @property
     def peak_name(self) -> str:
@@ -50,7 +50,8 @@ class Target:
 
     @property
     def caption(self) -> str:
-        return f"Figure: {self.chart_title}"
+        """Return the picture caption. It names the chart and its bars, but never the value."""
+        return f"Figure: {self.chart_title}. Bars: {', '.join(self.chart_categories)}."
 
     def chart(self, seed: int, value: str | None = None) -> bytes:
         """Return the chart picture. The peak bar carries `value`, or the image golden value."""
@@ -65,6 +66,8 @@ class FormatHandler:
     fmt: ClassVar[Format]
     #: The trap is the draft main file, so its title carries this suffix.
     draft_suffix: ClassVar[str] = " (draft)"
+    #: True when the rendered file already holds the text fact. The deck adds it after rendering.
+    text_fact_in_render: ClassVar[bool] = True
 
     def golden_ir(self, t: Target, ir: ArtifactIR) -> ArtifactIR:
         """Return a copy of the IR with the text fact section at unit 6 or deeper."""

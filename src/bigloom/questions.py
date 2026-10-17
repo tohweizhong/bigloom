@@ -21,6 +21,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 # Test design: the final document holds a revised forecast. The draft holds another value.
 PLANTED_QUALIFIER = "revised {noun} forecast"
+# A question that opens "What was" or "What is" with no article before the noun phrase.
+_ARTICLE_GAP = re.compile(r"^(What (?:was|is))\s+(?!the\b|a\b|an\b)", flags=re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -41,6 +43,11 @@ class Plan:
     chart_categories: tuple[str, ...]
     chart_peak: int
     image_question: str
+
+
+def sentence_case(text: str) -> str:
+    """Upper-case the first letter only, so acronyms such as CET1 keep their case."""
+    return text[:1].upper() + text[1:]
 
 
 def period_of(world: World, ir: ArtifactIR) -> str:
@@ -140,6 +147,8 @@ def text_question(text: dict[str, str], measure: Measure, label: str, period: st
         hit = re.search(rf"\b{re.escape(measure.noun)}\b", sentence, flags=re.IGNORECASE)
         if hit:
             sentence = sentence[: hit.start()] + label + sentence[hit.end() :]
+            # The label is one specific figure, so it takes "the": "What was the total revised ...".
+            sentence = _ARTICLE_GAP.sub(r"\1 the ", sentence, count=1)
             return sentence.rstrip("?").rstrip() + f" in the {scope}?"
     return f"What is the {label} for {when} in the {scope}?"
 
@@ -194,7 +203,7 @@ def plan_targets(world: World, irs: Sequence[ArtifactIR], peaks: Sequence[int], 
         image_noun = pct.noun if pct else f"{money.noun} growth"
         local.add(image_noun)
         dim_name, cats = dims[len(plans) % len(dims)]
-        chart_title = f"{PLANTED_QUALIFIER.format(noun=image_noun).capitalize()} by {dim_name}"
+        chart_title = f"{sentence_case(PLANTED_QUALIFIER.format(noun=image_noun))} by {dim_name}"
         name = cats[peak % len(cats)]
         image_question = (
             f"In the {scope} for {period_text(period)}, what {image_noun} forecast does "

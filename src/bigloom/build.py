@@ -20,14 +20,26 @@ from typing import TYPE_CHECKING
 from .corpus import CorpusError, CorpusProvenance, resolve_corpus
 from .formats import FORMATS, Format, Target, handler_for
 from .models import ManifestEntry
+from .qualify import inspect_file_bytes
 from .queries import generate_queries
 from .questions import period_of, plan_targets
+from .realism import (
+    GATE_SENTENCE_WORDS,
+    MAX_REPEATED_SENTENCE_RATE,
+    file_findings,
+    mask,
+    repeated_sentence_rate,
+    split_sentences,
+    world_names,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from worldloom.models import ArtifactIR
     from worldloom.world import World
 
 TRAP_MAX_BYTES = 1024 * 1024
+#: The text fact must sit at this unit (a Word paragraph or cell, or a PDF text line) or deeper.
+MIN_TEXT_DEPTH = 6
 
 
 def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
@@ -45,9 +57,17 @@ def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
 
 
 def _choose(
-    world: World, fmt: Format, formats_of: Mapping[str, set[str]], used_ids: set[str], used_types: set[str]
+    world: World,
+    fmt: Format,
+    formats_of: Mapping[str, set[str]],
+    used_ids: set[str],
+    used_types: set[str],
+    rejected: Sequence[str] = (),
 ) -> tuple[ArtifactIR, str]:
-    """Choose the longest unused document of a type not yet used, among the documents WorldLoom renders in `fmt`."""
+    """Choose an unused document of a type not yet used, among the documents WorldLoom renders in `fmt`.
+
+    The document with the most body prose wins, then the one with the most visible sections.
+    """
     intents = {i.id: i for i in world.artifact_intents}
     candidates = []
     for ir in world.artifact_irs:
@@ -56,18 +76,34 @@ def _choose(
             continue
         if intent.artifact_type in used_types:
             continue
-        visible = sum(1 for s in ir.sections if not s.hidden)
-        candidates.append((-visible, ir.id, ir, intent.artifact_type))
+        visible = [s for s in ir.sections if not s.hidden]
+        words = sum(len((s.body or "").split()) for s in visible)
+        candidates.append((-words, -len(visible), ir.id, ir, intent.artifact_type))
     if not candidates:
+        why = f" Rejected: {'; '.join(rejected)}." if rejected else ""
         raise CorpusError(
-            f"No unused WorldLoom document type renders as {fmt} in this world. Use other formats, "
+            f"No unused WorldLoom document type renders as {fmt} in this world.{why} Use other formats, "
             "fewer sizes, or a pack with more document types (for example packs/govtech.json)."
         )
-    candidates.sort(key=lambda c: (c[0], c[1]))
-    _, _, ir, artifact_type = candidates[0]
+    candidates.sort(key=lambda c: (c[0], c[1], c[2]))
+    _, _, _, ir, artifact_type = candidates[0]
     used_ids.add(ir.id)
     used_types.add(artifact_type)
     return ir, artifact_type
+
+
+def _prose_defect(ir: ArtifactIR, names: Sequence[str]) -> str:
+    """Return why the WorldLoom prose of a document fails the realism gate, or an empty string."""
+    sentences = [
+        mask(sentence, names)
+        for sec in ir.sections
+        if sec.body and not sec.hidden
+        for sentence in split_sentences(sec.body, GATE_SENTENCE_WORDS)
+    ]
+    rate = repeated_sentence_rate(sentences)
+    if rate > MAX_REPEATED_SENTENCE_RATE:
+        return f"{rate:.0%} of its sentences repeat"
+    return ""
 
 
 def style_seed_for(world_seed: int, ir_id: str) -> int:
@@ -117,9 +153,7 @@ def _render_pass(world: World, irs: Mapping[str, ArtifactIR], formats: Sequence[
 
 
 def _text_index(payload: bytes, ext: str, value: str) -> int:
-    """Return the 1-based unit (or PDF page) where `value` first appears, or 0."""
-    from .qualify import inspect_file_bytes
-
+    """Return the 1-based unit (a Word paragraph or cell, or a PDF line) where `value` first appears, or 0."""
     snap = inspect_file_bytes(payload, "." + ext)
     for idx, unit in enumerate(snap.units, 1):
         if value in unit.text or value.replace(" ", "") in unit.text.replace(" ", "").replace("\n", ""):
@@ -188,15 +222,20 @@ def build_corpus(
                 "WorldLoom documents. Omit world_pack to build a new corpus, or give a pack JSON file."
             )
         formats_of = _renderable(world, fmts)
-        chosen = [(fmt, *_choose(world, fmt, formats_of, used_ids, used_types)) for fmt in fmts]
-        peaks = [rng.randrange(6) for _ in chosen]
-        plans = plan_targets(world, [ir for _, ir, _ in chosen], peaks, used_labels)
-        targets: list[Target] = []
-        for (fmt, ir, artifact_type), plan in zip(chosen, plans, strict=True):
-            counter += 1
-            targets.append(
-                Target(
-                    file_id=f"bl-{counter:03d}-{fmt}-{size_tag}", fmt=fmt, size_bytes=size_bytes, ir_id=ir.id,
+        names = world_names(world)
+        for fmt in fmts:
+            handler = handler_for(fmt)
+            rejected: list[str] = []
+            while True:
+                ir, artifact_type = _choose(world, fmt, formats_of, used_ids, used_types, rejected)
+                defect = _prose_defect(ir, names)
+                if defect:
+                    rejected.append(f"{artifact_type}: {defect}")
+                    continue
+                labels_before = set(used_labels)
+                plan = plan_targets(world, [ir], [rng.randrange(6)], used_labels)[0]
+                t = Target(
+                    file_id=f"bl-{counter + 1:03d}-{fmt}-{size_tag}", fmt=fmt, size_bytes=size_bytes, ir_id=ir.id,
                     artifact_type=artifact_type, label=plan.text_label, chart_title=plan.chart_title,
                     chart_categories=plan.chart_categories, chart_peak=plan.chart_peak,
                     text_question=plan.text_question, image_question=plan.image_question,
@@ -204,20 +243,35 @@ def build_corpus(
                     text_canary=_unique_money(rng, used_values, currency),
                     image_golden=_unique_pct(rng, used_values), image_canary=_unique_pct(rng, used_values),
                 )
-            )
-
-        for t in targets:
-            handler = handler_for(t.fmt)
-            style_seed = style_seed_for(int(world.seed), t.ir_id)
-            base_ir = _with_style_seed(irs[t.ir_id], style_seed)
-            # One render pass for each target, so a planted value reaches no other document.
-            main = _render_pass(world, {t.ir_id: handler.golden_ir(t, base_ir)}, [t.fmt]).get((t.ir_id, t.fmt))
-            canary = _render_pass(world, {t.ir_id: handler.canary_ir(t, base_ir)}, [t.fmt])
-            trap = canary.get((t.ir_id, handler.trap_kind()))
-            if main is None or trap is None:
-                raise CorpusError(f"WorldLoom did not render {t.ir_id} as {t.fmt}.")
+                style_seed = style_seed_for(int(world.seed), t.ir_id)
+                base_ir = _with_style_seed(irs[t.ir_id], style_seed)
+                # One render pass for each target, so a planted value reaches no other document.
+                main = _render_pass(world, {t.ir_id: handler.golden_ir(t, base_ir)}, [t.fmt]).get((t.ir_id, t.fmt))
+                canary = _render_pass(world, {t.ir_id: handler.canary_ir(t, base_ir)}, [t.fmt])
+                trap = canary.get((t.ir_id, handler.trap_kind()))
+                if main is None or trap is None:
+                    raise CorpusError(f"WorldLoom did not render {t.ir_id} as {t.fmt}.")
+                findings = file_findings(inspect_file_bytes(main, "." + t.fmt))
+                if findings:
+                    # Safety step: the rendered file fails a realism reading. Try the next document.
+                    rejected.append(f"{artifact_type}: {findings[0].code} ({findings[0].detail})")
+                    used_labels.clear()
+                    used_labels.update(labels_before)
+                    continue
+                depth = _text_index(main, t.fmt, t.text_golden) if handler.text_fact_in_render else MIN_TEXT_DEPTH
+                if depth < MIN_TEXT_DEPTH:
+                    # The document is too short to hold the fact deep enough. Try the next one.
+                    rejected.append(f"{artifact_type}: the text fact sits at unit {depth}, below {MIN_TEXT_DEPTH}")
+                    used_labels.clear()
+                    used_labels.update(labels_before)
+                    continue
+                break
+            counter += 1
             target_bytes = handler.finish_target(t, main, seed + counter)
             trap_bytes = handler.finish_trap(t, trap)
+            final_depth = _text_index(target_bytes, t.fmt, t.text_golden)
+            if final_depth < MIN_TEXT_DEPTH:
+                raise CorpusError(f"The text fact of {t.file_id} sits at unit {final_depth}, below {MIN_TEXT_DEPTH}.")
             if len(trap_bytes) >= TRAP_MAX_BYTES:
                 raise CorpusError(f"Trap for {t.file_id} is {len(trap_bytes)} bytes, above the 1 MB limit.")
             target_rel = f"large/{t.file_id}_final.{t.fmt}"
@@ -236,7 +290,7 @@ def build_corpus(
                     distractor_size_bytes=len(trap_bytes), distractor_sha256=hashlib.sha256(trap_bytes).hexdigest(),
                     topic=topic, period=period, distractor_period=f"{period} draft",
                     text_metric_label=t.label, text_golden_value=t.text_golden, text_canary_value=t.text_canary,
-                    text_unit_index=_text_index(target_bytes, t.fmt, t.text_golden),
+                    text_unit_index=final_depth,
                     image_chart_title=t.chart_title, image_golden_value=t.image_golden,
                     image_canary_value=t.image_canary, text_question=t.text_question,
                     image_question=t.image_question, document_title=ir.title, document_type=t.artifact_type,

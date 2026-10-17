@@ -62,3 +62,39 @@ def test_pad_ooxml_reaches_exact_size_and_stays_readable() -> None:
     assert Document(BytesIO(padded)).paragraphs[0].text.startswith("Paragraph 0")
     assert pad_ooxml(raw, 200_000, seed=3) == padded
     assert pad_ooxml(raw, 10, seed=3) == raw
+
+
+def test_fact_goes_before_sign_off_sections() -> None:
+    from worldloom.models import ArtifactSection
+
+    ir = ir_with_sections(4)
+    tail = [ArtifactSection(heading="Approval"), ArtifactSection(heading="Supporting facts", hidden=True)]
+    ir = ir.model_copy(update={"sections": [*ir.sections, *tail]})
+    out = handler_for("docx").golden_ir(target("docx"), ir)
+    assert [s.heading for s in out.sections][4:] == ["Revised revenue forecast", "Approval", "Supporting facts"]
+
+
+def test_reader_handles_a_package_above_512_mib(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """The padding member alone takes the package past the WorldLoom 512 MiB budget."""
+    import hashlib
+
+    from worldloom.native_artifacts import NativeArtifactError, inspect_artifact
+
+    from bigloom.qualify import inspect_file_bytes
+
+    raw = docx_bytes()
+    buf = BytesIO(raw)
+    zero = bytes(1 << 20)
+    with zipfile.ZipFile(buf, "a", zipfile.ZIP_DEFLATED) as zf, zf.open(BALLAST_NAME, "w", force_zip64=True) as fh:
+        for _ in range(600):
+            fh.write(zero)
+    big = buf.getvalue()
+    try:
+        inspect_artifact(big, "docx")
+        raise AssertionError("WorldLoom accepted a package above its budget")
+    except NativeArtifactError:
+        pass
+    snap = inspect_file_bytes(big, ".docx")
+    assert any(u.text.startswith("Paragraph 0") for u in snap.units)
+    assert snap.metrics["file_size_bytes"] == len(big)
+    assert snap.sha256 == hashlib.sha256(big).hexdigest()

@@ -82,7 +82,9 @@ def test_build_and_queries_pass_qualification_gate(tmp_path: Path) -> None:
     assert snapshots[pptx_entry.target_file].metrics["speaker_notes"] >= 1
 
     pdf_entry = next(e for e in entries if e.format == "pdf")
-    first_page = snapshots[pdf_entry.target_file].units[0].text
+    from bigloom.qualify import pdf_pages
+
+    first_page = pdf_pages(snapshots[pdf_entry.target_file])[0]
     assert pdf_entry.document_title in first_page
 
 

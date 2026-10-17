@@ -87,6 +87,11 @@ class ViolationCode(StrEnum):
     CANARY_COLLIDES_WITH_TARGET = "canary_collides_with_target"
     TARGET_OR_TRAP_NOT_IN_TOP3 = "target_or_trap_not_in_top3"
     LOW_ENTROPY_GOLDEN_VALUE = "low_entropy_golden_value"
+    REPEATED_SENTENCES = "repeated_sentences"
+    TEMPLATE_OPENERS = "template_openers"
+    HEADER_REPEATS = "header_repeats"
+    CUT_WORDS = "cut_words"
+    THIN_PAGES = "thin_pages"
 
 
 class QualificationViolation(FrozenModel):

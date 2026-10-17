@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import zipfile
 from collections.abc import Sequence
 from io import BytesIO
 from pathlib import Path
@@ -13,12 +14,14 @@ from worldloom.evaluate.bm25 import Bm25
 from worldloom.evaluate.tfidf import TfIdf
 from worldloom.native_artifacts import NativeSnapshot, NativeUnit, inspect_artifact
 
+from .evidence import BALLAST_NAME
 from .models import (
     EvalCase,
     QualificationReport,
     QualificationViolation,
     ViolationCode,
 )
+from .realism import file_findings
 
 SUPPORTED_EXTENSIONS = {".docx", ".pptx", ".xlsx", ".pdf"}
 #: The best passage of a target and of its trap must rank in positions 1 to TOP_K.
@@ -36,25 +39,106 @@ def _is_low_entropy_value(value: str) -> bool:
     return bool(_LOW_ENTROPY_RE.fullmatch(cleaned))
 
 
+class PdfSnapshot(NativeSnapshot):
+    """A PDF snapshot that also keeps the prose of each page, without table text.
+
+    `prose_pages` holds the text set in the body font or larger: paragraphs and headings.
+    WorldLoom sets table cells, captions, and running heads in smaller fonts, so they drop out.
+    The realism readings use it, so that DOCX and PDF follow the same rule.
+    """
+
+    prose_pages: tuple[str, ...] = ()
+
+
+def _prose_pages(fragments: Sequence[Sequence[tuple[float, str]]]) -> tuple[str, ...]:
+    """Return, for each page, the fragments in the body font size or larger.
+
+    The body size is the largest font size that carries at least a fifth of the characters
+    in long fragments. Table text is smaller, and headings carry few characters.
+    """
+    weight: dict[float, int] = {}
+    for page in fragments:
+        for size, text in page:
+            if len(text.split()) >= 5:
+                weight[size] = weight.get(size, 0) + len(text)
+    if not weight:
+        return tuple("" for _ in fragments)
+    total = sum(weight.values())
+    body = max(size for size, chars in weight.items() if chars >= total / 5)
+    return tuple("\n".join(text for size, text in page if size >= body - 0.3) for page in fragments)
+
+
+def _without_ballast(payload: bytes) -> bytes:
+    """Return the OOXML package without the BigLoom padding member.
+
+    `inspect_artifact` reads every package member into memory and refuses packages above
+    512 MiB expanded. The padding member holds no text, so the reader drops it first.
+    """
+    with zipfile.ZipFile(BytesIO(payload)) as src:
+        if BALLAST_NAME not in src.namelist():
+            return payload
+        out = BytesIO()
+        with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as dst:
+            for info in src.infolist():
+                if info.filename != BALLAST_NAME:
+                    dst.writestr(info, src.read(info.filename))
+        return out.getvalue()
+
+
 def inspect_file_bytes(payload: bytes, suffix: str) -> NativeSnapshot:
-    """Inspect native document bytes via WorldLoom or pypdf for PDF files."""
+    """Inspect native document bytes: WorldLoom for OOXML, pypdf for PDF.
+
+    A PDF unit is one text line, with the locator "page:<n>/line:<m>". `pdf_pages` joins
+    the lines of each page again.
+
+    For OOXML, the BigLoom padding member is dropped before inspection, so files up to
+    1 GiB stay inside the WorldLoom inspection budget. The snapshot keeps the size and the
+    digest of the original file.
+    """
     ext = suffix.lower().removeprefix(".")
     if ext in ("docx", "pptx", "xlsx"):
-        return inspect_artifact(payload, ext)
+        snap = inspect_artifact(_without_ballast(payload), ext)
+        metrics = {**snap.metrics, "file_size_bytes": len(payload)}
+        return snap.model_copy(update={"sha256": hashlib.sha256(payload).hexdigest(), "metrics": metrics})
     if ext == "pdf":
         reader = PdfReader(BytesIO(payload))
         units: list[NativeUnit] = []
+        metrics = {"file_size_bytes": len(payload), "pages": len(reader.pages)}
+        fragments: list[list[tuple[float, str]]] = []
         for page_idx, page in enumerate(reader.pages, 1):
-            text = page.extract_text() or ""
-            units.append(NativeUnit(locator=f"page:{page_idx}", text=text))
+            found: list[tuple[float, str]] = []
 
-        return NativeSnapshot(
+            def visit(text: str, cm: object, tm: object, font: object, size: float, found=found) -> None:
+                if text.strip():
+                    found.append((round(float(size), 1), text.strip()))
+
+            text = page.extract_text(visitor_text=visit) or ""
+            # One unit for each text line, so depth counts lines, as DOCX counts paragraphs.
+            lines = [line for line in text.splitlines() if line.strip()] or [""]
+            units.extend(NativeUnit(locator=f"page:{page_idx}/line:{n}", text=line) for n, line in enumerate(lines, 1))
+            fragments.append(found)
+            images = len(page.images)
+            if images:
+                metrics[f"images_page_{page_idx}"] = images
+
+        return PdfSnapshot(
             format="pdf",
             sha256=hashlib.sha256(payload).hexdigest(),
             units=tuple(units),
-            metrics={"file_size_bytes": len(payload), "pages": len(reader.pages)},
+            metrics=metrics,
+            prose_pages=_prose_pages(fragments),
         )
     raise ValueError(f"Unsupported file extension: {suffix}")
+
+
+def pdf_pages(snap: NativeSnapshot) -> list[str]:
+    """Return the text of each PDF page, joined from its line units."""
+    pages: dict[int, list[str]] = {}
+    for unit in snap.units:
+        number = int(unit.locator.split("/")[0].removeprefix("page:"))
+        pages.setdefault(number, []).append(unit.text)
+    count = max([snap.metrics.get("pages", 0), *pages])
+    return ["\n".join(t for t in pages.get(n, []) if t) for n in range(1, count + 1)]
 
 
 def load_corpus_snapshots(corpus_dir: Path) -> dict[str, NativeSnapshot]:
@@ -139,9 +223,20 @@ def qualify_corpus(
     cases: Sequence[EvalCase],
     *,
     check_retrieval: bool = True,
+    check_realism: bool = True,
 ) -> QualificationReport:
-    """Run all build-time anti-leakage checks across snapshots and evaluation cases."""
+    """Run all build-time anti-leakage checks across snapshots and evaluation cases.
+
+    With `check_realism`, each DOCX and PDF file must also pass the realism readings in
+    `realism.file_findings`. A realism violation names the file in `case_id` as "file:<path>".
+    """
     violations: list[QualificationViolation] = []
+    if check_realism:
+        for rel in sorted(snapshots):
+            for finding in file_findings(snapshots[rel]):
+                violations.append(
+                    QualificationViolation(case_id=f"file:{rel}", code=ViolationCode(finding.code), detail=finding.detail)
+                )
     file_names = sorted(snapshots.keys())
     owners: list[str] = []
     passage_texts: list[str] = []

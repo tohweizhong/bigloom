@@ -85,15 +85,18 @@ def fix_deck_layout(data: bytes) -> tuple[bytes, int]:
 
 class PptxHandler(FormatHandler):
     fmt: ClassVar[Format] = "pptx"
+    text_fact_in_render: ClassVar[bool] = False
 
     def add_picture(self, t: Target, payload: bytes, seed: int) -> bytes:
         payload, _ = fix_deck_layout(payload)
-        return pptx_add_evidence_slide(payload, t.heading, [f"{t.heading}: {t.text_golden}"], t.chart(seed))
+        return pptx_add_evidence_slide(
+            payload, t.heading, [f"{t.heading}: {t.text_golden}", t.caption], t.chart(seed)
+        )
 
     def pad(self, payload: bytes, size_bytes: int, seed: int) -> bytes:
         return pad_ooxml(payload, size_bytes, seed)
 
     def finish_trap(self, t: Target, payload: bytes) -> bytes:
         payload, _ = fix_deck_layout(payload)
-        lines = [f"{t.heading}: {t.text_canary}", f"{t.chart_title}: {t.image_canary}"]
+        lines = [f"{t.heading}: {t.text_canary}", f"{t.chart_title}, {t.peak_name}: {t.image_canary}", t.caption]
         return pptx_add_evidence_slide(payload, f"{t.heading}{self.draft_suffix}", lines, None)
