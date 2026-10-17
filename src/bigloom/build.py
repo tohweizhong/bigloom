@@ -13,23 +13,12 @@ from __future__ import annotations
 import hashlib
 import random
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from .corpus import CorpusError, CorpusProvenance, resolve_corpus
-from .evidence import (
-    docx_add_picture,
-    evidence_section,
-    fact_chart_png,
-    fix_deck_layout,
-    pad_ooxml,
-    pad_pdf,
-    pdf_add_picture,
-    pptx_add_evidence_slide,
-    with_evidence,
-    xlsx_add_picture_sheet,
-)
+from .formats import FORMATS, Format, Target, handler_for
 from .models import ManifestEntry
 from .queries import generate_queries
 from .questions import period_of, plan_targets
@@ -38,31 +27,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from worldloom.models import ArtifactIR
     from worldloom.world import World
 
-Format = Literal["docx", "xlsx", "pptx", "pdf"]
-FORMATS: tuple[Format, ...] = ("docx", "xlsx", "pptx", "pdf")
 TRAP_MAX_BYTES = 1024 * 1024
-EVIDENCE_DEPTH = 6
-
-
-@dataclass(frozen=True)
-class _Target:
-    """One planned target file: the WorldLoom document and the values BigLoom adds to it."""
-
-    file_id: str
-    fmt: Format
-    size_bytes: int
-    ir_id: str
-    artifact_type: str
-    label: str
-    chart_title: str
-    chart_categories: tuple[str, ...]
-    chart_peak: int
-    text_question: str
-    image_question: str
-    text_golden: str
-    text_canary: str
-    image_golden: str
-    image_canary: str
 
 
 def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
@@ -162,36 +127,6 @@ def _text_index(payload: bytes, ext: str, value: str) -> int:
     return 0
 
 
-def _finish_target(t: _Target, payload: bytes, seed: int) -> bytes:
-    """Add the image fact (and the deck text fact) to a rendered target, then pad it."""
-    png = fact_chart_png(t.chart_title, t.chart_categories, t.image_golden, seed, peak=t.chart_peak)
-    caption = f"Figure: {t.chart_title}"
-    if t.fmt == "docx":
-        payload = docx_add_picture(payload, png, caption)
-    elif t.fmt == "pdf":
-        payload = pdf_add_picture(payload, png, caption)
-    elif t.fmt == "pptx":
-        payload, _ = fix_deck_layout(payload)
-        payload = pptx_add_evidence_slide(payload, t.label.capitalize(), [f"{t.label.capitalize()}: {t.text_golden}"], png)
-    else:
-        payload = xlsx_add_picture_sheet(payload, png, "Chart", caption)
-    if t.fmt == "pdf":
-        return pad_pdf(payload, t.size_bytes, seed)
-    return pad_ooxml(payload, t.size_bytes, seed)
-
-
-def _finish_trap(t: _Target, payload: bytes) -> bytes:
-    if t.fmt == "pptx":
-        payload, _ = fix_deck_layout(payload)
-        payload = pptx_add_evidence_slide(
-            payload,
-            f"{t.label.capitalize()} (draft)",
-            [f"{t.label.capitalize()}: {t.text_canary}", f"{t.chart_title}: {t.image_canary}"],
-            None,
-        )
-    return payload
-
-
 def build_corpus(
     out_dir: Path,
     *,
@@ -214,7 +149,7 @@ def build_corpus(
         fmt = raw.lower().strip().removeprefix(".")
         if fmt not in FORMATS:
             raise ValueError(f"Unsupported format '{raw}'.")
-        fmts.append(fmt)  # type: ignore[arg-type]
+        fmts.append(handler_for(fmt).fmt)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "large").mkdir(parents=True, exist_ok=True)
@@ -256,11 +191,11 @@ def build_corpus(
         chosen = [(fmt, *_choose(world, fmt, formats_of, used_ids, used_types)) for fmt in fmts]
         peaks = [rng.randrange(6) for _ in chosen]
         plans = plan_targets(world, [ir for _, ir, _ in chosen], peaks, used_labels)
-        targets: list[_Target] = []
+        targets: list[Target] = []
         for (fmt, ir, artifact_type), plan in zip(chosen, plans, strict=True):
             counter += 1
             targets.append(
-                _Target(
+                Target(
                     file_id=f"bl-{counter:03d}-{fmt}-{size_tag}", fmt=fmt, size_bytes=size_bytes, ir_id=ir.id,
                     artifact_type=artifact_type, label=plan.text_label, chart_title=plan.chart_title,
                     chart_categories=plan.chart_categories, chart_peak=plan.chart_peak,
@@ -272,25 +207,17 @@ def build_corpus(
             )
 
         for t in targets:
-            heading = t.label.capitalize()
-            peak_name = t.chart_categories[t.chart_peak]
+            handler = handler_for(t.fmt)
             style_seed = style_seed_for(int(world.seed), t.ir_id)
             base_ir = _with_style_seed(irs[t.ir_id], style_seed)
-            golden_ir = with_evidence(base_ir, evidence_section(heading, [(heading, t.text_golden)]), depth=EVIDENCE_DEPTH)
-            canary_ir = with_evidence(
-                base_ir,
-                evidence_section(heading, [(heading, t.text_canary), (f"{t.chart_title}: {peak_name}", t.image_canary)]),
-                depth=EVIDENCE_DEPTH,
-                title_suffix=" (draft)" if t.fmt != "docx" else "",
-            )
             # One render pass for each target, so a planted value reaches no other document.
-            main = _render_pass(world, {t.ir_id: golden_ir}, [t.fmt]).get((t.ir_id, t.fmt))
-            canary = _render_pass(world, {t.ir_id: canary_ir}, [t.fmt])
-            trap = canary.get((t.ir_id, "v0.1.docx")) if t.fmt == "docx" else canary.get((t.ir_id, t.fmt))
+            main = _render_pass(world, {t.ir_id: handler.golden_ir(t, base_ir)}, [t.fmt]).get((t.ir_id, t.fmt))
+            canary = _render_pass(world, {t.ir_id: handler.canary_ir(t, base_ir)}, [t.fmt])
+            trap = canary.get((t.ir_id, handler.trap_kind()))
             if main is None or trap is None:
                 raise CorpusError(f"WorldLoom did not render {t.ir_id} as {t.fmt}.")
-            target_bytes = _finish_target(t, main, seed + counter)
-            trap_bytes = _finish_trap(t, trap)
+            target_bytes = handler.finish_target(t, main, seed + counter)
+            trap_bytes = handler.finish_trap(t, trap)
             if len(trap_bytes) >= TRAP_MAX_BYTES:
                 raise CorpusError(f"Trap for {t.file_id} is {len(trap_bytes)} bytes, above the 1 MB limit.")
             target_rel = f"large/{t.file_id}_final.{t.fmt}"

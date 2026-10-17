@@ -83,6 +83,12 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Each document gets its own `style_seed` in IR metadata. The enterprise renderers read it through `_genome_for`.
 - [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
+## Phase 4b: Format Handlers (user request, 17 Oct 2026)
+
+- [x] Task: Move the steps that differ by format into `src/bigloom/formats/` (one handler each for DOCX, PDF, PPTX, and XLSX). `build.py` keeps one shared pipeline.
+- [x] Task: Add one unit test file for each handler: `tests/test_format_docx.py`, `tests/test_format_pdf.py`, `tests/test_format_deck_workbook.py`.
+- [x] Task: Next work starts with DOCX and PDF (user request).
+
 ## Phase 5: Qualification v2 (FR5)
 
 - [ ] Task: Write failing tests.

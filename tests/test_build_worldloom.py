@@ -17,13 +17,6 @@ from pptx import Presentation
 from pypdf import PdfReader
 
 from bigloom.build import build_corpus, style_seed_for
-from bigloom.evidence import (
-    BALLAST_NAME,
-    PDF_BALLAST_NAME,
-    fix_deck_layout,
-    pad_ooxml,
-    pad_pdf,
-)
 from bigloom.models import ManifestEntry
 from bigloom.qualify import load_corpus_snapshots
 
@@ -174,47 +167,3 @@ def test_manifest_holds_natural_questions(built: tuple[Path, list[ManifestEntry]
         assert e.document_title in e.text_question and e.document_title in e.image_question
         assert e.text_metric_label in e.text_question
         assert e.image_chart_title in e.image_question
-
-
-def test_pad_ooxml_reaches_exact_size_and_stays_readable() -> None:
-    buf = BytesIO()
-    doc = Document()
-    doc.add_paragraph("Body text")
-    doc.save(buf)
-    target = 200_000
-    padded = pad_ooxml(buf.getvalue(), target, seed=3)
-    assert target <= len(padded) <= target + 512
-    assert BALLAST_NAME in zipfile.ZipFile(BytesIO(padded)).namelist()
-    assert Document(BytesIO(padded)).paragraphs[0].text == "Body text"
-    assert pad_ooxml(buf.getvalue(), target, seed=3) == padded
-
-
-def test_pad_pdf_reaches_size_and_stays_readable() -> None:
-    from reportlab.pdfgen import canvas
-
-    buf = BytesIO()
-    c = canvas.Canvas(buf, invariant=True)
-    c.drawString(72, 720, "Page text")
-    c.save()
-    target = 150_000
-    padded = pad_pdf(buf.getvalue(), target, seed=5)
-    assert target <= len(padded) <= target + 4096
-    reader = PdfReader(BytesIO(padded))
-    assert "Page text" in reader.pages[0].extract_text()
-    assert PDF_BALLAST_NAME in reader.attachments
-
-
-def test_fix_deck_layout_corrects_off_slide_placeholders() -> None:
-    from pptx.util import Inches
-
-    prs = Presentation()
-    prs.slide_width = Inches(13.333)
-    slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.width = Inches(16)
-    slide.shapes.title.height = 0
-    buf = BytesIO()
-    prs.save(buf)
-    fixed, changed = fix_deck_layout(buf.getvalue())
-    assert changed >= 1
-    title = Presentation(BytesIO(fixed)).slides[0].shapes.title
-    assert title.height > 0 and title.left + title.width <= Inches(13.333)
