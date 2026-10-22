@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from io import BytesIO
 
-import pytest
-
 from bigloom.models import EvalCase, ViolationCode
 from bigloom.qualify import inspect_file_bytes, qualify_corpus
 from bigloom.realism import file_findings
@@ -126,12 +124,30 @@ def test_gate_reports_realism_violation_with_file_name() -> None:
     assert not [v for v in off.violations if v.code == ViolationCode.REPEATED_SENTENCES]
 
 
-@pytest.mark.parametrize("ext", [".pptx", ".xlsx"])
-def test_other_formats_are_not_read_yet(ext: str) -> None:
+def test_pptx_and_xlsx_findings_fire_on_defects() -> None:
     from worldloom.native_artifacts import NativeSnapshot, NativeUnit
 
-    snap = NativeSnapshot(format=ext[1:], sha256="0" * 64, units=(NativeUnit(locator="slide:1/text", text="x"),), metrics={})
-    assert file_findings(snap) == []
+    bad_pptx = NativeSnapshot(
+        format="pptx",
+        sha256="0" * 64,
+        units=tuple(NativeUnit(locator=f"slide:{i}/text", text=f"{PROSE[0]} {PROSE[0]}") for i in range(1, 4)),
+        metrics={},
+    )
+    assert "repeated_sentences" in {f.code for f in file_findings(bad_pptx)}
+    clean_pptx = NativeSnapshot(
+        format="pptx",
+        sha256="0" * 64,
+        units=tuple(NativeUnit(locator=f"slide:{i}/text", text=f"08 April 2026\n{p}") for i, p in enumerate(PROSE, 1)),
+        metrics={},
+    )
+    assert file_findings(clean_pptx) == []
+    bad_xlsx = NativeSnapshot(
+        format="xlsx",
+        sha256="0" * 64,
+        units=tuple(NativeUnit(locator=f"sheet:S1/cell:A{i}", text=PROSE[0]) for i in range(1, 8)),
+        metrics={},
+    )
+    assert "repeated_sentences" in {f.code for f in file_findings(bad_xlsx)}
 
 
 def test_pdf_table_text_in_a_smaller_font_is_not_read_as_prose() -> None:

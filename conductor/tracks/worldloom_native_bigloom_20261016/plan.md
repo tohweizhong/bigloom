@@ -101,9 +101,9 @@ No production code changes in this phase. Test scripts go in the track folder un
 - [x] Task: Implement the second reader.
 - [x] Task: The build tries the next document when a document fails the prose check, a realism check, or the depth check.
 - [x] Task: The caption names the chart and its bars. The Word picture sits after the text fact table.
-- [ ] Task: Realism checks for PPTX and XLSX.
+- [x] Task: Realism checks for PPTX and XLSX.
 - [x] Task: Rewrite the clean fixture in `tests/test_qualify.py` so that it does not repeat the topic in every paragraph.
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 6: Natural Questions (FR6)
 
@@ -113,7 +113,7 @@ No production code changes in this phase. Test scripts go in the track folder un
     - [x] The wording comes from the pack `evaluation_text`.
     - [x] No two questions in one set share a fixed label.
 - [x] Task: Rewrite `queries.py`. Remove "Authorized Capital Reserve", "Q4 Peak Thermal Efficiency", and "Final Audit Report".
-- [ ] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
+- [x] Task: Phase Verification and Checkpoint (refer to `workflow.md`).
 
 ## Phase 7: Fold in `bigloom proposal` (FR7)
 

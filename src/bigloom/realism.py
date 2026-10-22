@@ -115,13 +115,28 @@ def _lines_and_prose(snap: NativeSnapshot) -> tuple[list[str], str, list[str]]:
             line.strip() for page in prose_pages for line in page.splitlines() if line.strip() and line.strip() not in heads
         ]
         return lines, " ".join(lines), pages
+    if snap.format == "pptx":
+        slides = [u.text for u in snap.units if u.locator.endswith("/text") and "/shape:" not in u.locator and u.text.strip()]
+        notes = [u.text for u in snap.units if u.locator.endswith("/notes") and u.text.strip()]
+        heads = running_heads(slides)
+        lines = [line.strip() for part in (*slides, *notes) for line in part.splitlines() if line.strip() and line.strip() not in heads]
+        return lines, " ".join(lines), []
+    if snap.format == "xlsx":
+        sheets: dict[str, list[str]] = {}
+        for u in snap.units:
+            if "/cell:" in u.locator and not u.locator.endswith("/type") and not u.text.startswith("=") and u.text.strip():
+                sheets.setdefault(u.locator.split("/")[0], []).append(u.text.strip())
+        heads = running_heads(["\n".join(rows) for rows in sheets.values()])
+        lines = [cell for rows in sheets.values() for cell in rows if cell not in heads]
+        prose_cells = [c for c in lines if c.endswith((".", "!", "?")) and len(c.split()) >= GATE_SENTENCE_WORDS]
+        return prose_cells, " ".join(prose_cells), []
     paragraphs = [u.text.strip() for u in snap.units if u.locator.startswith("paragraph:") and u.text.strip()]
     return paragraphs, " ".join(paragraphs), []
 
 
 def file_findings(snap: NativeSnapshot) -> list[Finding]:
-    """Return the realism defects of one DOCX or PDF file. Other formats return no findings."""
-    if snap.format not in ("docx", "pdf"):
+    """Return the realism defects of one DOCX, PDF, PPTX, or XLSX file."""
+    if snap.format not in ("docx", "pdf", "pptx", "xlsx"):
         return []
     lines, prose, pages = _lines_and_prose(snap)
     findings: list[Finding] = []
