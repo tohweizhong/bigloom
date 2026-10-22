@@ -1,0 +1,159 @@
+{
+  "round": 7,
+  "date_sgt": "2026-10-23 01:39",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98",
+  "candidate_policy": "policies/writer/round-007.md",
+  "candidate_policy_sha256": "6ecb5ff7f124b6f89846407574583a2bce4fbdb41150a1cb374168c3af652b17",
+  "proposer_change": {
+    "target_metric": "commercial_per_k",
+    "change": "Name each commercial measure at most once in an entire section across all formats including PPTX slides and PDF variance summaries.",
+    "why": "Round 2 champion train commercial_per_k was 2.257 against the 0.0 real reference."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 2785,
+    "seed_2027": 2523,
+    "seed_3101": 2604,
+    "seed_3102": 2441
+  },
+  "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
+  "gate_passed": true,
+  "gate_violations": [],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 2.257,
+    "retail_per_k": 0.208,
+    "within_file_repeat": 0.039,
+    "top_opener_share": 0.13,
+    "unique_sentences": 48.833,
+    "words_per_mb": 435.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 5.838,
+    "retail_per_k": 0.685,
+    "within_file_repeat": 0.044,
+    "top_opener_share": 0.115,
+    "unique_sentences": 29.167,
+    "words_per_mb": 436.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "words": 922,
+      "unique_sentences": 33,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 1.08,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.03
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "words": 939,
+      "unique_sentences": 32,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 1.06,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.031
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "words": 3043,
+      "unique_sentences": 46,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 4.93,
+      "within_file_repeat": 0.122,
+      "top_opener_share": 0.041
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "words": 1290,
+      "unique_sentences": 32,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 10.08,
+      "within_file_repeat": 0.143,
+      "top_opener_share": 0.086
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "words": 454,
+      "unique_sentences": 16,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 8.81,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.25
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "words": 441,
+      "unique_sentences": 16,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 9.07,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.25
+    }
+  ],
+  "writer_notes": [
+    "Fresh writer subagents wrote shorter sections (2785 and 2523 total words on train vs 4899 and 5486 in Round 2), reducing unique_sentences to 29.167.",
+    "Because each file had fewer total words while still naming commercial measures once per section, commercial_per_k rose to 5.838 per 1000 words.",
+    "Train retail_per_k (0.685 vs 0.78 real) and top_opener_share (0.115 vs 0.130) improved, and both gates passed with 0 violations."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Operational tracking began when INC0080099 opened at priority P2 against inventory-valuation following the morning batch failure on the platform. During the initial phase of the response, engineers investigated a suspected upstream infrastructure interruption, but that line of enquiry was closed once platform verification showed that ERP logs show no interruption during the valuation window. After teams isolated the stale agency code entries and applied a corrective override to the reference register, reprocessing ran to completion and Asset valuation completed later that afternoon. Each stage of the recovery was logged against the incident record before the service returned to normal operation. The hours spent checking upstream logs demonstrate the cost of lacking automated schema and code validation on ingested reference tables. Had pre-flight checks flagged the unmapped agency codes at ingestion, engineering teams would have bypassed the false infrastructure trail and restored the valuation feed well before the afternoon window."
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "must separate approved fee waivers from unplanned operational cost overruns when reviewing next month's programme allocations with division heads. The finance lead is asked to approve the two-part remediation workstream for the product hierarchy sync service, where One ticket automates code mapping validation; one assigns mapping table ownership with a mandatory reviewer. Approving both work packages is essential so that the agency does not settle for a partial technical check while leaving governance unaddressed. Right now, the governance gap remains open because the owner for the Agency Reference Data Register is unassigned, and only formal ownership assignment with mandatory review fixes the underlying control rather than detection alone. Until that governance step is completed, the platform stays exposed to the confirmed root cause where control failure: the mapping table has no registered owner and no required reviewer, as hand-maintained cross-walks between legacy and cloud agency codes can still be altered"
+    }
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [
+      "retail_per_k",
+      "top_opener_share"
+    ],
+    "worsened": [
+      "commercial_per_k",
+      "unique_sentences"
+    ],
+    "holdout_gain": -2.373,
+    "reasons": [
+      "train dimensions worsened beyond their band: commercial_per_k, unique_sentences",
+      "holdout did not gain (normalised gain -2.373)"
+    ]
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 6.298,
+    "retail_per_k": 0.227,
+    "within_file_repeat": 0.04,
+    "top_opener_share": 0.135,
+    "unique_sentences": 52.0,
+    "words_per_mb": 389.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 5.828,
+    "retail_per_k": 0.683,
+    "within_file_repeat": 0.059,
+    "top_opener_share": 0.117,
+    "unique_sentences": 28.333,
+    "words_per_mb": 355.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  }
+}
