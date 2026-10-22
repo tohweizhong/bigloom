@@ -53,9 +53,9 @@ def test_receipt_round_trips(tmp_path: Path) -> None:
     assert data["round"] == 2 and data["decision"]["promote"] is False
 
 
-def test_judge_guard_blocks_a_metric_win_that_reads_less_real() -> None:
+def test_judge_guard_blocks_only_when_every_judge_agrees() -> None:
     cand = {**BEST, "top_opener_share": 0.09}
-    ok = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_error=0.10, cand_judge_error=0.05)
-    assert ok.promote
-    blocked = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_error=0.20, cand_judge_error=0.05)
-    assert not blocked.promote and any("judge" in r for r in blocked.reasons)
+    one_flip = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[20, 0, 0], cand_judge_correct=[20, 20, 0])
+    assert one_flip.promote
+    all_agree = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[10, 2, 3], cand_judge_correct=[20, 18, 19])
+    assert not all_agree.promote and any("every judge" in r for r in all_agree.reasons)

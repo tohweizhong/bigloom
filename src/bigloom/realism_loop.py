@@ -66,16 +66,19 @@ def decide(
     best_holdout: Mapping[str, float],
     cand_holdout: Mapping[str, float],
     real: Mapping[str, float],
-    best_judge_error: float | None = None,
-    cand_judge_error: float | None = None,
+    best_judge_correct: list[int] | None = None,
+    cand_judge_correct: list[int] | None = None,
 ) -> Decision:
     """Apply the promotion rule.
 
     Promote only when, on the train set, at least one dimension moves closer to the real value
     by more than its band and no dimension moves away by more than its band, and on the holdout
-    set the summed normalised distance also falls. When judge error rates are given (masked
-    pairs), the candidate's rate must not fall by more than `JUDGE_BAND`: the judges guard
-    against text that games the cheap metrics without reading as real.
+    set the summed normalised distance also falls.
+
+    The judges guard against text that games the cheap metrics without reading as real. With
+    masked names, one judge labels a whole file by "series", so its 20 verdicts are not
+    independent. The guard therefore blocks only when EVERY judge is right more often on the
+    candidate than on the champion, and the mean error rate falls by more than `JUDGE_BAND`.
     """
     bt, ct = distances(best_train, real), distances(cand_train, real)
     improved = tuple(k for k in BANDS if bt[k] - ct[k] > BANDS[k])
@@ -89,8 +92,12 @@ def decide(
         reasons.append(f"train dimensions worsened beyond their band: {', '.join(worsened)}")
     if gain <= 0:
         reasons.append(f"holdout did not gain (normalised gain {gain})")
-    if best_judge_error is not None and cand_judge_error is not None and best_judge_error - cand_judge_error > JUDGE_BAND:
-        reasons.append(f"judge error rate fell from {best_judge_error:.2f} to {cand_judge_error:.2f}")
+    if best_judge_correct and cand_judge_correct and len(best_judge_correct) == len(cand_judge_correct):
+        pairs = 20 * len(best_judge_correct)
+        best_err = 1 - sum(best_judge_correct) / pairs
+        cand_err = 1 - sum(cand_judge_correct) / pairs
+        if all(c > b for c, b in zip(cand_judge_correct, best_judge_correct, strict=True)) and best_err - cand_err > JUDGE_BAND:
+            reasons.append(f"every judge read the candidate as less real (error {best_err:.2f} -> {cand_err:.2f})")
     return Decision(promote=not reasons, improved=improved, worsened=worsened, holdout_gain=gain, reasons=tuple(reasons))
 
 

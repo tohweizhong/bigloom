@@ -36,17 +36,18 @@ _CHUNK = 1 << 20
 
 
 def evidence_section(heading: str, rows: Sequence[tuple[str, str]]) -> ArtifactSection:
-    """Return one table section with (measure, value) rows."""
+    """Return one table section with (measure, value) rows.
+
+    The row label is the measure, so the table shows each measure once. The renderers draw the
+    table title as the header of the label column.
+    """
     from worldloom.models import ArtifactSection, Cell, Column, Row, Table
 
     table = Table(
         key=EVIDENCE_KEY,
         title=heading,
-        columns=[Column(key="measure", label="Measure"), Column(key="value", label="Value")],
-        rows=[
-            Row(key=f"r{i}", label=label, cells={"measure": Cell(value=label), "value": Cell(value=value)})
-            for i, (label, value) in enumerate(rows, 1)
-        ],
+        columns=[Column(key="value", label="Value")],
+        rows=[Row(key=f"r{i}", label=label, cells={"value": Cell(value=value)}) for i, (label, value) in enumerate(rows, 1)],
     )
     return ArtifactSection(heading=heading, table=table)
 

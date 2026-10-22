@@ -23,7 +23,7 @@ LO, HI = 110, 170
 #: Test design: real public product names that judges recognised in round 1. Masked as [PRODUCT-n].
 PRODUCTS: tuple[str, ...] = (
     "SearchSG", "Corppass", "CorpPass", "WOGAA", "Singpass", "SingPass", "GovText", "Myinfo", "MyInfo",
-    "MyCareersFuture", "PayNow", "Paynow", "SGTS", "Singapore Government Tech Stack", "GITSIR", "ScamShield",
+    "MyCareersFuture", "PayNow", "Paynow", "SGTS", "Singapore Government Tech Stack", "GITSIR", "ScamShield", "SingCERT",
     "Enterprise Data Hub",
 )
 #: Test design: organisation names. Masked as [ORG-n].
