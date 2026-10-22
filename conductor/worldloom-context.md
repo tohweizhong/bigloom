@@ -6,6 +6,14 @@ Updated By: Jetski repo-research subagent
 Repository: `/usr/local/google/home/weizhongt/coding/sharepoint-research/worldloom/synthetic-foundry`
 Commit: `3fcf194ed692ad004f26312202c9eff799bcbe57` (merge of PR #63, 28 Sep 2026 07:25 SGT)
 
+> [!NOTE]
+> **Pin moved on 17 Oct 2026 SGT.** BigLoom now pins commit `53bb44a` (merge of PR #77, 14 Oct 2026 18:11 SGT), 124 commits after `3fcf194`. This document still describes `3fcf194`. These changes matter to BigLoom:
+> - No change: the enterprise renderers (`render/enterprise/`), narration (`narrative/`), `packs.py`, `evaluate/bm25.py`, and `evaluate/tfidf.py`.
+> - `render/xlsx.py`, `documents.py`, and `doctypes.py`: workbook formulas now round to a set number of decimal places.
+> - `render/ooxml.py`: ZIP entries get the same file permission bits on all machines, so file digests change.
+> - `native_artifacts.py`: a new optional inspection cache. The 512 MiB inspection limit stays.
+> - New areas that BigLoom does not use: telemetry import, `evalrun flow`, unified retrieval grading, and `visuals` (generated infographics, not evidence).
+
 ## Project Identity
 
 - **Name:** `worldloom`. The repository, the Python package, and the command share this name (`pyproject.toml:6`, `README.md:13`).
