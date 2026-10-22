@@ -202,8 +202,14 @@ def plan_targets(world: World, irs: Sequence[ArtifactIR], peaks: Sequence[int], 
         )
         image_noun = pct.noun if pct else f"{money.noun} growth"
         local.add(image_noun)
-        dim_name, cats = dims[len(plans) % len(dims)]
-        chart_title = f"{sentence_case(PLANTED_QUALIFIER.format(noun=image_noun))} by {dim_name}"
+        # Choose the first dimension whose chart title no earlier target in the set uses.
+        # `used` holds earlier chart titles too, so plans made one at a time stay unique.
+        base_title = sentence_case(PLANTED_QUALIFIER.format(noun=image_noun))
+        options = [(d, c, f"{base_title} by {d}") for d, c in dims]
+        _dim, cats, chart_title = next(
+            (o for o in options if o[2] not in used and o[2] not in local), options[len(plans) % len(options)]
+        )
+        local.add(chart_title)
         name = cats[peak % len(cats)]
         image_question = (
             f"In the {scope} for {period_text(period)}, what {image_noun} forecast does "

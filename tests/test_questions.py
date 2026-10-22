@@ -43,3 +43,13 @@ def test_group_wording_gets_an_article() -> None:
 
 def test_sentence_case_keeps_acronyms() -> None:
     assert sentence_case("revised CET1 capital forecast") == "Revised CET1 capital forecast"
+
+
+def test_plans_made_one_at_a_time_keep_chart_titles_unique(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from bigloom.corpus import resolve_corpus
+    from bigloom.questions import plan_targets
+
+    world, _ = resolve_corpus(corpus_dir=None, out_dir=tmp_path, seed=42)
+    used: set[str] = set()
+    titles = [plan_targets(world, [ir], [0], used)[0].chart_title for ir in world.artifact_irs[:4]]
+    assert len(set(titles)) == len(titles), titles
