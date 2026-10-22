@@ -1,7 +1,7 @@
 # Realism self-improvement loop
 
-Status: updated after Round 2, 23 Oct 2026 00:02 SGT. Every part of the loop is built and has run
-end-to-end. This page reports measured numbers and cites the round receipts.
+Status: updated after Round 3, 23 Oct 2026 00:16 SGT. Every part of the loop is built and has run
+end-to-end across three rounds. This page reports measured numbers and cites the round receipts.
 
 BigLoom builds large files that must read like real agency documents. This page describes the loop
 that measures realism, the rounds that have run, and the findings from each round. The design
@@ -41,6 +41,7 @@ Rules that apply to every round:
 | Round 0 | WorldLoom template writer (`ComposedProvider`) | Off | Baseline | Baseline (`round0.json`) |
 | Round 1 | Jetski writer subagent (`policies/writer/round-001.md`, `bda2a5cd…`) | On (`longform_filter.py`) | Handshake writer + appendix/ID filter + single-column measure table (`2e2fa95`) | Champion baseline (`round1.json`) |
 | Round 2 | Jetski writer subagent (`policies/writer/round-002.md`, `a60c857a…`) | On | Add `VOCABULARY` rule: name commercial measures at most once per paragraph and use public-sector words (`income`, `funding drawn`, `surplus`, `cost recovery`) for repeat references | **Promoted** (`round2.json`, holdout gain `+0.051`) |
+| Round 3 | Jetski writer subagent (`policies/writer/round-003.md`, `7c2b3286…`) | On | Cap three-word openers at two per document and direct thin-fact sections to use dry administrative procedure | **Rejected** (`round3.json`; hard gate failed on `bl-001-docx-5mb-text` rank 4, `unique_sentences` fell from `48.8` to `36.8`, and `commercial_per_k` rose from `2.26` to `4.96`) |
 
 ## 3. Metric vector
 
@@ -48,30 +49,34 @@ The metric vector uses no model calls. All columns use the same grader
 (`grader_sha256` `eeb607b3b32a…`). Rates are per 1000 words. Sentence reuse compares different
 documents only; size twins (the same document type at 2 MB and 5 MB) do not count.
 
-| Metric | Real (11 files) | Round 0 Train | Round 1 Train (re-baselined) | Round 2 Train | Round 1 Holdout | Round 2 Holdout |
-|---|---|---|---|---|---|---|
-| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 |
-| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 7.19 | **6.30** |
-| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.20 | 0.23 |
-| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | **3.9%** | 3.9% | 4.0% |
-| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 12.6% | 13.5% |
-| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | 57.2 | 52.0 |
-| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 |
-| Words per MB | 4,032 | 443 | 440 | 435 | 450 | 390 |
+| Metric | Real (11 files) | Round 0 Train | Round 1 Train (re-baselined) | Round 2 Train (Champion) | Round 3 Train (Rejected) | Round 1 Holdout | Round 2 Holdout (Champion) | Round 3 Holdout |
+|---|---|---|---|---|---|---|---|---|
+| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.96 | 7.19 | **6.30** | 7.05 |
+| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.26 | 0.20 | 0.23 | 0.27 |
+| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | **3.9%** | 4.8% | 3.9% | 4.0% | 5.4% |
+| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 12.1% | 12.6% | 13.5% | **9.9%** |
+| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | 36.8 | 57.2 | 52.0 | 37.3 |
+| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Words per MB | 4,032 | 443 | 440 | 435 | 360 | 450 | 390 | 354 |
 
-Findings after Round 2:
+Findings after Round 3:
 
-1. **Commercial terms dropped by 70% on train (`7.55` to `2.26`) and by 12% on holdout (`7.19` to
-   `6.30`).** On train, the PDF rate fell from `9.11`/`8.77` to `4.14`/`3.04`, and the deck rate
+1. **Commercial terms dropped by 70% in Round 2 (`7.55` to `2.26` on train, `7.19` to `6.30` on
+   holdout).** On train, the PDF rate fell from `9.11`/`8.77` to `4.14`/`3.04`, and the deck rate
    fell from `12.53`/`13.64` to `2.56`/`2.55`.
 2. **Repeated table cells fixed (`2e2fa95`).** In Round 1, Masked Judge 1 spotted that BigLoom's
    planted text-fact table repeated the measure label twice in the same row (`row.label` and
    `cells["measure"]`). Making the table single-column (`Value`) removed that clue and lowered
    Round 1 train `commercial_per_k` from `8.05` to `7.55`.
-3. **Top opener share in PDF (`0.087` on 5 MB train) and PPTX (`0.312`).** In Seed 2027 `ART-0020`,
-   the writer started six sentences with `The finance team`. In PPTX, five slide bullets start with
-   the date `# April #` from WorldLoom's slide layout.
+3. **Why Round 3 was rejected (stopping condition).** The Round 3 policy (`round-003.md`) lowered
+   `top_opener_share` on holdout (`13.5%` to `9.9%`), but writers produced shorter prose (`3,505`
+   and `4,514` words vs `4,899` and `5,486` in Round 2). That reduced `unique_sentences` from
+   `48.8` to `36.8` (worsened beyond the `5.0` band), raised `commercial_per_k` to `4.96`, and
+   pushed `traps/bl-001-docx-5mb_draft.docx` to BM25 rank 4 on `bl-001-docx-5mb-text`. Under the
+   loop stopping rule (stop when a hard gate fails), the loop halted after Round 3 with
+   `policies/writer/round-002.md` as the promoted champion policy.
 
 ## 4. Blind judges and correlated series behaviour
 
@@ -112,6 +117,6 @@ Why the judge guard requires all 3 judges to improve on the candidate:
 | `src/bigloom/realism.py` | Per-file realism findings checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md`, `round-002.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` .. `round2.json` | Full round receipts with samples and policy digests |
-| `docs/realism/loop/train-002.json` | Train-only receipt visible to the proposer |
+| `policies/writer/round-001.md` .. `round-003.md` | Versioned writer policies (`round-002.md` is the promoted champion) |
+| `docs/realism/receipts/round0.json` .. `round3.json` | Full round receipts with samples and policy digests |
+| `docs/realism/loop/train-002.json`, `train-003.json` | Train-only receipts visible to the proposer |
