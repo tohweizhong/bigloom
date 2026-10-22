@@ -1,7 +1,7 @@
 # Realism self-improvement loop
 
-Status: updated after Round 11, 23 Oct 2026 02:33 SGT. Every part of the loop is built and has run
-end-to-end across eleven rounds. This page reports measured numbers and cites the round receipts.
+Status: updated after Round 12, 23 Oct 2026 02:48 SGT. Every part of the loop is built and has run
+end-to-end across twelve rounds. This page reports measured numbers and cites the round receipts.
 
 BigLoom builds large files that must read like real agency documents. This page describes the loop
 that measures realism, the rounds that have run, and the findings from each round. The design
@@ -50,6 +50,7 @@ Rules that apply to every round:
 | Round 9 | Jetski writer subagent (`policies/writer/round-009.md`, `e940cc6a…`) | On | Cap commercial words at one use per document (at most three across all 21 sections) | **Rejected** (`round9.json`; won on every metric vector dimension—train `commercial_per_k` `2.09`, `top_opener_share` `11.2%`, `unique_sentences` `58.2`, holdout gain `+11.423` with `commercial_per_k` `2.00`—but removing `gross margin` from the DOCX dropped `bl-001-docx-5mb_final.docx` to BM25 rank 4 on `bl-001-docx-5mb-image`) |
 | Round 10 | Jetski writer subagent (`policies/writer/round-010.md`, `db8c8714…`) | On | Write `gross margin` once in each section of `ART-0019` while avoiding commercial words in all other documents | **Rejected** (`round10.json`; improved train `top_opener_share` (`11.2%`) and `unique_sentences` (`58.2`) with holdout gain `+10.817`, but `bl-001-docx` is built from `ART-0007` rather than `ART-0019`, and removing `margin` from the PDF raised its BM25 IDF so the PPTX outranked `bl-001-docx-5mb_final.docx` on `bl-001-docx-5mb-image`) |
 | Round 11 | Jetski writer subagent (`policies/writer/round-011.md`, `75139cfa…`) | On | Write `gross margin forecast` once in `ART-0007/Standing exposure` and `gross margin` once in `ART-0020/Summary` and `ART-0024/Headline` while avoiding all other commercial words across all 21 sections | **Promoted** (`round11.json`; passed all hard gates, improved train `top_opener_share` (`13.0%` -> `11.2%`) and `unique_sentences` (`48.8` -> `58.2`) with zero worsened dimensions, lowered holdout `commercial_per_k` from `6.30` to `2.27`, gained `+10.893` on holdout, and passed the masked blind judge guard) |
+| Round 12 | Jetski writer subagent (`policies/writer/round-012.md`, `8e383634…`) | On | Keep sentences concise (`12` to `16` words each) so every 300-word section contains at least 20 distinct sentences and every slide section contains at least 12 distinct sentences | **Rejected** (`round12.json`; passed train gate and raised `unique_sentences` from `58.2` to `70.5` on train and `57.3` to `72.5` on holdout with holdout gain `+1.667`, but `traps/bl-001-docx-2mb_draft.docx` ranked 4th on BM25 for `bl-001-docx-2mb-image` when hardcoded artifact IDs missed the PDF `Overall utilisation` section) |
 
 ## 3. Metric vector
 
@@ -57,19 +58,19 @@ The metric vector uses no model calls. All columns use the same grader
 (`grader_sha256` `eeb607b3b32a…`). Rates are per 1000 words. Sentence reuse compares different
 documents only; size twins (the same document type at 2 MB and 5 MB) do not count.
 
-| Metric | Real (11 files) | Round 0 Train | Round 1 Train | Round 2 Train | Round 5 Train | Round 8 Train | Round 9 Train | Round 10 Train | Round 11 Train (Champion) | Round 1 Holdout | Round 2 Holdout | Round 5 Holdout | Round 8 Holdout | Round 9 Holdout | Round 10 Holdout | Round 11 Holdout (Champion) |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** |
-| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.78 | 4.09 | **2.09** | **2.09** | **2.36** | 7.19 | 6.30 | 2.33 | 5.16 | **2.00** | 2.30 | **2.27** |
-| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.21 | 0.18 | 0.18 | 0.18 | 0.18 | 0.20 | 0.23 | 0.24 | 0.19 | 0.19 | 0.19 | 0.19 |
-| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | 3.9% | 3.7% | **3.4%** | **3.4%** | **3.4%** | **3.4%** | 3.9% | 4.0% | 5.1% | 3.8% | **3.4%** | **3.4%** | **3.4%** |
-| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 13.1% | 11.5% | **11.2%** | **11.2%** | **11.2%** | 12.6% | 13.5% | 13.0% | 11.3% | **11.0%** | **11.0%** | **11.0%** |
-| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | **65.8** | 58.0 | 58.2 | 58.2 | **58.2** | 57.2 | 52.0 | 56.5 | 57.2 | **57.3** | **57.3** | **57.3** |
-| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.5% | 0.0% | 0.0% | 0.0% | **0.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | **0.0%** |
-| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
-| Words per MB | 4,032 | 443 | 440 | 435 | 431 | 466 | 467 | 467 | **467** | 450 | 390 | 414 | 491 | 491 | 491 | **492** |
+| Metric | Real (11 files) | Round 0 Train | Round 1 Train | Round 2 Train | Round 8 Train | Round 10 Train | Round 11 Train (Champion) | Round 12 Train | Round 1 Holdout | Round 2 Holdout | Round 8 Holdout | Round 10 Holdout | Round 11 Holdout (Champion) | Round 12 Holdout |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** | 0.00 |
+| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.09 | **2.09** | **2.36** | 2.43 | 7.19 | 6.30 | 5.16 | 2.30 | **2.27** | 2.51 |
+| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.18 | 0.18 | 0.18 | 0.19 | 0.20 | 0.23 | 0.19 | 0.19 | 0.19 | 0.19 |
+| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | 3.9% | **3.4%** | **3.4%** | **3.4%** | 4.1% | 3.9% | 4.0% | 3.8% | **3.4%** | **3.4%** | 3.7% |
+| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 11.5% | **11.2%** | **11.2%** | 11.4% | 12.6% | 13.5% | 11.3% | **11.0%** | **11.0%** | 12.2% |
+| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | 58.0 | 58.2 | **58.2** | **70.5** | 57.2 | 52.0 | 57.2 | 57.3 | **57.3** | **72.5** |
+| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% | 0.0% | **0.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | **0.0%** | 0.0% |
+| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 | **0** | 0 | 0 | 0 | 0 | 0 | **0** | 0 |
+| Words per MB | 4,032 | 443 | 440 | 435 | 466 | 467 | **467** | **468** | 450 | 390 | 491 | 491 | **492** | 458 |
 
-Findings after Round 11:
+Findings after Round 12:
 
 1. **Commercial terms dropped by 70% in Round 2 (`7.55` to `2.26` on train, `7.19` to `6.30` on
    holdout).** On train, the PDF rate fell from `9.11`/`8.77` to `4.14`/`3.04`, and the deck rate
@@ -137,6 +138,16 @@ Findings after Round 11:
     `11.0%`, `unique_sentences` rose from `52.0` to `57.3`, and normalised holdout gain reached
     `+10.893`. All three masked blind judges ran on Round 11 (`[20, 20, 20]`), passing the judge guard.
     `policies/writer/round-011.md` is now the promoted champion policy.
+11. **Why Round 12 was rejected.** Starting from `round-011.md` with one rule change in `QUALITY`
+    (`round-012.md`: concise `12` to `16` word sentences so every 300-word section has at least 20
+    sentences and every slide section has at least 12 sentences), train `unique_sentences` jumped from
+    `58.2` to `70.5` (`+12.3` sentences per file) and holdout `unique_sentences` jumped from `57.3` to
+    `72.5` (`+15.2` sentences per file, holdout gain `+1.667`). However, because `VOCABULARY` named
+    hardcoded artifact IDs (`ART-0020` and `ART-0024`), a seed whose artifact numbering shifts by one
+    missed the `margin` term in the PDF (`Overall utilisation`), dropping `df` from `6` to `4` so
+    `traps/bl-001-docx-2mb_draft.docx` ranked 4th on BM25 for `bl-001-docx-2mb-image`. Naming section
+    titles (`Standing exposure`, `Cause`, `Overall utilisation`, and `In brief`) instead of hardcoded
+    artifact IDs fixes the BM25 IDF across all seeds.
 
 ## 4. Blind judges and correlated series behaviour
 
@@ -179,6 +190,6 @@ Why the judge guard requires all 3 judges to improve on the candidate:
 | `src/bigloom/realism.py` | Per-file realism findings checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` .. `round-011.md` | Versioned writer policies (`round-011.md` is the promoted champion) |
-| `docs/realism/receipts/round0.json` .. `round11.json` | Full round receipts with samples and policy digests |
-| `docs/realism/loop/train-002.json` .. `train-011.json` | Train-only receipts visible to the proposer |
+| `policies/writer/round-001.md` .. `round-012.md` | Versioned writer policies (`round-011.md` is the promoted champion) |
+| `docs/realism/receipts/round0.json` .. `round12.json` | Full round receipts with samples and policy digests |
+| `docs/realism/loop/train-002.json` .. `train-012.json` | Train-only receipts visible to the proposer |
