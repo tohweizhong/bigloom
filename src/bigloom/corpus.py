@@ -22,13 +22,15 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover
     from worldloom.world import World
 
-WORLDLOOM_PIN = "3fcf194"
+WORLDLOOM_PIN = "53bb44a"
 WORLDLOOM_REPO = "https://github.com/vamsiramakrishnan/worldloom"
 INSTALL_COMMAND = f"pip install 'worldloom[all] @ git+{WORLDLOOM_REPO}@{WORLDLOOM_PIN}'"
 COMPOSED_MODEL_ID = "composed-prose-2"
 CACHE_ENV = "BIGLOOM_CORPUS_CACHE"
-#: Narration writers that this track supports. The roadmap adds "handshake", "claude", and "codex".
-WRITERS: tuple[str, ...] = ("template",)
+#: Narration writers that this track supports. The roadmap adds "claude" and "codex".
+#: "template" narrates with the WorldLoom template writer during the build. "handshake" reads a
+#: corpus whose candidate documents an agent narrated with `bigloom narrate prepare` and `accept`.
+WRITERS: tuple[str, ...] = ("template", "handshake")
 DEFAULT_WRITER = "template"
 
 
@@ -112,10 +114,11 @@ def _build_args(
     pack: str | None,
     domain: str | None,
     facets: Mapping[str, str] | None,
+    narrate: bool = True,
 ) -> list[str]:
     args = [
         _worldloom_cli(), "build", "--seed", str(seed),
-        "--realism", "enterprise", "--narrate", "--out", str(out), "--overwrite",
+        "--realism", "enterprise", *(["--narrate"] if narrate else []), "--out", str(out), "--overwrite",
     ]
     engine = "retail"
     if pack:
@@ -150,9 +153,14 @@ def build_worldloom_corpus(
     pack: str | None = None,
     domain: str | None = None,
     facets: Mapping[str, str] | None = None,
+    narrate: bool = True,
 ) -> Path:
-    """Run `worldloom build` into `out`. Reuse a cached copy when the same inputs ran before."""
-    args = _build_args(out, seed=seed, locale=locale, pack=pack, domain=domain, facets=facets)
+    """Run `worldloom build` into `out`. Reuse a cached copy when the same inputs ran before.
+
+    With `narrate=False`, the corpus has no prose, so an agent can write it through the
+    WorldLoom handshake (see `narration.py`).
+    """
+    args = _build_args(out, seed=seed, locale=locale, pack=pack, domain=domain, facets=facets, narrate=narrate)
     key_parts = [WORLDLOOM_PIN, *args[2:]]
     key_parts[key_parts.index(str(out))] = "<out>"
     if pack and Path(pack).is_file():
@@ -227,6 +235,12 @@ def resolve_corpus(
     """
     if writer not in WRITERS:
         raise CorpusError(f"Unknown writer '{writer}'. Writers that work: {', '.join(WRITERS)}.")
+    if writer == "handshake" and corpus_dir is None:
+        raise CorpusError(
+            "The handshake writer needs a corpus that an agent narrated. Run `bigloom narrate prepare "
+            "--out-dir <dir>`, answer <dir>/narration/requests.json, run `bigloom narrate accept`, "
+            "then build with --corpus-dir <dir>/corpus."
+        )
     require_worldloom()
     from worldloom.world import World
 

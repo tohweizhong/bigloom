@@ -29,9 +29,9 @@ def _prose_digest(world) -> str:  # type: ignore[no-untyped-def]
     return h.hexdigest()
 
 
-def test_template_is_the_default_and_only_writer() -> None:
+def test_template_is_the_default_writer_and_handshake_is_supported() -> None:
     assert DEFAULT_WRITER == "template"
-    assert WRITERS == ("template",)
+    assert WRITERS == ("template", "handshake")
 
 
 def test_template_writer_narrates_every_section(tmp_path: Path) -> None:
@@ -73,7 +73,12 @@ def test_manifest_records_writer(tmp_path: Path) -> None:
 
 
 def test_init_rejects_unknown_writer(tmp_path: Path) -> None:
-    res = runner.invoke(app, ["init", "--out", str(tmp_path / "w"), "--writer", "handshake"], input="")
+    res = runner.invoke(app, ["init", "--out", str(tmp_path / "w"), "--writer", "claude"], input="")
     assert res.exit_code != 0
     assert isinstance(res.exception, CorpusError)
     assert "template" in str(res.exception)
+
+
+def test_handshake_writer_needs_a_narrated_corpus(tmp_path: Path) -> None:
+    with pytest.raises(CorpusError, match="bigloom narrate prepare"):
+        resolve_corpus(corpus_dir=None, out_dir=tmp_path, seed=7, writer="handshake")

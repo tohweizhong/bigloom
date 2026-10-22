@@ -23,6 +23,46 @@ app = typer.Typer(
     help="Large-file synthesis and target-leakage gates on top of WorldLoom.",
     add_completion=False,
 )
+narrate_app = typer.Typer(help="Agent-written prose through the WorldLoom narration handshake.")
+app.add_typer(narrate_app, name="narrate")
+
+
+@narrate_app.command("prepare")
+def narrate_prepare(
+    out_dir: Annotated[Path, typer.Option("--out-dir", file_okay=False)],
+    seed: Annotated[int, typer.Option("--seed")] = 42,
+    formats: Annotated[str, typer.Option("--formats")] = "docx,pdf",
+    world_pack: Annotated[str | None, typer.Option("--world-pack")] = None,
+    domain: Annotated[str | None, typer.Option("--domain")] = None,
+    locale: Annotated[str | None, typer.Option("--locale")] = None,
+    facets: Annotated[str, typer.Option("--facets", help="Comma-separated key=value pairs.")] = "",
+) -> None:
+    """Build a corpus with no prose and write the requests for the candidate target documents."""
+    from .narration import prepare
+
+    result = prepare(
+        out_dir, seed=seed, formats=[f.strip() for f in formats.split(",") if f.strip()],
+        world_pack=world_pack, domain=domain, locale=locale, facets=parse_facets(facets),
+    )
+    typer.echo(json.dumps({
+        "corpus_dir": str(result.corpus_dir), "requests": str(result.requests_path),
+        "documents": list(result.artifact_ids), "sections": result.requests, "target_words": result.target_words,
+    }, indent=2))
+
+
+@narrate_app.command("accept")
+def narrate_accept(
+    out_dir: Annotated[Path, typer.Option("--out-dir", file_okay=False, exists=True)],
+    responses: Annotated[Path, typer.Option("--from", exists=True, dir_okay=False)],
+    model_id: Annotated[str, typer.Option("--model-id")] = "agent",
+) -> None:
+    """Validate the agent responses with WorldLoom. Commit them only when every response passes."""
+    from .narration import accept
+
+    report = accept(out_dir, responses, model_id=model_id)
+    typer.echo(json.dumps(report, indent=2))
+    if not report["accepted"]:
+        raise typer.Exit(code=1)
 
 
 @app.command()
