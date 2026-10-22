@@ -59,3 +59,8 @@
 
 - [~] **Track: Appendix and ID Filter (remove WorldLoom IDs and machine appendices from target and trap files)**
   *Link: [./tracks/appendix_filter_20261022/index.md](./tracks/appendix_filter_20261022/index.md)*
+
+---
+
+- [~] **Track: Realism Loop, Round 1 (metric vector, round 1, self-improvement.md draft)**
+  *Link: [./tracks/realism_loop_20261022/index.md](./tracks/realism_loop_20261022/index.md)*
