@@ -54,3 +54,8 @@
 
 - [~] **Track: WorldLoom-Native BigLoom (content and layout from WorldLoom, test design in BigLoom)**
   *Link: [./tracks/worldloom_native_bigloom_20261016/index.md](./tracks/worldloom_native_bigloom_20261016/index.md)*
+
+---
+
+- [ ] **Track: Appendix and ID Filter (remove WorldLoom IDs and machine appendices from target and trap files)**
+  *Link: [./tracks/appendix_filter_20261022/index.md](./tracks/appendix_filter_20261022/index.md)*

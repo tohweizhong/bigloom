@@ -1,0 +1,8 @@
+{
+  "track_id": "appendix_filter_20261022",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-10-22T23:04:00+08:00",
+  "updated_at": "2026-10-22T23:04:00+08:00",
+  "title": "Appendix and ID Filter (remove WorldLoom IDs and machine appendices from target and trap files)"
+}
