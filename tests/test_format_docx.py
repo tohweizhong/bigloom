@@ -98,3 +98,12 @@ def test_reader_handles_a_package_above_512_mib(tmp_path) -> None:  # type: igno
     assert any(u.text.startswith("Paragraph 0") for u in snap.units)
     assert snap.metrics["file_size_bytes"] == len(big)
     assert snap.sha256 == hashlib.sha256(big).hexdigest()
+
+
+def test_text_fact_table_shows_each_measure_once_per_row() -> None:
+    h, t = handler_for("docx"), target("docx")
+    table = h.golden_ir(t, ir_with_sections(10)).sections[EVIDENCE_DEPTH].table
+    for r in table.rows:
+        row_text = [r.label, *(str(c.value) for c in r.cells.values())]
+        assert row_text.count(r.label) == 1
+    assert [c.label for c in table.columns] == ["Value"]
