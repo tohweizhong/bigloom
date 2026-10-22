@@ -82,3 +82,12 @@ def test_init_rejects_unknown_writer(tmp_path: Path) -> None:
 def test_handshake_writer_needs_a_narrated_corpus(tmp_path: Path) -> None:
     with pytest.raises(CorpusError, match="bigloom narrate prepare"):
         resolve_corpus(corpus_dir=None, out_dir=tmp_path, seed=7, writer="handshake")
+
+
+@pytest.mark.parametrize("command", ["build", "init"])
+def test_help_lists_the_writers_that_work(command: str) -> None:
+    res = runner.invoke(app, [command, "--help"], terminal_width=200)
+    assert res.exit_code == 0
+    text = " ".join(res.output.split())
+    assert "template" in text and "handshake" in text
+    assert "This release supports: template." not in text

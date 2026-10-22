@@ -18,7 +18,7 @@ Round 0 of the realism loop found 21.15 WorldLoom IDs per 1000 words in BigLoom 
 | 6 | Note "Schedules incorporated from <title> (ART-####), ..." | line 974 | Remove " (ART-####)" |
 | 7 | Appendix "Related documents": row labels are artifact IDs | line 1119 | Keep the appendix. Use the document title as the row label. |
 | 8 | Deck "related" lines "<title> (ART-####)" | `render/enterprise/pptx.py` line 335 | Remove the IDs from the deck |
-| 9 | Document reference "CO-0001-FINANCE-ART-0024" on the cover, control table, and running heads | line 1157 | Replace with a readable reference, for example "GTA-FIN-2026-024" |
+| 9 | Document reference "CO-0001-FINANCE-ART-0024" on the cover, control table, and running heads | line 1157 | Replace with a readable reference, for example "GTA/FIN/2026/024" (slashes, so it does not look like a WorldLoom ID) |
 
 ## Functional requirements
 

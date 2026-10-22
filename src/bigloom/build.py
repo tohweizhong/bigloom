@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 
 from .corpus import CorpusError, CorpusProvenance, resolve_corpus
 from .formats import FORMATS, Format, Target, handler_for
+from .formats.longform_filter import filtered_longform, scrub_ir
 from .models import ManifestEntry
 from .qualify import inspect_file_bytes
 from .queries import generate_queries
@@ -136,8 +137,10 @@ def _render_pass(world: World, irs: Mapping[str, ArtifactIR], formats: Sequence[
 
     The file kind is the extension for a main file, or "v0.1.docx" for the first Word revision.
     """
-    staged = replace(world, _artifact_irs=tuple(irs.get(ir.id, ir) for ir in world.artifact_irs))
-    rendered = staged.render(*sorted(set(formats)))._rendered
+    staged = replace(world, _artifact_irs=tuple(scrub_ir(irs.get(ir.id, ir)) for ir in world.artifact_irs))
+    # Remove WorldLoom IDs and ledger appendices from every document of this pass.
+    with filtered_longform():
+        rendered = staged.render(*sorted(set(formats)))._rendered
     out: dict[tuple[str, str], bytes] = {}
     for item in rendered:
         if not item.artifact_id or item.artifact_id not in irs:
