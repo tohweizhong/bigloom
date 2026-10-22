@@ -1,8 +1,8 @@
 {
   "round": 13,
   "date_sgt": "2026-10-23 03:20",
-  "champion_policy": "policies/writer/round-011.md",
-  "champion_policy_sha256": "75139cfae214add1c70e7902175fb580deb7fc8de44f0b21b066512ce0a85d61",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98",
   "candidate_policy": "policies/writer/round-013.md",
   "candidate_policy_sha256": "1bb77be6efe83625153f82bc4e64c40389840dba3c27850646ff9044b89d9ed8",
   "proposer_change": {
@@ -27,12 +27,12 @@
   "gate_violations": [],
   "champion_train_vector": {
     "wl_id_per_k": 0.0,
-    "commercial_per_k": 2.358,
-    "retail_per_k": 0.183,
-    "within_file_repeat": 0.034,
-    "top_opener_share": 0.112,
-    "unique_sentences": 58.167,
-    "words_per_mb": 467.333,
+    "commercial_per_k": 2.257,
+    "retail_per_k": 0.208,
+    "within_file_repeat": 0.039,
+    "top_opener_share": 0.13,
+    "unique_sentences": 48.833,
+    "words_per_mb": 435.333,
     "dates_after_doc_date": 0.0,
     "cross_document_reuse": 0.0
   },
@@ -105,9 +105,9 @@
   ],
   "writer_notes": [
     "Round 13 passed all hard qualification and retrieval gates on both train and holdout (zero violations) with four fresh writer subagents running from scratch.",
-    "Naming section titles (Standing exposure, Cause, Overall utilisation, and In brief) instead of hardcoded artifact IDs fixed the BM25 and TF-IDF retrieval gate across all seeds.",
-    "However, without a sentence-length rule in QUALITY, the fresh writers wrote long compound sentences (24 to 28 words per sentence), which reduced train unique_sentences from 58.167 to 38.500 and holdout unique_sentences from 57.333 to 37.000.",
-    "Therefore policies/writer/round-011.md remains the promoted champion policy."
+    "Naming section titles (Standing exposure, Cause, Overall utilisation, and In brief) instead of hardcoded artifact IDs fixed the BM25 and TF-IDF retrieval gate across all seeds, improved train top_opener_share from 0.130 to 0.104, and cut holdout commercial_per_k from 6.298 to 2.815 (normalised holdout gain +5.393 vs Round 2).",
+    "However, without a sentence-length rule in QUALITY, the fresh writers wrote long compound sentences (24 to 28 words per sentence), which reduced train unique_sentences from 48.833 to 38.500 and increased train commercial_per_k from 2.257 to 2.763.",
+    "Therefore policies/writer/round-002.md remains the promoted champion policy."
   ],
   "samples": [
     {
@@ -121,25 +121,26 @@
   ],
   "decision": {
     "promote": false,
-    "improved": [],
+    "improved": [
+      "top_opener_share"
+    ],
     "worsened": [
+      "commercial_per_k",
       "unique_sentences"
     ],
-    "holdout_gain": -5.5,
+    "holdout_gain": 5.393,
     "reasons": [
-      "no train dimension improved by more than its band",
-      "train dimensions worsened beyond their band: unique_sentences",
-      "holdout did not gain (normalised gain -5.5)"
+      "train dimensions worsened beyond their band: commercial_per_k, unique_sentences"
     ]
   },
   "champion_holdout_vector": {
     "wl_id_per_k": 0.0,
-    "commercial_per_k": 2.265,
-    "retail_per_k": 0.185,
-    "within_file_repeat": 0.034,
-    "top_opener_share": 0.11,
-    "unique_sentences": 57.333,
-    "words_per_mb": 491.5,
+    "commercial_per_k": 6.298,
+    "retail_per_k": 0.227,
+    "within_file_repeat": 0.04,
+    "top_opener_share": 0.135,
+    "unique_sentences": 52.0,
+    "words_per_mb": 389.5,
     "dates_after_doc_date": 0.0,
     "cross_document_reuse": 0.0
   },
