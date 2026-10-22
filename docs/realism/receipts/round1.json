@@ -1,0 +1,130 @@
+{
+  "round": 1,
+  "date_sgt": "2026-10-22 23:31",
+  "build": "bigloom narrate prepare --seed 2026|2027 --formats docx,pdf,pptx --world-pack packs/govtech.json; Jetski writer subagents; bigloom narrate accept; bigloom build --corpus-dir ... --writer handshake --sizes-mb 2 (seed 2026) and 5 (seed 2027); BigLoom 8a9d2e1; WorldLoom 53bb44a",
+  "writer_policy_sha256": "bda2a5cd4c429d3ea012167460eb650966ac1daa5c5f804b7160832d93594a03",
+  "appendix_filter": true,
+  "writer_accept_rounds": {
+    "seed_2026": 2,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 4861,
+    "seed_2027": 5444
+  },
+  "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 8.052,
+    "retail_per_k": 0.205,
+    "within_file_repeat": 0.044,
+    "top_opener_share": 0.12,
+    "unique_sentences": 51.333,
+    "words_per_mb": 442.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "words": 1577,
+      "unique_sentences": 71,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 0.63,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.028
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "words": 1677,
+      "unique_sentences": 78,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 0.6,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.013
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "words": 1878,
+      "unique_sentences": 62,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 10.65,
+      "within_file_repeat": 0.134,
+      "top_opener_share": 0.045
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "words": 1949,
+      "unique_sentences": 63,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 10.26,
+      "within_file_repeat": 0.132,
+      "top_opener_share": 0.044
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "words": 479,
+      "unique_sentences": 17,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 12.53,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.294
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "words": 440,
+      "unique_sentences": 17,
+      "wl_id_per_k": 0.0,
+      "commercial_per_k": 13.64,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.294
+    }
+  ],
+  "judges": {
+    "pairs": 20,
+    "seed": 2026,
+    "prompt_sha256": "1f8fb66190c176c5092fe4db2c25c77a9167585c9acc420b07adbfade06e2110",
+    "models": [
+      "pro",
+      "pro",
+      "pro"
+    ],
+    "key": "P01:A P02:A P03:B P04:B P05:A P06:A P07:A P08:B P09:A P10:B P11:B P12:A P13:B P14:A P15:B P16:B P17:A P18:B P19:B P20:B",
+    "judges": [
+      {
+        "id": "5bd9c586",
+        "model": "pro",
+        "correct": 20,
+        "main_clue": "names of real public GovTech products or standards (14 of 20); extraction marks or placeholders (5)"
+      },
+      {
+        "id": "f36983e9",
+        "model": "pro",
+        "correct": 20,
+        "main_clue": "document type: fictional budget and incident reports (15 of 20); narrative style or invented furniture (5)"
+      },
+      {
+        "id": "6839d0be",
+        "model": "pro",
+        "correct": 20,
+        "main_clue": "names of real public GovTech products or standards (16 of 20); template and extraction marks (3)"
+      }
+    ],
+    "correct": [
+      20,
+      20,
+      20
+    ],
+    "error_rate": 0.0
+  },
+  "writer_notes": [
+    "Sections with 2 or 3 facts and a 300-word brief need sentences that cite no fact.",
+    "Some section purposes need facts that are not in the request.",
+    "Two references in one clause print the direction word twice.",
+    "Persona asks for acronyms; the policy forbids them."
+  ],
+  "fixes_during_round": [
+    "Chart titles were not unique when targets were planned one at a time (8a9d2e1)."
+  ],
+  "decision": "measured only; no proposer, no holdout, no promotion rule yet"
+}
