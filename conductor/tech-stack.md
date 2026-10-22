@@ -8,7 +8,7 @@
 | **Data Models and Specs** | Pydantic v2 (`>=2.7`), PyYAML (`>=6.0`) | Frozen, strict data contracts, YAML proposal specs, and JSON/JSONL serialization. |
 | **World and Retrieval Base** | WorldLoom (`synthetic-foundry`) | Enterprise corpus facts, `native_artifacts` byte inspection, and `Bm25` / `TfIdf` rank checks. |
 | **Office and PDF Files** | `python-docx`, `python-pptx`, `openpyxl`, `xlsxwriter`, `reportlab`, `pypdf` | Build and inspect `.docx`, `.pptx`, `.xlsx`, and `.pdf` documents. |
-| **Image Synthesis** | Pillow (`>=10.0`) | Render charts and add light grain so ZIP compression does not shrink large files. |
+| **Image Synthesis** | Pillow (`>=10.0`) | Draw the chart picture that holds the image fact. Padding is an unreferenced ZIP member (OOXML) or an embedded file (PDF), not image grain. |
 | **Testing and Linting** | `pytest` (`>=8.0`), `ruff` (`>=0.4`) | Unit tests, negative leakage tests, and code formatting. |
 
 ## Stack Updates
