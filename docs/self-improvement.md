@@ -1,7 +1,7 @@
 # Realism self-improvement loop
 
-Status: updated after Round 5, 23 Oct 2026 01:15 SGT. Every part of the loop is built and has run
-end-to-end across five rounds. This page reports measured numbers and cites the round receipts.
+Status: updated after Round 6, 23 Oct 2026 01:28 SGT. Every part of the loop is built and has run
+end-to-end across six rounds. This page reports measured numbers and cites the round receipts.
 
 BigLoom builds large files that must read like real agency documents. This page describes the loop
 that measures realism, the rounds that have run, and the findings from each round. The design
@@ -44,6 +44,7 @@ Rules that apply to every round:
 | Round 3 | Jetski writer subagent (`policies/writer/round-003.md`, `b739d290…`) | On | Cap three-word openers at two per document and direct thin-fact sections to use dry administrative procedure | **Rejected** (`round3.json`; hard gate failed on `bl-001-docx-5mb-text` rank 4, `unique_sentences` fell from `48.8` to `36.8`, and `commercial_per_k` rose from `2.26` to `4.96`) |
 | Round 4 | Jetski writer subagent (`policies/writer/round-004.md`, `b10737ef…`) | On | Cap each commercial word at one use per section across all formats | **Rejected** (`round4.json`; passed all hard gates, improved train `top_opener_share` from `13.0%` to `9.0%`, and gained `+3.669` on holdout, but longer compound sentences reduced train `unique_sentences` from `48.8` to `35.3`) |
 | Round 5 | Jetski writer subagent (`policies/writer/round-005.md`, `69b1350e…`) | On | Keep sentences concise (`12` to `18` words) so each 300-word section holds at least 18 sentences | **Rejected** (`round5.json`; passed all hard gates, improved train `unique_sentences` from `48.8` to `65.8`, and gained `+8.279` on holdout, but more paragraphs per section caused train `commercial_per_k` to rise from `2.26` to `4.78` under the once-per-paragraph vocabulary rule) |
+| Round 6 | Jetski writer subagent (`policies/writer/round-006.md`, `41278114…`) | On | Cap three-word sentence openers at two per document and require distinct three-word openings across slide sections | **Rejected** (`round6.json`; passed all hard gates, improved train `unique_sentences` from `48.8` to `65.8`, lowered `cross_document_reuse` to `0.0%`, and gained `+9.543` on holdout, but reusing the Seed `2027` writer conversation carried over Round 5's `4.78` `commercial_per_k`) |
 
 ## 3. Metric vector
 
@@ -51,19 +52,19 @@ The metric vector uses no model calls. All columns use the same grader
 (`grader_sha256` `eeb607b3b32a…`). Rates are per 1000 words. Sentence reuse compares different
 documents only; size twins (the same document type at 2 MB and 5 MB) do not count.
 
-| Metric | Real (11 files) | Round 0 Train | Round 1 Train (re-baselined) | Round 2 Train (Champion) | Round 3 Train (Rejected) | Round 4 Train (Rejected) | Round 5 Train (Rejected) | Round 1 Holdout | Round 2 Holdout (Champion) | Round 3 Holdout | Round 4 Holdout | Round 5 Holdout |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.96 | **2.25** | 4.78 | 7.19 | 6.30 | 7.05 | **2.24** | **2.33** |
-| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.26 | 0.22 | 0.21 | 0.20 | 0.23 | 0.27 | **0.94** | 0.24 |
-| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | **3.9%** | 4.8% | 4.3% | **3.7%** | 3.9% | 4.0% | 5.4% | 5.5% | 5.1% |
-| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 12.1% | **9.0%** | 13.1% | 12.6% | 13.5% | **9.9%** | 13.1% | 13.0% |
-| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | 36.8 | 35.3 | **65.8** | 57.2 | 52.0 | 37.3 | 32.5 | **56.5** |
-| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% | 0.0% | 0.5% | 0.0% | 0.0% | 0.0% | 1.0% | 0.0% |
-| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Words per MB | 4,032 | 443 | 440 | 435 | 360 | 421 | 431 | 450 | 390 | 354 | 414 | 414 |
+| Metric | Real (11 files) | Round 0 Train | Round 1 Train (re-baselined) | Round 2 Train (Champion) | Round 3 Train (Rejected) | Round 4 Train (Rejected) | Round 5 Train (Rejected) | Round 6 Train (Rejected) | Round 1 Holdout | Round 2 Holdout (Champion) | Round 3 Holdout | Round 4 Holdout | Round 5 Holdout | Round 6 Holdout |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.96 | **2.25** | 4.78 | 4.78 | 7.19 | 6.30 | 7.05 | **2.24** | 2.33 | **2.24** |
+| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | 0.21 | 0.26 | 0.22 | 0.21 | 0.21 | 0.20 | 0.23 | 0.27 | **0.94** | 0.24 | 0.24 |
+| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | **3.9%** | 4.8% | 4.3% | **3.7%** | **3.7%** | 3.9% | 4.0% | 5.4% | 5.5% | 5.1% | 4.8% |
+| Most common three-word opener | 7.4% | 20.1% | 12.0% | 13.0% | 12.1% | **9.0%** | 13.1% | 12.9% | 12.6% | 13.5% | **9.9%** | 13.1% | 13.0% | 12.3% |
+| Unique sentences per file | 146.7 | 30.5 | 51.3 | 48.8 | 36.8 | 35.3 | **65.8** | **65.8** | 57.2 | 52.0 | 37.3 | 32.5 | 56.5 | **57.0** |
+| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% | 0.0% | 0.5% | 0.0% | 0.0% | 0.0% | 0.0% | 1.0% | 0.0% | 0.0% |
+| Dates after the document date | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Words per MB | 4,032 | 443 | 440 | 435 | 360 | 421 | 431 | 432 | 450 | 390 | 354 | 414 | 414 | 416 |
 
-Findings after Round 5:
+Findings after Round 6:
 
 1. **Commercial terms dropped by 70% in Round 2 (`7.55` to `2.26` on train, `7.19` to `6.30` on
    holdout).** On train, the PDF rate fell from `9.11`/`8.77` to `4.14`/`3.04`, and the deck rate
@@ -88,7 +89,15 @@ Findings after Round 5:
    and `unique_sentences` rose from `52.0` to `56.5`). However, on train seed `2027`, shorter
    sentences caused the writer to split sections into more paragraphs while still naming a
    commercial measure once per paragraph (`round-002.md`'s rule), raising train `commercial_per_k`
-   from `2.26` to `4.78`. `policies/writer/round-002.md` remains the promoted champion policy.
+   from `2.26` to `4.78`.
+6. **Why Round 6 was rejected and what it revealed.** Starting from `round-002.md` with one rule
+   change (`round-006.md`: cap three-word openers at two per document and require distinct slide
+   section openings), holdout gained `+9.543` (`commercial_per_k` `2.24`, `top_opener_share`
+   `12.3%`, `unique_sentences` `57.0`). However, because we messaged the existing writer subagents
+   instead of spawning fresh subagents, the Seed `2027` writer reused its Round 5 text in context,
+   carrying over Round 5's `4.78` `commercial_per_k`. Each round must use fresh writer subagents so
+   prior-round drafts do not leak across policy evaluations. `policies/writer/round-002.md` remains
+   the promoted champion policy.
 
 ## 4. Blind judges and correlated series behaviour
 
@@ -129,6 +138,6 @@ Why the judge guard requires all 3 judges to improve on the candidate:
 | `src/bigloom/realism.py` | Per-file realism findings checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` .. `round-005.md` | Versioned writer policies (`round-002.md` is the promoted champion) |
-| `docs/realism/receipts/round0.json` .. `round5.json` | Full round receipts with samples and policy digests |
-| `docs/realism/loop/train-002.json` .. `train-005.json` | Train-only receipts visible to the proposer |
+| `policies/writer/round-001.md` .. `round-006.md` | Versioned writer policies (`round-002.md` is the promoted champion) |
+| `docs/realism/receipts/round0.json` .. `round6.json` | Full round receipts with samples and policy digests |
+| `docs/realism/loop/train-002.json` .. `train-006.json` | Train-only receipts visible to the proposer |
