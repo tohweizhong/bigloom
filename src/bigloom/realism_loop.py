@@ -40,6 +40,8 @@ BANDS: dict[str, float] = {
     "unique_sentences": 5.0,
     "cross_document_reuse": 0.01,
 }
+#: The judge guard: the candidate's judge error rate may not fall by more than this (6 of 60 verdicts).
+JUDGE_BAND = 0.10
 
 
 @dataclass(frozen=True)
@@ -64,12 +66,16 @@ def decide(
     best_holdout: Mapping[str, float],
     cand_holdout: Mapping[str, float],
     real: Mapping[str, float],
+    best_judge_error: float | None = None,
+    cand_judge_error: float | None = None,
 ) -> Decision:
     """Apply the promotion rule.
 
     Promote only when, on the train set, at least one dimension moves closer to the real value
     by more than its band and no dimension moves away by more than its band, and on the holdout
-    set the summed normalised distance also falls.
+    set the summed normalised distance also falls. When judge error rates are given (masked
+    pairs), the candidate's rate must not fall by more than `JUDGE_BAND`: the judges guard
+    against text that games the cheap metrics without reading as real.
     """
     bt, ct = distances(best_train, real), distances(cand_train, real)
     improved = tuple(k for k in BANDS if bt[k] - ct[k] > BANDS[k])
@@ -83,6 +89,8 @@ def decide(
         reasons.append(f"train dimensions worsened beyond their band: {', '.join(worsened)}")
     if gain <= 0:
         reasons.append(f"holdout did not gain (normalised gain {gain})")
+    if best_judge_error is not None and cand_judge_error is not None and best_judge_error - cand_judge_error > JUDGE_BAND:
+        reasons.append(f"judge error rate fell from {best_judge_error:.2f} to {cand_judge_error:.2f}")
     return Decision(promote=not reasons, improved=improved, worsened=worsened, holdout_gain=gain, reasons=tuple(reasons))
 
 

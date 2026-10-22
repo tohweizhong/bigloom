@@ -51,3 +51,11 @@ def test_receipt_round_trips(tmp_path: Path) -> None:
     rl.write_receipt(tmp_path / "r.json", {"round": 2, "decision": d})
     data = json.loads((tmp_path / "r.json").read_text(encoding="utf-8"))
     assert data["round"] == 2 and data["decision"]["promote"] is False
+
+
+def test_judge_guard_blocks_a_metric_win_that_reads_less_real() -> None:
+    cand = {**BEST, "top_opener_share": 0.09}
+    ok = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_error=0.10, cand_judge_error=0.05)
+    assert ok.promote
+    blocked = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_error=0.20, cand_judge_error=0.05)
+    assert not blocked.promote and any("judge" in r for r in blocked.reasons)
