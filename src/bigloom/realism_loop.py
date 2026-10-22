@@ -81,8 +81,8 @@ def decide(
     candidate than on the champion, and the mean error rate falls by more than `JUDGE_BAND`.
     """
     bt, ct = distances(best_train, real), distances(cand_train, real)
-    improved = tuple(k for k in BANDS if bt[k] - ct[k] > BANDS[k])
-    worsened = tuple(k for k in BANDS if ct[k] - bt[k] > BANDS[k])
+    improved = tuple(k for k in BANDS if round(bt[k] - ct[k], 6) > BANDS[k])
+    worsened = tuple(k for k in BANDS if round(ct[k] - bt[k], 6) > BANDS[k])
     bh, ch = distances(best_holdout, real), distances(cand_holdout, real)
     gain = round(sum((bh[k] - ch[k]) / BANDS[k] for k in BANDS), 3)
     reasons: list[str] = []
