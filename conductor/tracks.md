@@ -57,7 +57,7 @@
 
 ---
 
-- [~] **Track: Appendix and ID Filter (remove WorldLoom IDs and machine appendices from target and trap files)**
+- [x] **Track: Appendix and ID Filter (remove WorldLoom IDs and machine appendices from target and trap files)**
   *Link: [./tracks/appendix_filter_20261022/index.md](./tracks/appendix_filter_20261022/index.md)*
 
 ---
