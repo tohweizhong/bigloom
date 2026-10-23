@@ -16,7 +16,7 @@ Update this section at the end of each round and after each loop change.
 |---|---|
 | Updated | 23 Oct 2026 20:05 SGT (rs016 champion baseline recorded) |
 | Loop version | v2 (merged into `realism-loop` at `65955eb`) |
-| Champion policy | `policies/writer/round-002.md` (`a60c857a…`) |
+| Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Last round | Round 15, rejected |
 | Next round number | 16 |
 | Real files for the judges | `/usr/local/google/home/weizhongt/.gemini/jetski/brain/962bad5e-098a-42ae-a058-de8668e68825/scratch/realism/real` MISSING. The folder does not exist on 23 Oct 10:52 SGT. The judges cannot run until the user gives the location of the 11 real files. |
@@ -27,8 +27,10 @@ Update this section at the end of each round and after each loop change.
 1. Level 2 is open again: no metric has room on train (rs016 below). The next step is a measure,
    not a change: run the masked judges on the rs016 champion set to see if they still tell real
    from synthetic every time.
-2. Convert all policy files to LF line ends in one separate commit, and record the new sha256
-   values here.
+2. Done 23 Oct 20:05 SGT: only `policies/writer/round-002.md` had CRLF line ends (two lines). It
+   now uses LF. Old sha256 `a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`, new
+   sha256 `24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69`. The text did not
+   change. Receipts before this commit name the old digest.
 
 ### rs016 champion baseline on the new requests (23 Oct 20:05 SGT)
 
