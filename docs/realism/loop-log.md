@@ -14,8 +14,8 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 23 Oct 2026 10:50 SGT |
-| Loop version | v2 (code on branch `realism-v2`, not yet merged into `realism-loop`) |
+| Updated | 23 Oct 2026 10:50 SGT (rescore recorded) |
+| Loop version | v2 (merged into `realism-loop` at `65955eb`) |
 | Champion policy | `policies/writer/round-002.md` (`a60c857a…`) |
 | Last round | Round 15, rejected |
 | Next round number | 16 |
@@ -23,11 +23,26 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Commit the review record dedupe fix on `realism-v2` (source (a) in section 7).
-2. Merge `realism-v2` into `realism-loop` and push.
-3. Rebuild the champion on v2 code and measure it again. Record it as a rescore, not a round.
-4. Check whether any v2 metric now has room on train (section 7). If no metric has room, ask the
-   user for a design change before Round 16.
+1. Level 2 is open: no metric has room on train (rescore below). Ask the user for one design
+   change before Round 16.
+
+### Champion rescore on v2 code (23 Oct 10:50 SGT)
+
+Receipt: `docs/realism/receipts/rescore-v2-002.json`. Round 2 prose, rebuilt on `65955eb`, no new
+writer runs. Both gates pass.
+
+| Metric | Train | Holdout | Real median | Band | Train room |
+|---|---|---|---|---|---|
+| `commercial_per_k` | 0.18 | 4.35 | 0.0 | 0.5 | No |
+| `retail_per_k` | 0.21 | 0.23 | 0.0 | 0.3 | No |
+| `within_file_repeat` | 2.5% | 2.6% | 0.0% | 1 point | No, the floor is 2.6% |
+| `top_opener_share` | 6.1% | 4.3% | 7.1% | 1 point | No |
+| `cross_document_reuse` | 0.0% | 0.0% | 0.1% | 1 point | No |
+
+The `within_file_repeat` floor comes from the PDF cover Summary box: 4 of 64 sentences in the 2 MB
+PDF and 6 of 66 in the 5 MB PDF. The train mean floor is 2.6%. The train pair shows almost no
+commercial phrases (0.18), but the holdout pair shows 4.35. The train seeds do not show the problem
+that remains.
 
 ## History of the loop design (v1)
 
