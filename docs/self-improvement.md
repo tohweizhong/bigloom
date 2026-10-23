@@ -104,6 +104,11 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    champion count, start one new fresh writer for that seed, then repeat step 5 for it. Apply the
    same rule to train and to holdout seeds. If the seed is still short, record a writer failure and
    reject the round.
+
+   The reference is the champion `agent_words` under the same requests. After a Level 2 change
+   that changes the requests, the champion rescore sets a new reference. In that rescore, a short
+   seed gets one new fresh writer. Use the second attempt whatever its length. Never choose between
+   attempts by length or by metrics. Record both attempts in the rescore receipt.
 7. **Build gate.** Run `build_round(Path("runs/loop/r<NNN>t"), TRAIN)` and
    `build_round(Path("runs/loop/r<NNN>h"), HOLDOUT)`. A gate violation rejects the round.
 8. **Decide.** Call:
