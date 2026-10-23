@@ -42,6 +42,14 @@ BANDS: dict[str, float] = {
 }
 #: The judge guard: the candidate's judge error rate may not fall by more than this (6 of 60 verdicts).
 JUDGE_BAND = 0.10
+#: Loop v2 real reference: the median of the 11 real files (grader v2). The v1 mean was pulled
+#: up by one 29,351-word DOCX, which put `unique_sentences` at 146.7 against a median of 39.
+REFERENCE_V2 = Path(__file__).resolve().parents[2] / "docs" / "realism" / "reference-v2.json"
+
+
+def real_reference(path: Path = REFERENCE_V2) -> dict[str, float]:
+    """Return the loop v2 real reference vector (the median of the real files)."""
+    return {k: float(v) for k, v in json.loads(path.read_text(encoding="utf-8"))["median"].items()}
 
 
 @dataclass(frozen=True)

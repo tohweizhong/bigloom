@@ -59,3 +59,17 @@ def test_judge_guard_blocks_only_when_every_judge_agrees() -> None:
     assert one_flip.promote
     all_agree = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[10, 2, 3], cand_judge_correct=[20, 18, 19])
     assert not all_agree.promote and any("every judge" in r for r in all_agree.reasons)
+
+
+def test_v2_reference_is_the_median_of_the_real_files() -> None:
+    import json
+    import statistics
+
+    from bigloom.realism_loop import REFERENCE_V2, real_reference
+
+    ref = real_reference()
+    files = json.loads(REFERENCE_V2.read_text(encoding="utf-8"))["files"]
+    assert len(files) == 11
+    assert ref["unique_sentences"] == statistics.median(f["unique_sentences"] for f in files)
+    assert ref["unique_sentences"] < 146.7  # the v1 mean, skewed by one long DOCX
+    assert set(ref) >= {"commercial_per_k", "top_opener_share", "unique_sentences", "cross_document_reuse"}
