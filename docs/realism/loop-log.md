@@ -14,7 +14,7 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 23 Oct 2026 10:50 SGT (rescore recorded) |
+| Updated | 23 Oct 2026 20:05 SGT (rs016 champion baseline recorded) |
 | Loop version | v2 (merged into `realism-loop` at `65955eb`) |
 | Champion policy | `policies/writer/round-002.md` (`a60c857a…`) |
 | Last round | Round 15, rejected |
@@ -24,14 +24,31 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Run 4 fresh writers on the champion policy (`round-002.md`) with the new requests, train and
-   holdout (cost: 4 writer runs). Blocked by model quota until about 23 Oct 19:44 SGT.
-2. Rescore the champion on those responses. The terminology change works only if holdout
-   `commercial_per_k` falls well below 4.35. Then run the room check before Round 16.
-3. Resolved 23 Oct 11:25 SGT: the 11 real files are in `runs/realism/real/` (git ignores `runs/`).
-   They were downloaded read-only from the SharePoint site `sharepoint-site-demo1` (folders
-   `GovTech Products and Services Apr26`, `Web Search Apr26`, and the library root). All 11 files
-   give the same word and sentence counts as `docs/realism/reference-v2.json`. The judges can run.
+1. Level 2 is open again: no metric has room on train (rs016 below). The next step is a measure,
+   not a change: run the masked judges on the rs016 champion set to see if they still tell real
+   from synthetic every time.
+2. Convert all policy files to LF line ends in one separate commit, and record the new sha256
+   values here.
+
+### rs016 champion baseline on the new requests (23 Oct 20:05 SGT)
+
+Receipt: `docs/realism/receipts/rescore-v2-016.json`. Champion policy `round-002.md`, fresh writers,
+new requests (`4a708a6`). Both gates pass. The length guard reference for Round 16 and later is the
+rs016 `agent_words`: 2026: 4,109, 2027: 3,238, 3101: 5,196, 3102: 5,225. Seed 2027 used attempt 2
+(attempt 1 had 4,375 words and is kept in `runs/loop/rs016-attempts/`).
+
+| Metric | Train | Holdout | Real median | Band | Train room |
+|---|---|---|---|---|---|
+| `commercial_per_k` | 0.00 | 0.00 | 0.0 | 0.5 | No |
+| `retail_per_k` | 0.24 | 0.20 | 0.0 | 0.3 | No |
+| `within_file_repeat` | 3.8% | 2.7% | 0.0% | 1 point | No, the floor is 3.8% |
+| `top_opener_share` | 6.2% | 5.7% | 7.1% | 1 point | No |
+| `cross_document_reuse` | 0.0% | 0.0% | 0.1% | 1 point | No |
+
+The request terminology change worked: holdout `commercial_per_k` fell from 4.35 to 0.00, and train
+from 0.18 to 0.00. All remaining train `within_file_repeat` comes from the PDF cover Summary box
+(6 of 58 and 6 of 48 sentences). The box copies the first 90 words, so shorter sentences raise
+this floor.
 
 ### Champion rescore on v2 code (23 Oct 10:50 SGT)
 
