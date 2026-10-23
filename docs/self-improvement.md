@@ -1,214 +1,234 @@
 # Realism self-improvement loop
 
-Status: updated after Round 14, 23 Oct 2026 04:01 SGT. Every part of the loop is built and has run
-end-to-end across fourteen rounds. This page reports measured numbers and cites the round receipts.
+BigLoom builds large DOCX, PDF, and PPTX files that must read like real agency documents. This page
+explains the loop that improves the prose in those files. It also states what the loop measured and
+what it learned. The design follows WorldLoom `evalrun improve`: change one policy, measure it on a
+train set and on an unseen holdout set, and keep the change only when it wins on both.
 
-BigLoom builds large files that must read like real agency documents. This page describes the loop
-that measures realism, the rounds that have run, and the findings from each round. The design
-follows WorldLoom `evalrun improve`: change one policy, measure on a train set and an unseen
-holdout set, and keep the change only when it wins on both.
+Status, 23 Oct 2026 10:20 SGT: 15 rounds have run (Round 0 to Round 14). One change was promoted
+(Round 2). Round 15 stopped before it had a result, because the writer subagents reached their model
+quota. Each round has a receipt in `docs/realism/receipts/`.
 
-## 1. Loop design
+## 1. The loop
 
-| Loop part | In BigLoom | State |
+```mermaid
+flowchart LR
+    champ["Champion writer policy"] --> prop["Proposer: one rule change"]
+    prop --> write["Fresh writer subagents, 4 seeds"]
+    write --> accept["Hard gate: narrate accept"]
+    accept --> build["Build and qualify: hard gate"]
+    build --> vec["Metric vector, train and holdout"]
+    vec --> decide{"Promotion rule"}
+    decide -->|"win"| judges["Masked blind judges"]
+    judges --> champ
+    decide -->|"loss"| receipt["Receipt, champion unchanged"]
+    receipt --> prop
+```
+
+Each round has six steps:
+
+1. **Proposal.** The proposer subagent reads the train receipts. It writes
+   `policies/writer/round-<NNN>.md`, which is the champion policy with one rule changed.
+2. **Writing.** Four fresh writer subagents answer the WorldLoom narration requests. Each one sees
+   only the text of the candidate policy. Two seeds are train (`2026` at 2 MB, `2027` at 5 MB). Two
+   seeds are holdout (`3101` at 2 MB, `3102` at 5 MB).
+3. **Fact gate.** `bigloom narrate accept` runs the WorldLoom claim checks. A section with an
+   unsupported claim, a typed digit, or an invented entity fails.
+4. **Build gate.** `bigloom qualify` builds the files and checks leakage, fact depth, and retrieval.
+   The retrieval check requires the target file to rank in the BM25 and TF-IDF top 3 for its query.
+5. **Score.** `realism_metrics` measures the metric vector on train and on holdout (section 2).
+6. **Decision.** `realism_loop.decide` applies the promotion rule. A promoted candidate then goes to
+   three masked blind judges (section 4).
+
+### Promotion rule
+
+A candidate is promoted only when all four conditions are true:
+
+- On train, at least one metric moves closer to the real value by more than its band.
+- On train, no metric moves away from the real value by more than its band.
+- On holdout, the summed normalised distance to the real values falls.
+- The judge guard does not trip.
+
+| Metric | Band |
+|---|---|
+| `commercial_per_k` | 0.5 |
+| `retail_per_k` | 0.3 |
+| `wl_id_per_k` | 0.5 |
+| `within_file_repeat` | 0.01 |
+| `top_opener_share` | 0.01 |
+| `unique_sentences` | 5.0 |
+| `cross_document_reuse` | 0.01 |
+
+### Rules that do not change
+
+- **Frozen grader.** Each receipt records `grader_sha256`
+  (`eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b`). The loop stops if the grader
+  changes.
+- **One change in each round.** A candidate changes one rule of the champion and nothing else.
+- **Holdout isolation.** The proposer never sees holdout numbers, holdout seeds, or holdout passages.
+- **Fresh writers.** Each round uses new writer subagents. A writer never sees an earlier round's
+  `responses.json`.
+- **Masked judges.** Product and organisation names are masked (`[PRODUCT-1]`, `[ORG-1]`) on both
+  sides of every judge pair.
+- **No Vertex AI.** Every model role is a Jetski subagent.
+
+## 2. What the metrics measure, and their limits
+
+The metric vector uses no model calls. Rates are per 1000 words. The real reference comes from 11
+real agency files.
+
+| Metric | What it counts | Real value |
 |---|---|---|
-| Agent under test | The writer that answers WorldLoom narration requests (`bigloom narrate prepare`, then `accept`) | Built (`src/bigloom/narration.py`) |
-| Policy | Versioned writer instructions in `policies/writer/round-<NNN>.md` | Built |
-| Hard gates, never optimized | `bigloom narrate accept` (WorldLoom claim checks), `bigloom qualify` (leakage, retrieval, realism findings), text and image fact depth | Built (`src/bigloom/qualify.py`, `src/bigloom/realism.py`) |
-| Score | The metric vector (section 3) and the masked blind judge guard (section 4) | Built (`src/bigloom/realism_metrics.py`, `src/bigloom/realism_pairs.py`) |
-| Proposer | A subagent that reads train receipts and makes one change to the writer policy | Built (`policies/PROPOSER.md`) |
-| Holdout | Seeds `3101` (2 MB) and `3102` (5 MB) that the proposer never sees | Built (`src/bigloom/realism_loop.py`) |
-| Promotion rule | At least one train dimension improves beyond its band, no train dimension worsens beyond its band, holdout normalised distance falls, and the judge guard does not trip | Built (`realism_loop.decide`) |
-| Receipt | One JSON file for each round in `docs/realism/receipts/round<N>.json` (and train-only view in `docs/realism/loop/train-<NNN>.json`) | Built |
+| `commercial_per_k` | The phrases `gross profit`, `gross margin`, `operating margin`, `EBITDA`, `sales volume` | 0.0 |
+| `retail_per_k` | Retail words such as `store`, `SKU`, `footfall` | 0.78 |
+| `wl_id_per_k` | WorldLoom ledger IDs such as `FACT-0028` | 0.0 |
+| `within_file_repeat` | The share of sentences that repeat in one file | 4.0% |
+| `top_opener_share` | The share of sentences that start with the most common three-word opener | 7.4% |
+| `unique_sentences` | Distinct sentences in each file | 146.7 |
+| `cross_document_reuse` | The share of sentences that also occur in a different document | 0.1% |
 
-Rules that apply to every round:
+Three properties of the corpus limit what a writer policy can change.
 
-- The grader does not change during a loop. Each receipt records `grader_sha256`
-  (`eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b`), the policy digests, and
-  the judge prompt digest.
-- One policy change per round. Champion and candidate run on the same cached world seeds (`2026`
-  and `2027` for train, `3101` and `3102` for holdout).
-- The proposer reads train receipts only. It never sees holdout passages or holdout vectors.
-- Product and organisation names are masked (`[PRODUCT-1]`, `[ORG-1]`) on both sides of every
-  blind judge pair (`realism_pairs.mask_names`).
-- Each round receipt stores two sample passages of about 150 words from the promoted set.
-- All model roles are Jetski subagents. No Vertex AI.
+**The `commercial_per_k` floor.** The planted chart captions and tables hold fixed commercial
+phrases: one in each DOCX, six in each PDF, and one in each PPTX. With zero commercial phrases in the
+prose, train `commercial_per_k` is still about 2.0. The champion is at 2.26. Thus this metric cannot
+improve by more than its 0.5 band. A promotion must come from `unique_sentences` or
+`top_opener_share`.
 
-## 2. Changes across rounds
+**PPTX slide footers.** The PPTX renderer makes one slide bullet from each paragraph. Each slide also
+has a date footer, which the metric reads as a sentence that starts with `# April #`. A deck has five
+such footers. With three paragraphs in each section, a deck has about 16 sentences and the footers
+make 31% of the openers. With two paragraphs, a deck has about 10 sentences and the footers make 50%.
+Thus fewer paragraphs raise `top_opener_share`, even when the prose is varied.
 
-| Round | Writer and policy | Filter | Policy change under test | Result |
-|---|---|---|---|---|
-| Round 0 | WorldLoom template writer (`ComposedProvider`) | Off | Baseline | Baseline (`round0.json`) |
-| Round 1 | Jetski writer subagent (`policies/writer/round-001.md`, `bda2a5cd…`) | On (`longform_filter.py`) | Handshake writer + appendix/ID filter + single-column measure table (`2e2fa95`) | Champion baseline (`round1.json`) |
-| Round 2 | Jetski writer subagent (`policies/writer/round-002.md`, `a60c857a…`) | On | Add `VOCABULARY` rule: name commercial measures at most once per paragraph and use public-sector words (`income`, `funding drawn`, `surplus`, `cost recovery`) for repeat references | **Promoted** (`round2.json`, holdout gain `+0.051`) |
-| Round 3 | Jetski writer subagent (`policies/writer/round-003.md`, `b739d290…`) | On | Cap three-word openers at two per document and direct thin-fact sections to use dry administrative procedure | **Rejected** (`round3.json`; hard gate failed on `bl-001-docx-5mb-text` rank 4, `unique_sentences` fell from `48.8` to `36.8`, and `commercial_per_k` rose from `2.26` to `4.96`) |
-| Round 4 | Jetski writer subagent (`policies/writer/round-004.md`, `b10737ef…`) | On | Cap each commercial word at one use per section across all formats | **Rejected** (`round4.json`; passed all hard gates, improved train `top_opener_share` from `13.0%` to `9.0%`, and gained `+3.669` on holdout, but longer compound sentences reduced train `unique_sentences` from `48.8` to `35.3`) |
-| Round 5 | Jetski writer subagent (`policies/writer/round-005.md`, `69b1350e…`) | On | Keep sentences concise (`12` to `18` words) so each 300-word section holds at least 18 sentences | **Rejected** (`round5.json`; passed all hard gates, improved train `unique_sentences` from `48.8` to `65.8`, and gained `+8.279` on holdout, but more paragraphs per section caused train `commercial_per_k` to rise from `2.26` to `4.78` under the once-per-paragraph vocabulary rule) |
-| Round 6 | Jetski writer subagent (`policies/writer/round-006.md`, `41278114…`) | On | Cap three-word sentence openers at two per document and require distinct three-word openings across slide sections | **Rejected** (`round6.json`; passed all hard gates, improved train `unique_sentences` from `48.8` to `65.8`, lowered `cross_document_reuse` to `0.0%`, and gained `+9.543` on holdout, but reusing the Seed `2027` writer conversation carried over Round 5's `4.78` `commercial_per_k`) |
-| Round 7 | Jetski writer subagent (`policies/writer/round-007.md`, `5fd47221…`) | On | Cap each commercial measure at one use per section across all formats (with fresh writer subagents) | **Rejected** (`round7.json`; passed all hard gates and improved `retail_per_k` (`0.69`) and `top_opener_share` (`11.5%`), but fresh writers wrote ~`2,600` words per seed instead of ~`5,000`, reducing `unique_sentences` to `29.2` and raising `commercial_per_k` per 1000 words to `5.84`) |
-| Round 8 | Jetski writer subagent (`policies/writer/round-008.md`, `8c9f8b23…`) | On | Require `95` to `115` percent of `target_words` for every section (`>= 285` words and `16` to `20` sentences per `300`-word section, `>= 4,800` words per seed) | **Rejected** (`round8.json`; passed all hard gates, improved train `top_opener_share` (`11.5%`) and `unique_sentences` (`58.0`), and gained `+5.173` on holdout, but Seed `2027` named commercial measures across multiple paragraphs per section (`commercial_per_k` `4.09` vs `2.26`)) |
-| Round 9 | Jetski writer subagent (`policies/writer/round-009.md`, `e940cc6a…`) | On | Cap commercial words at one use per document (at most three across all 21 sections) | **Rejected** (`round9.json`; won on every metric vector dimension—train `commercial_per_k` `2.09`, `top_opener_share` `11.2%`, `unique_sentences` `58.2`, holdout gain `+11.423` with `commercial_per_k` `2.00`—but removing `gross margin` from the DOCX dropped `bl-001-docx-5mb_final.docx` to BM25 rank 4 on `bl-001-docx-5mb-image`) |
-| Round 10 | Jetski writer subagent (`policies/writer/round-010.md`, `db8c8714…`) | On | Write `gross margin` once in each section of `ART-0019` while avoiding commercial words in all other documents | **Rejected** (`round10.json`; improved train `top_opener_share` (`11.2%`) and `unique_sentences` (`58.2`) with holdout gain `+10.817`, but `bl-001-docx` is built from `ART-0007` rather than `ART-0019`, and removing `margin` from the PDF raised its BM25 IDF so the PPTX outranked `bl-001-docx-5mb_final.docx` on `bl-001-docx-5mb-image`) |
-| Round 11 | Jetski writer subagent (`policies/writer/round-011.md`, `75139cfa…`) | On | Write `gross margin forecast` once in `ART-0007/Standing exposure` and `gross margin` once in `ART-0020/Summary` and `ART-0024/Headline` while avoiding all other commercial words across all 21 sections | **Rejected** (`round11.json`; when re-verified from scratch with four fresh writer subagents, passed all hard gates, but `ART-0020/Summary` and `ART-0024/Headline` do not match the section titles in `requests.json` and shorter prose reduced `unique_sentences` from `48.8` to `31.2` and raised `commercial_per_k` from `2.26` to `3.27`) |
-| Round 12 | Jetski writer subagent (`policies/writer/round-012.md`, `8e383634…`) | On | Keep sentences concise (`12` to `16` words each) so every 300-word section contains at least 20 distinct sentences and every slide section contains at least 12 distinct sentences | **Rejected** (`round12.json`; passed train gate and raised `unique_sentences` from `48.8` to `70.5` on train and `52.0` to `72.5` on holdout, but `traps/bl-001-docx-2mb_draft.docx` ranked 4th on BM25 for `bl-001-docx-2mb-image` when hardcoded artifact IDs missed the PDF `Overall utilisation` section) |
-| Round 13 | Jetski writer subagent (`policies/writer/round-013.md`, `1bb77be6…`) | On | Replace hardcoded artifact IDs in `VOCABULARY` with section titles (`Standing exposure` and `Cause` for `gross margin forecast`, and `Overall utilisation` and `In brief` for `gross margin`) while avoiding all other commercial words across all 21 sections | **Rejected** (`round13.json`; passed all hard gates on train and holdout from scratch, improved train `top_opener_share` to `10.4%`, and gained `+5.393` on holdout vs Round 2, but fresh writers without a sentence-length rule wrote compound sentences that lowered `unique_sentences` from `48.8` to `38.5`) |
-| Round 14 | Jetski writer subagent (`policies/writer/round-014.md`, `0e251946…`) | On | Write each 300-word section as two paragraphs of nine to ten concise sentences (`14` to `17` words each, at least `285` words per section) | **Rejected** (`round14.json`; passed all hard gates on train and holdout and raised train `unique_sentences` from `48.8` to `62.7`, but `round-002.md` `VOCABULARY` allowed commercial terms in each paragraph (`commercial_per_k` `3.48`), and two-paragraph slide sections reduced PPTX bullets so slide date footers raised `top_opener_share` to `16.6%`) |
+**BM25 and the word `margin`.** The DOCX image query asks about the chart "Revised gross margin
+forecast by business unit". When the PDF and PPTX prose do not use the word `margin`, its BM25 weight
+rises. Then a PPTX, whose chart caption holds `margin`, can rank above the target DOCX, and the
+retrieval gate fails. This caused the gate failures in Rounds 9, 10, and 12. The single word `margin`
+does not count in `commercial_per_k`. Only the two-word phrases count.
 
-## 3. Metric vector
+## 3. Measured results
 
-The metric vector uses no model calls. All columns use the same grader
-(`grader_sha256` `eeb607b3b32a…`). Rates are per 1000 words. Sentence reuse compares different
-documents only; size twins (the same document type at 2 MB and 5 MB) do not count.
+The champion is `policies/writer/round-002.md`
+(`a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`).
 
-| Metric | Real (11 files) | Round 0 Train | Round 1 Train | Round 2 Train (Champion) | Round 8 Train | Round 11 Train | Round 12 Train | Round 13 Train | Round 14 Train | Round 1 Holdout | Round 2 Holdout (Champion) | Round 8 Holdout | Round 11 Holdout | Round 12 Holdout | Round 13 Holdout | Round 14 Holdout |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WorldLoom IDs per 1000 words | 0.0 | 20.50 | 0.00 | **0.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| Commercial terms per 1000 words | 0.0 | 20.44 | 7.55 | **2.26** | 4.09 | 3.27 | 2.43 | 2.76 | 3.48 | 7.19 | **6.30** | 5.16 | 3.21 | 2.51 | **2.82** | 6.49 |
-| Retail terms per 1000 words | 0.78 | 1.40 | 0.21 | **0.21** | 0.18 | **0.33** | 0.19 | 0.21 | 0.19 | 0.20 | **0.23** | 0.19 | **0.75** | 0.19 | 0.21 | 0.24 |
-| Repeated sentences in one file | 4.0% | 16.0% | 4.4% | **3.9%** | 3.4% | 4.7% | 4.1% | 3.3% | **3.8%** | 3.9% | **4.0%** | 3.8% | 6.7% | 3.7% | 3.5% | 4.7% |
-| Most common three-word opener | 7.4% | 20.1% | 12.0% | **13.0%** | 11.5% | 14.3% | 11.4% | **10.4%** | 16.6% | 12.6% | **13.5%** | 11.3% | 13.2% | 12.2% | **11.5%** | 15.3% |
-| Unique sentences per file | 146.7 | 30.5 | 51.3 | **48.8** | 58.0 | 31.2 | **70.5** | 38.5 | **62.7** | 57.2 | **52.0** | 57.2 | 27.5 | **72.5** | 37.0 | 52.0 |
-| Sentence reuse across different documents | 0.1% | 6.6% | 0.0% | **0.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | **0.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Dates after the document date | 0 | 0 | 0 | **0** | 0 | 0 | 0 | 0 | 0 | 0 | **0** | 0 | 0 | 0 | 0 | 0 |
-| Words per MB | 4,032 | 443 | 440 | **435** | 466 | 387 | **468** | 433 | 455 | 450 | **390** | 491 | 322 | 458 | 438 | 414 |
+| Metric | Real | Round 0 train (template writer) | Round 1 train (first writer policy) | Champion train | Champion holdout |
+|---|---|---|---|---|---|
+| `wl_id_per_k` | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 |
+| `commercial_per_k` | 0.0 | 20.44 | 7.55 | 2.26 | 6.30 |
+| `retail_per_k` | 0.78 | 1.40 | 0.21 | 0.21 | 0.23 |
+| `within_file_repeat` | 4.0% | 16.0% | 4.4% | 3.9% | 4.0% |
+| `top_opener_share` | 7.4% | 20.1% | 12.0% | 13.0% | 13.5% |
+| `unique_sentences` | 146.7 | 30.5 | 51.3 | 48.8 | 52.0 |
+| `cross_document_reuse` | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% |
+| Words per MB | 4,032 | 443 | 440 | 435 | 390 |
 
-Findings after Round 14:
+Most of the gain came before the loop started. The handshake writer and the appendix filter (Round 1)
+removed the ledger IDs and the reused template sentences. Round 2 then cut train `commercial_per_k`
+from 7.55 to 2.26.
 
-1. **Commercial terms dropped by 70% in Round 2 (`7.55` to `2.26` on train, `7.19` to `6.30` on
-   holdout).** On train, the PDF rate fell from `9.11`/`8.77` to `4.14`/`3.04`, and the deck rate
-   fell from `12.53`/`13.64` to `2.56`/`2.55`.
-2. **Repeated table cells fixed (`2e2fa95`).** In Round 1, Masked Judge 1 spotted that BigLoom's
-   planted text-fact table repeated the measure label twice in the same row (`row.label` and
-   `cells["measure"]`). Making the table single-column (`Value`) removed that clue and lowered
-   Round 1 train `commercial_per_k` from `8.05` to `7.55`.
-3. **Why Round 3 was rejected.** The Round 3 policy (`round-003.md`) changed two rules at once. It
-   lowered `top_opener_share` on holdout (`13.5%` to `9.9%`), but writers produced shorter prose,
-   which reduced `unique_sentences` from `48.8` to `36.8`, raised `commercial_per_k` to `4.96`, and
-   pushed `traps/bl-001-docx-5mb_draft.docx` to BM25 rank 4 on `bl-001-docx-5mb-text`.
-4. **Why Round 4 was rejected.** Starting from `round-002.md` with one rule change (`round-004.md`),
-   both train and holdout passed all hard gates, train `top_opener_share` improved from `13.0%` to
-   `9.0%`, and holdout gained `+3.669` (`commercial_per_k` dropped from `6.30` to `2.24`). However,
-   writers used longer compound sentences (`29` to `35` words per sentence vs `21` to `26` in Round
-   2), which lowered train `unique_sentences` from `48.8` to `35.3` (beyond the `5.0` band).
-5. **Why Round 5 was rejected.** Starting from `round-002.md` with one rule change (`round-005.md`:
-   keep sentences `12` to `18` words so each 300-word section has at least 18 sentences), both train
-   and holdout passed all hard gates, train `unique_sentences` jumped from `48.8` to `65.8` (`+17.0`
-   sentences per file), and holdout gained `+8.279` (`commercial_per_k` fell from `6.30` to `2.33`
-   and `unique_sentences` rose from `52.0` to `56.5`). However, on train seed `2027`, shorter
-   sentences caused the writer to split sections into more paragraphs while still naming a
-   commercial measure once per paragraph (`round-002.md`'s rule), raising train `commercial_per_k`
-   from `2.26` to `4.78`.
-6. **Why Round 6 was rejected and what it revealed.** Starting from `round-002.md` with one rule
-   change (`round-006.md`: cap three-word openers at two per document and require distinct slide
-   section openings), holdout gained `+9.543` (`commercial_per_k` `2.24`, `top_opener_share`
-   `12.3%`, `unique_sentences` `57.0`). However, because we messaged the existing writer subagents
-   instead of spawning fresh subagents, the Seed `2027` writer reused its Round 5 text in context,
-   carrying over Round 5's `4.78` `commercial_per_k`.
-7. **Why Round 7 was rejected.** Starting from `round-002.md` with one rule change (`round-007.md`:
-   cap commercial terms at once per section) and four fresh writer subagents, both gates passed and
-   `retail_per_k` (`0.69` vs `0.78` real) and `top_opener_share` (`11.5%` vs `13.0%`) improved.
-   However, because WorldLoom `narrate accept` does not enforce the `target_words` floor (`90%` to
-   `120%`), the fresh writers wrote `2,523` to `2,785` total words per seed instead of `4,899` to
-   `5,486`, which cut `unique_sentences` to `29.2` and increased the per-1000-word commercial term
-   density (`5.84`).
-8. **Why Round 8 was rejected.** Starting from `round-002.md` with one rule change (`round-008.md`:
-   explicit `95%` to `115%` word and sentence floor per section), all four fresh writers wrote full
-   lengths (`5,188` to `6,254` words per seed), both gates passed, train `top_opener_share` improved
-   (`13.0%` to `11.5%`), train `unique_sentences` improved (`48.8` to `58.0`), and holdout gained
-   `+5.173`. However, on Seed `2027` (`5 MB` train), `round-002.md`'s unmodified `VOCABULARY` line
-   ("Name each such measure at most once in a paragraph") allowed the writer to use commercial nouns
-   across each paragraph of the PDF and PPTX (`8.70` and `8.81` per 1000 words vs `3.61` and `2.31`
-   on Seed `2026`), raising train `commercial_per_k` to `4.09`.
-9. **Why Round 9 and Round 10 were rejected and the BM25 IDF discovery.** In Round 9 (`round-009.md`)
-   and Round 10 (`round-010.md`), capping commercial words won on every metric vector dimension
-   (`commercial_per_k` `2.09` on train and `2.00` to `2.30` on holdout, `top_opener_share` `11.2%` on
-   train and `11.0%` on holdout, `unique_sentences` `58.2` on train and `57.3` on holdout, holdout
-   gain `+11.423` and `+10.817`, zero worsened dimensions). However, `bl-001-docx-5mb-image` ("what
-   gross margin forecast does the chart Revised gross margin forecast by business unit show for
-   Product & Engineering?") failed its BM25 top-3 retrieval check because `bl-001-docx` is built from
-   `ART-0007` (the Incident RCA) rather than `ART-0019`, and removing `margin` from the PDF (`df`
-   dropping from `6` to `4`) increased the BM25 IDF of `margin` so the shorter PPTX files (whose chart
-   titles contain `margin`) outscored the DOCX (`gross: 1, margin: 1`).
-10. **Why Round 11 was rejected when re-verified from scratch (`round-011.md`).** When re-evaluated
-    from scratch with four fresh writer subagents using only `policies/writer/round-011.md`, Round 11
-    passed all hard qualification and retrieval gates on both train and holdout. However, fresh
-    writers noted that `ART-0020/Summary` and `ART-0024/Headline` do not match the section titles in
-    `requests.json` (`Overall utilisation` and `In brief`), and without a sentence-length rule in
-    `QUALITY`, three of the four fresh writers wrote shorter prose (`2,012` to `2,317` words), which
-    reduced train `unique_sentences` from `48.8` to `31.2` and raised `commercial_per_k` from `2.26`
-    to `3.27`. Therefore `policies/writer/round-002.md` remains the promoted champion policy.
-11. **Why Round 12 was rejected.** Starting from `round-011.md` with one rule change in `QUALITY`
-    (`round-012.md`: concise `12` to `16` word sentences so every 300-word section has at least 20
-    sentences and every slide section has at least 12 sentences), train `unique_sentences` jumped from
-    `48.8` to `70.5` and holdout `unique_sentences` jumped from `52.0` to `72.5`. However, because
-    `VOCABULARY` named hardcoded artifact IDs (`ART-0020` and `ART-0024`), a seed whose artifact
-    numbering shifts by one missed the `margin` term in the PDF (`Overall utilisation`), dropping `df`
-    from `6` to `4` so `traps/bl-001-docx-2mb_draft.docx` ranked 4th on BM25 for
-    `bl-001-docx-2mb-image`. Naming section titles (`Standing exposure`, `Cause`, `Overall
-    utilisation`, and `In brief`) instead of hardcoded artifact IDs fixes the BM25 IDF across all
-    seeds.
-12. **Why Round 13 was rejected when run from scratch.** When Round 13 (`round-013.md`) was run from
-    scratch with four fresh writer subagents, naming section titles (`Standing exposure`, `Cause`,
-    `Overall utilisation`, and `In brief`) instead of hardcoded artifact IDs passed every hard
-    qualification and retrieval gate on both train and holdout, improved train `top_opener_share` from
-    `13.0%` to `10.4%`, and cut holdout `commercial_per_k` from `6.30` to `2.82` (normalised holdout
-    gain `+5.393` vs Round 2). However, without a sentence-length rule in `QUALITY`, fresh writers
-    wrote long compound sentences (`24` to `28` words per sentence), which reduced `unique_sentences`
-    from `48.8` to `38.5` on train and `52.0` to `37.0` on holdout. `policies/writer/round-002.md`
-    remains the promoted champion policy.
-13. **Why Round 14 was rejected and the PPTX slide bullet discovery.** Starting from `round-002.md`
-    with one rule change in `QUALITY` (`round-014.md`: write each 300-word section as two paragraphs
-    of nine to ten concise sentences), Round 14 passed every hard qualification and retrieval gate on
-    both train and holdout and jumped train `unique_sentences` from `48.8` to `62.7` (`104` and `87`
-    on DOCX, `89` and `73` on PDF). However, two interactions occurred: first, under `round-002.md`
-    `VOCABULARY` ("Name each such measure at most once in a paragraph"), writers named both `gross
-    profit` and `gross margin` in each paragraph of the PDF (`6.82` and `6.29` per 1000 words);
-    second, writing PPTX slide sections as two paragraphs instead of three or four paragraphs caused
-    WorldLoom's PPTX slide renderer (which extracts the first sentence of each paragraph as a slide
-    bullet) to place only two bullets on each slide, reducing total PPTX sentences to `10` so five
-    slide date footers (`# April #`) accounted for `50.0%` of PPTX openers.
+Rounds 3 to 14 did not promote a change. Eight of the twelve candidates passed the hard gates on
+both sets. Several candidates gained on holdout. Each one still lost on train, because a second metric got
+worse by more than its band.
 
-## 4. Blind judges and correlated series behaviour
+The files are still far from real on two metrics. Real files have about three times as many distinct
+sentences (146.7 against 48.8). Their text is also about nine times more dense (4,032 words per MB
+against 435). The masked judges can still tell real from synthetic every time (section 4).
 
-| Round | Masking | Correct verdicts (3 judges) | Mean error rate (goal 50%) | Main clues reported by judges |
-|---|---|---|---|---|
-| Round 0 | Unmasked | `[20, 20, 20]` (60/60) | 0.0% | WorldLoom IDs, lineage tables, formulaic templates, 2026 dates |
-| Round 1 | Unmasked | `[20, 20, 20]` (60/60) | 0.0% | Real public GovTech product/framework names on real side (14 to 18 of 20), document type (15 of 20); 0 mentions of WorldLoom IDs, repeats, or 2026 dates |
-| Round 1 | Masked (`[PRODUCT-n]`, `[ORG-n]`) | `[20, 0, 0]` (20/60) | 66.7% | Each judge grouped the 20 pairs into two document series; two judges inverted which series was real |
-| Round 2 | Masked (`[PRODUCT-n]`, `[ORG-n]`) | `[20, 20, 20]` (60/60) | 0.0% | PDF column/font/table extraction marks and control codes on real side (12 to 13 of 20); dramatic or polished narrative tone in thin-fact sections on synthetic side (4 to 8 of 20) |
-| Round 11 | Masked (`[PRODUCT-n]`, `[ORG-n]`) | `[20, 20, 20]` (60/60) | 0.0% | Real external standards/domains (DSS, NIST 800-53, MITRE ATLAS, RFC 2350, ACRA BizFile+, `.gov.sg`) and PDF glyph marks on real side (15 to 17 of 20); mid-sentence capitalised fact splices and document family grouping on synthetic side (3 to 5 of 20) |
+## 4. Blind judges
 
-Why the judge guard requires all 3 judges to improve on the candidate:
+Three judges each see 20 pairs. Each pair holds one real passage and one synthetic passage, with
+names masked. A judge error rate of 50% means the judges cannot tell the two sides apart.
 
-- With product and agency names masked, each judge still sees that the 20 passages come from two
-  document families: web/standards extracts with broken PDF columns and font icons vs continuous
-  financial and incident narratives.
-- Each judge assigns one label to an entire family, so its 20 verdicts are 100% correlated (`20`
-  or `0`). Blocking promotion when two judges flip from `0` to `20` treats one binary family flip
-  as 40 independent pairs. Therefore `realism_loop.decide` blocks only when **every** judge scores
-  higher on the candidate than on the champion and mean error drops by more than `JUDGE_BAND`.
+| Round | Correct verdicts | Mean error | Main clues the judges gave |
+|---|---|---|---|
+| Round 0 (unmasked) | 60 of 60 | 0% | WorldLoom IDs, lineage tables, template phrases |
+| Round 1 (unmasked) | 60 of 60 | 0% | Real product and framework names on the real side |
+| Round 1 (masked) | 20 of 60 | 67% | Each judge sorted the pairs into two series, and two judges reversed which series was real |
+| Round 2 (masked) | 60 of 60 | 0% | PDF extraction marks on the real side, polished narrative tone on the synthetic side |
+| Round 11 (masked) | 60 of 60 | 0% | Real external standards and `.gov.sg` domains on the real side, capital letters in mid-sentence fact splices on the synthetic side |
 
-## 5. Remaining tensions for Round 12+
+A judge gives one label to a whole document series, so its 20 verdicts are not independent. The judge
+guard therefore blocks a promotion only when every judge does better on the candidate and the mean
+error falls by more than `JUDGE_BAND` (0.10).
 
-- **Mid-sentence capitalised fact splices.** Masked Judge R11-3 noted that when a WorldLoom fact
-  statement starts with a capital letter (`Asset valuation completed`, `ERP logs show no interruption`),
-  placing `{{fact:FACT-ID}}` in the middle of a sentence produces a mid-sentence capital letter.
-  Placing sentence-valued facts at the start of a sentence (or after a colon) removes that splice.
-- **Sentence opener concentration in slide decks.** On PPTX slides (`ART-0024`), `top_opener_share` is
-  `0.278` to `0.294` because two or three sentences in the deck share the same three-word opener.
-  Requiring every sentence in a slide deck to begin with a distinct three-word opener can lower
-  `top_opener_share` below `0.10` across the set.
+Most judge clues are about the real side (extraction marks, real standards). The prose rules cannot
+change those clues.
 
-## 6. Files
+## 5. What we learned
+
+**One rule change moves two metrics in opposite directions.** Shorter sentences raise
+`unique_sentences`, but writers then name `gross profit` once in each new paragraph (Rounds 5, 8,
+14). Fewer commercial words lower `commercial_per_k`, but writers then join facts into long compound
+sentences of 25 to 30 words, which lowers `unique_sentences` (Rounds 4, 11, 13). Each fix to one metric
+made the other metric worse.
+
+**One run for each seed is a noisy test.** Under the same policy, two fresh writers wrote 0 and 32
+commercial phrases (Round 5 and Round 8, seeds 2026 and 2027). In Round 7 and Round 11, fresh writers
+wrote half the target length. A single run cannot tell a policy effect from writer variance. WorldLoom
+found the same problem in its first live pilot.
+
+**The real limits are in the corpus, not in the policy.** The `commercial_per_k` floor, the PPTX
+footers, and the BM25 effect (section 2) each come from the planted content or the renderer. The
+proposer can only change the writer policy, so it cannot remove them.
+
+**Near misses are discarded.** Rounds 5, 8, 9, and 12 each gained on holdout and improved one or two
+train metrics. The loop keeps no archive, so later rounds start again from the champion and cannot
+build on these candidates.
+
+**Process errors invalidate a round.** The supervisor stopped four errors: two rules in one round, a
+receipt with passages from an earlier round, holdout numbers in a proposer message, and writers
+told to copy earlier output. Each affected round ran again from scratch. The rules in section 1 now
+prevent these errors.
+
+## 6. Next levers
+
+These changes alter the loop design. They need approval before they are made.
+
+1. **Repeat runs.** Run two writers on each seed and compare the means. This reduces writer variance.
+2. **An archive of near misses.** Keep candidates that gained on holdout, and let the proposer start
+   from one of them.
+3. **A floor-aware band.** Measure `commercial_per_k` on the prose only, or subtract the fixed
+   phrases from the planted content.
+4. **Fixes in the corpus.** Write the PPTX date footer so that it is not read as a sentence, and keep
+   the word `margin` in the PDF so that the BM25 weight does not change.
+5. **Round 15.** Run `policies/writer/round-015.md` again after the quota resets. It adds sentence
+   length and three-paragraph rules to `QUALITY`. The three paragraphs keep the PPTX bullet count.
+
+## Appendix A. Rounds
+
+The receipt for each row is `docs/realism/receipts/round<N>.json`. It holds the full vectors, the
+samples, and the policy digest.
+
+| Round | Change under test | Result | Main reason |
+|---|---|---|---|
+| 0 | WorldLoom template writer | Baseline | Not applicable |
+| 1 | Handshake writer, appendix and ID filter, single-column measure table (`bda2a5cd…`) | Baseline champion | Not applicable |
+| 2 | `VOCABULARY`: name commercial measures at most once in a paragraph (`a60c857a…`) | **Promoted** | `commercial_per_k` 7.55 to 2.26 on train |
+| 3 | Opener cap and thin-fact procedure rule (`b739d290…`) | Rejected | Two rules in one round. Retrieval gate failed. |
+| 4 | Each commercial word once in each section (`b10737ef…`) | Rejected | `unique_sentences` 48.8 to 35.3 |
+| 5 | Sentences of 12 to 18 words (`69b1350e…`) | Rejected | `commercial_per_k` 2.26 to 4.78 |
+| 6 | Opener cap of two in each document (`41278114…`) | Rejected | A reused writer carried Round 5 text |
+| 7 | Each commercial measure once in each section, fresh writers (`5fd47221…`) | Rejected | Writers wrote half length, `unique_sentences` 29.2 |
+| 8 | Word and sentence floor in each section (`8c9f8b23…`) | Rejected | `commercial_per_k` 2.26 to 4.09 |
+| 9 | Commercial words once in each document (`e940cc6a…`) | Rejected | Retrieval gate failed (BM25 effect) |
+| 10 | `gross margin` once in each section of one document (`db8c8714…`) | Rejected | Retrieval gate failed (BM25 effect) |
+| 11 | `gross margin` in three named sections (`75139cfa…`) | Rejected | Wrong section names, `unique_sentences` 31.2 |
+| 12 | Sentences of 12 to 16 words (`8e383634…`) | Rejected | Retrieval gate failed on one seed |
+| 13 | `gross margin` in four named sections (`1bb77be6…`) | Rejected | `unique_sentences` 48.8 to 38.5 |
+| 14 | Two paragraphs of short sentences in each section (`89a09a12…`) | Rejected | `commercial_per_k` 3.48, PPTX footers raised `top_opener_share` to 16.6% |
+| 15 | Short sentences in three paragraphs | Not run | Writer quota reached |
+
+## Appendix B. Files
 
 | File | Purpose |
 |---|---|
 | `src/bigloom/realism_metrics.py` | The metric vector and the grader digest |
-| `src/bigloom/realism_pairs.py` | Masked blind passage pair builder, scorer, and sample extractor |
-| `src/bigloom/realism_loop.py` | Train/holdout preparation, build runner, promotion rule, and receipt writer |
-| `src/bigloom/realism.py` | Per-file realism findings checked by `bigloom qualify` |
+| `src/bigloom/realism_loop.py` | Train and holdout preparation, build runner, promotion rule, receipt writer |
+| `src/bigloom/realism_pairs.py` | Masked blind pair builder, scorer, and sample extractor |
+| `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` .. `round-014.md` | Versioned writer policies (`round-002.md` is the promoted champion) |
-| `docs/realism/receipts/round0.json` .. `round14.json` | Full round receipts with samples and policy digests |
-| `docs/realism/loop/train-002.json` .. `train-014.json` | Train-only receipts visible to the proposer |
+| `policies/writer/round-001.md` to `round-014.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round14.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-014.json` | Train-only receipts that the proposer reads |
