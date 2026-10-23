@@ -186,3 +186,37 @@ def test_rendered_documents_hold_no_skus(govtech_world: World) -> None:
     assert texts
     joined = "\n".join(texts)
     assert "SKU" not in joined
+
+
+def test_rendered_decks_use_public_sector_measure_words(govtech_world: World) -> None:
+    """Loop v2: WorldLoom deck templates say gross surplus and surplus rate in a public-sector pack."""
+    import io
+
+    import pptx as _pptx
+
+    from bigloom.build import _render_pass
+
+    rendered = _render_pass(govtech_world, {ir.id: ir for ir in govtech_world.artifact_irs}, ["pptx"])
+    texts = []
+    for (_aid, kind), payload in rendered.items():
+        if kind != "pptx":
+            continue
+        for slide in _pptx.Presentation(io.BytesIO(payload)).slides:
+            texts.extend(sh.text_frame.text for sh in slide.shapes if sh.has_text_frame)
+    joined = "\n".join(texts).lower()
+    assert texts
+    assert "gross profit" not in joined and "gross margin" not in joined
+
+
+def test_agent_prose_keeps_its_commercial_words(govtech_world: World) -> None:
+    """Loop v2: the render pass renames template prose only. A writer's words stay, so the metric sees them."""
+    from bigloom.build import _public_charts
+
+    ir = next(i for i in govtech_world.artifact_irs if any(s.body for s in i.sections))
+    sec = next(s for s in ir.sections if s.body)
+    planted = sec.model_copy(update={"body": "The gross profit fell short of plan."})
+    ir = ir.model_copy(update={"sections": [planted if s is sec else s for s in ir.sections]})
+    kept = _public_charts(ir, govtech_world, frozenset({ir.id}))
+    renamed = _public_charts(ir, govtech_world, frozenset())
+    assert "gross profit" in next(s.body for s in kept.sections if s.heading == sec.heading)
+    assert "gross surplus" in next(s.body for s in renamed.sections if s.heading == sec.heading)

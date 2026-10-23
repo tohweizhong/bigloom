@@ -10,9 +10,11 @@ a group, each target is a different document type, so no two targets are copies.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import random
-from collections.abc import Mapping, Sequence
+import re
+from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -177,14 +179,94 @@ def public_units(world: World) -> World:
     return replace(world, _facts=tuple(facts)) if changed else world
 
 
-def _render_pass(world: World, irs: Mapping[str, ArtifactIR], formats: Sequence[Format]) -> dict[tuple[str, str], bytes]:
+#: Commercial measure words that WorldLoom templates put in slide titles and chart titles, and the
+#: public-sector words that BigLoom plants and asks the writer for (`questions.PUBLIC_SECTOR_NOUNS`).
+PUBLIC_SECTOR_TERMS: dict[str, str] = {"gross profit": "gross surplus", "gross margin": "surplus rate"}
+_TERM = re.compile(r"\b(gross profit|gross margin)\b", re.IGNORECASE)
+
+
+def public_terms_text(text: str) -> str:
+    """Replace commercial measure words with the public-sector words, and keep a leading capital."""
+    def swap(m: re.Match[str]) -> str:
+        new = PUBLIC_SECTOR_TERMS[m.group(1).lower()]
+        return new[:1].upper() + new[1:] if m.group(1)[:1].isupper() else new
+    return _TERM.sub(swap, text or "")
+
+
+@contextlib.contextmanager
+def public_terms_render(world: World) -> Iterator[None]:
+    """Give the WorldLoom templates the public-sector measure words for one render pass.
+
+    The deck renderer titles a slide from `narrative.composer.measure_noun`, which knows only the
+    ledger words ("gross profit"). BigLoom does not change WorldLoom. It wraps the function for
+    this pass, the same way `filtered_longform` wraps `longform.document`.
+    """
+    from worldloom.narrative import composer
+
+    from .questions import _public_sector
+
+    if not _public_sector(world):
+        yield
+        return
+    original = composer.measure_noun
+
+    def measure_noun(kind: str) -> str:
+        return public_terms_text(original(kind))
+
+    composer.measure_noun = measure_noun  # type: ignore[assignment]
+    try:
+        yield
+    finally:
+        composer.measure_noun = original  # type: ignore[assignment]
+
+
+def agent_artifacts(corpus_dir: Path | str | None) -> frozenset[str]:
+    """Return the ids of the documents with agent prose, from the narration plan next to the corpus."""
+    import json
+
+    if not corpus_dir:
+        return frozenset()
+    plan = Path(corpus_dir).parent / "narration" / "plan.json"
+    if not plan.is_file():
+        return frozenset()
+    return frozenset(json.loads(plan.read_text(encoding="utf-8")).get("artifact_ids", []))
+
+
+def _public_charts(ir: ArtifactIR, world: World, agent_ids: frozenset[str] = frozenset()) -> ArtifactIR:
+    """Rename commercial measure words in text that no agent writer wrote.
+
+    Applies to a public-sector pack only: WorldLoom template prose, headings, titles, and chart
+    titles. The deck renderer builds slides from the prose of every document in the pack, and the
+    documents without agent prose carry template prose ("Gross profit landed at ..."). The prose
+    of a document in `agent_ids` stays as the writer wrote it, so the metrics still see the
+    writer's words. Fact references (`{{fact:ID}}`) do not change.
+    """
+    from .questions import _public_sector
+
+    if not _public_sector(world):
+        return ir
+    sections = []
+    for sec in ir.sections:
+        update: dict[str, object] = {
+            "heading": public_terms_text(sec.heading),
+            "body": public_terms_text(sec.body) if sec.body and ir.id not in agent_ids else sec.body,
+        }
+        if sec.charts:
+            update["charts"] = [c.model_copy(update={"title": public_terms_text(c.title)}) for c in sec.charts]
+        sections.append(sec.model_copy(update=update))
+    return ir.model_copy(update={"sections": sections, "title": public_terms_text(ir.title)})
+
+
+def _render_pass(world: World, irs: Mapping[str, ArtifactIR], formats: Sequence[Format],
+                 agent_ids: frozenset[str] = frozenset()) -> dict[tuple[str, str], bytes]:
     """Render the world with replaced IRs. Return payloads keyed by (artifact id, file kind).
 
     The file kind is the extension for a main file, or "v0.1.docx" for the first Word revision.
     """
-    staged = replace(public_units(world), _artifact_irs=tuple(scrub_ir(irs.get(ir.id, ir)) for ir in world.artifact_irs))
+    staged = replace(public_units(world), _artifact_irs=tuple(
+        _public_charts(scrub_ir(irs.get(ir.id, ir)), world, agent_ids) for ir in world.artifact_irs))
     # Remove WorldLoom IDs and ledger appendices from every document of this pass.
-    with filtered_longform():
+    with filtered_longform(), public_terms_render(world):
         rendered = staged.render(*sorted(set(formats)))._rendered
     out: dict[tuple[str, str], bytes] = {}
     for item in rendered:
@@ -271,6 +353,7 @@ def build_corpus(
             )
         formats_of = _renderable(world, fmts)
         names = world_names(world)
+        agent_ids = agent_artifacts(prov.corpus_dir)
         for fmt in fmts:
             handler = handler_for(fmt)
             rejected: list[str] = []
@@ -294,8 +377,9 @@ def build_corpus(
                 style_seed = style_seed_for(int(world.seed), t.ir_id)
                 base_ir = _with_style_seed(irs[t.ir_id], style_seed)
                 # One render pass for each target, so a planted value reaches no other document.
-                main = _render_pass(world, {t.ir_id: handler.golden_ir(t, base_ir)}, [t.fmt]).get((t.ir_id, t.fmt))
-                canary = _render_pass(world, {t.ir_id: handler.canary_ir(t, base_ir)}, [t.fmt])
+                main = _render_pass(world, {t.ir_id: handler.golden_ir(t, base_ir)}, [t.fmt],
+                                    agent_ids).get((t.ir_id, t.fmt))
+                canary = _render_pass(world, {t.ir_id: handler.canary_ir(t, base_ir)}, [t.fmt], agent_ids)
                 trap = canary.get((t.ir_id, handler.trap_kind()))
                 if main is None or trap is None:
                     raise CorpusError(f"WorldLoom did not render {t.ir_id} as {t.fmt}.")
