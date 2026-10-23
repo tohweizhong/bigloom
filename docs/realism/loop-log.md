@@ -29,9 +29,11 @@ Update this section at the end of each round and after each loop change.
    from the PDF incident review. The family rule did not change the judge result. The promotion
    rule cannot reward a judge gain, because the judges only guard. Ask the user for the next Level 2
    change.
-2. The room check shows room only on `top_opener_share` (5.9% against a real median of 7.1%). That
-   would ask the writer for more repeated openers, which is not a realism gain. Discuss with the
-   user before a proposer targets it.
+2. No room on train. `top_opener_share` (5.9%) is on the clean side of the real median (7.1%), so
+   it has no room (rule in `91f26cd`). Evidence for the retail floor and the holdout causes is in
+   the receipt: all holdout commercial matches and the holdout reuse come from the 3101 executive
+   summary deck (WorldLoom deck templates quote fact nouns and the incident review), not from
+   writer prose.
 
 ### rescore-v2-017: champion on the target family rule (23 Oct 20:50 SGT)
 
@@ -44,7 +46,7 @@ service impact assessment. New reference: do not compare with rs016 as a gain or
 | `commercial_per_k` | 0.00 | 2.08 | 0.0 | 0 | No |
 | `retail_per_k` | 0.60 | 0.77 | 0.0 | 0.60 | No |
 | `within_file_repeat` | 2.4% | 2.8% | 0.0% | 2.4% | No |
-| `top_opener_share` | 5.9% | 5.1% | 7.1% | 0 | Yes (1.2 points), but in the wrong direction for realism |
+| `top_opener_share` | 5.9% | 5.1% | 7.1% | 0 | No (clean side of the real median) |
 | `cross_document_reuse` | 0.0% | 3.6% | 0.1% | 0 | No |
 
 - **Targets.** Train: DOCX service impact assessment, PDF incident review, PPTX Exco update. Holdout
