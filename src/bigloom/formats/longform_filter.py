@@ -177,6 +177,23 @@ def _part(part: Part, number: str | None = None) -> Part:
     )
 
 
+def _distinct_comments(comments: tuple[Any, ...]) -> tuple[Any, ...]:
+    """Keep the first review comment of each text.
+
+    WorldLoom can give every section the same reviewer comment, so the review record repeats one
+    sentence four times. A real reviewer does not write the same comment on every section.
+    """
+    seen: set[str] = set()
+    out = []
+    for c in comments:
+        key = " ".join(c.text.split()).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(c)
+    return tuple(out)
+
+
 def filter_document(doc: LongDocument) -> LongDocument:
     """Return the document without ledger appendices, ID columns, ID captions, or an ID reference.
 
@@ -189,7 +206,9 @@ def filter_document(doc: LongDocument) -> LongDocument:
     reference = doc.reference
     if _ID.search(reference):
         reference = readable_reference(reference, doc.company, doc.period, doc.artifact_id)
-    comments = tuple(replace(c, text=_clean(c.text), resolution=_clean(c.resolution)) for c in doc.comments)
+    comments = _distinct_comments(
+        tuple(replace(c, text=_clean(c.text), resolution=_clean(c.resolution)) for c in doc.comments)
+    )
     history = tuple(replace(r, summary=_clean(r.summary)) for r in doc.history)
     metadata = {k: v for k, v in doc.metadata.items() if not _ID.search(str(v))}
     return replace(

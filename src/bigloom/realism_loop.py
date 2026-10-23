@@ -37,9 +37,11 @@ BANDS: dict[str, float] = {
     "retail_per_k": 0.3,
     "within_file_repeat": 0.01,
     "top_opener_share": 0.01,
-    "unique_sentences": 5.0,
     "cross_document_reuse": 0.01,
 }
+#: Loop v2 does not score the raw `unique_sentences` count. A count grows with file length, and
+#: the real median (39) comes from short files, so the count rewarded shorter files. Sentence
+#: variety is scored as a rate by `within_file_repeat`. Receipts still report the count.
 #: The judge guard: the candidate's judge error rate may not fall by more than this (6 of 60 verdicts).
 JUDGE_BAND = 0.10
 #: Loop v2 real reference: the median of the 11 real files (grader v2). The v1 mean was pulled

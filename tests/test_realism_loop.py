@@ -16,13 +16,19 @@ BEST = {"wl_id_per_k": 0.0, "commercial_per_k": 8.0, "retail_per_k": 0.2, "withi
 def test_distance_is_absolute_gap_to_real() -> None:
     d = rl.distances(BEST, REAL)
     assert d["top_opener_share"] == round(0.12 - 0.074, 4)
-    assert d["unique_sentences"] == round(146.7 - 51.0, 4)
+    assert "unique_sentences" not in d  # loop v2 reports the count but does not score it
 
 
 def test_promote_when_train_improves_and_holdout_gains() -> None:
     cand = {**BEST, "top_opener_share": 0.09, "unique_sentences": 60.0}
     d = rl.decide(BEST, cand, BEST, {**BEST, "top_opener_share": 0.10}, REAL)
-    assert d.promote and set(d.improved) == {"top_opener_share", "unique_sentences"}
+    assert d.promote and set(d.improved) == {"top_opener_share"}
+
+
+def test_a_longer_file_alone_does_not_promote_or_reject() -> None:
+    """Loop v2: the raw sentence count is not scored, so length alone moves nothing."""
+    d = rl.decide(BEST, {**BEST, "unique_sentences": 500.0}, BEST, {**BEST, "unique_sentences": 5.0}, REAL)
+    assert d.improved == () and d.worsened == ()
 
 
 def test_reject_when_a_dimension_worsens_beyond_its_band() -> None:
