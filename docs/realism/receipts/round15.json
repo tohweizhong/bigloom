@@ -110,7 +110,16 @@
     "Writers reported that sections with two or three facts and a 300-word target needed reasoning sentences that repeat the same facts.",
     "policies/writer/round-002.md remains the champion."
   ],
-  "samples": [],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Incident record: INC0080099 opened at priority P2 against inventory-valuation. The ticket fixed the start of the clock and gave every responder one shared reference. The first line of enquiry was the ERP, the usual suspect for an overnight valuation fault. That line was reasonable on the symptoms and turned out to be wrong. Evidence closed it: ERP logs show no interruption during the valuation window. Logs, not judgement, ended that theory, and the timeline should keep it visible. With the platform cleared, the enquiry turned from infrastructure to the data the service consumed. Work then concentrated on the codes passed into each valuation run. Valuation status at the time of writing: Asset valuation completed. Three points about this sequence matter for the next responder. First, the ERP theory was eliminated by log evidence and not by assumption. That evidence is now part of the record and need not be gathered"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "For the cluster finance partner, the reason for the gap lies in cost recovery, not in demand. Demand matched plan, so any corrective action should focus on how work is delivered and priced. I ask the partner to review the cost lines behind the gross figure before the next forecast. Particular attention should go to work delivered below its cost recovery rate. If the rate stays at this level, the cluster will continue to absorb budget faster than it recovers it. A short written explanation from the cluster would help finance decide whether to revise the forecast. The favourable income result should not obscure the gross shortfall in the cluster's reporting."
+    }
+  ],
   "decision": {
     "promote": false,
     "improved": [
@@ -145,5 +154,6 @@
     "words_per_mb": 444.0,
     "dates_after_doc_date": 0.0,
     "cross_document_reuse": 0.0
-  }
+  },
+  "samples_method": "realism_pairs.samples(runs/loop/r015t/set/large), default threshold of 100 words. The first receipt passed runs/loop/r015t/set, which holds no files directly, so it returned no passages."
 }
