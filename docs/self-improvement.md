@@ -31,7 +31,8 @@ Each round has six steps:
    `policies/writer/round-<NNN>.md`, which is the champion policy with one rule changed.
 2. **Writing.** Four fresh writer subagents answer the WorldLoom narration requests. Each one sees
    only the text of the candidate policy. Two seeds are train (`2026` at 2 MB, `2027` at 5 MB). Two
-   seeds are holdout (`3101` at 2 MB, `3102` at 5 MB).
+   seeds are holdout, one at 2 MB and one at 5 MB. Section 7 names them. The proposer does not read
+   section 7.
 3. **Fact gate.** `bigloom narrate accept` runs the WorldLoom claim checks. A section with an
    unsupported claim, a typed digit, or an invented entity fails.
 4. **Build gate.** `bigloom qualify` builds the files and checks leakage, fact depth, and retrieval.
@@ -112,16 +113,18 @@ does not count in `commercial_per_k`. Only the two-word phrases count.
 The champion is `policies/writer/round-002.md`
 (`a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`).
 
-| Metric | Real | Round 0 train (template writer) | Round 1 train (first writer policy) | Champion train | Champion holdout |
-|---|---|---|---|---|---|
-| `wl_id_per_k` | 0.0 | 20.50 | 0.00 | 0.00 | 0.00 |
-| `commercial_per_k` | 0.0 | 20.44 | 7.55 | 2.26 | 6.30 |
-| `retail_per_k` | 0.78 | 1.40 | 0.21 | 0.21 | 0.23 |
-| `within_file_repeat` | 4.0% | 16.0% | 4.4% | 3.9% | 4.0% |
-| `top_opener_share` | 7.4% | 20.1% | 12.0% | 13.0% | 13.5% |
-| `unique_sentences` | 146.7 | 30.5 | 51.3 | 48.8 | 52.0 |
-| `cross_document_reuse` | 0.1% | 6.6% | 0.0% | 0.0% | 0.0% |
-| Words per MB | 4,032 | 443 | 440 | 435 | 390 |
+| Metric | Real | Round 0 train (template writer) | Round 1 train (first writer policy) | Champion train |
+|---|---|---|---|---|
+| `wl_id_per_k` | 0.0 | 20.50 | 0.00 | 0.00 |
+| `commercial_per_k` | 0.0 | 20.44 | 7.55 | 2.26 |
+| `retail_per_k` | 0.78 | 1.40 | 0.21 | 0.21 |
+| `within_file_repeat` | 4.0% | 16.0% | 4.4% | 3.9% |
+| `top_opener_share` | 7.4% | 20.1% | 12.0% | 13.0% |
+| `unique_sentences` | 146.7 | 30.5 | 51.3 | 48.8 |
+| `cross_document_reuse` | 0.1% | 6.6% | 0.0% | 0.0% |
+| Words per MB | 4,032 | 443 | 440 | 435 |
+
+The champion holdout values are in section 7, because the proposer reads sections 1 to 5.
 
 Most of the gain came before the loop started. The handshake writer and the appendix filter (Round 1)
 removed the ledger IDs and the reused template sentences. Round 2 then cut train `commercial_per_k`
@@ -181,6 +184,11 @@ receipt with passages from an earlier round, holdout numbers in a proposer messa
 told to copy earlier output. Each affected round ran again from scratch. The rules in section 1 now
 prevent these errors.
 
+**An empty field is a silent error.** The first Round 15 receipt had no sample passages. The sample
+extractor read `runs/loop/r015t/set`, but the files are in `set/large`. The extractor returned an
+empty list and no error. Commit `1ab566a` added the two passages. The receipt checklist in section 7
+now catches this error before a commit.
+
 ## 6. Next levers
 
 These changes alter the loop design. They need approval before they are made.
@@ -195,6 +203,91 @@ These changes alter the loop design. They need approval before they are made.
 5. **Round 15 result.** Round 15 raised train `unique_sentences` from 48.8 to 74.3 and gained `+4.119`
    on holdout. It was rejected because train `commercial_per_k` rose from 2.26 to 6.47. Shorter
    sentences again made writers name `gross profit` in more paragraphs.
+
+## 7. Loop v2: guidance for the next rounds
+
+This section was added by the loop monitor on 23 Oct 2026 10:45 SGT. It applies to every round that
+runs on loop v2 code.
+
+> [!IMPORTANT]
+> This section holds holdout seeds and holdout numbers. The proposer must not read it. The proposer
+> reads sections 1 to 5 only (`policies/PROPOSER.md`).
+
+### Holdout set (not for the proposer)
+
+The holdout seeds are `3101` (2 MB) and `3102` (5 MB). Loop v1 champion holdout (grader v1):
+`wl_id_per_k` 0.00, `commercial_per_k` 6.30, `retail_per_k` 0.23, `within_file_repeat` 4.0%,
+`top_opener_share` 13.5%, `unique_sentences` 52.0, `cross_document_reuse` 0.0%, words per MB 390.
+
+### What changed in loop v2
+
+| Item | Loop v1 | Loop v2 |
+|---|---|---|
+| Grader digest | `eeb607b3…` | `b1ff1f40…` (skips PPTX date, footer, and slide number text) |
+| Planted nouns in a public-sector pack | `gross profit`, `gross margin` | `gross surplus`, `surplus rate` |
+| Real reference | Mean of 11 real files | Median of 11 real files (`docs/realism/reference-v2.json`) |
+| `unique_sentences` in the promotion rule | Scored, band 5.0 | Not scored. Receipts report it only. User approved, 23 Oct 10:39 SGT. |
+
+A v1 receipt and a v2 receipt use different graders. Do not compare their numbers directly. To compare
+a v1 policy with a v2 policy, rebuild the v1 prose on v2 code and score it again. A rescore is not a
+new round. Label it as a rescore in the receipt.
+
+### The v2 vector has little room on train
+
+The v2 champion rescore (train, grader v2) shows how much each metric can still gain:
+
+| Metric | Real median | Champion train | Can it gain more than its band? |
+|---|---|---|---|
+| `commercial_per_k` | 0.0 | 0.17 | No. The gap (0.17) is less than the band (0.5). |
+| `retail_per_k` | 0.0 | 0.21 | No. The gap (0.21) is less than the band (0.3). |
+| `top_opener_share` | 7.1% | 6.3% | No. The gap (0.8 points) is less than the band (1 point). |
+| `within_file_repeat` | 0.0% | 3.9% | Yes. This is the only metric that can promote a candidate. |
+| `cross_document_reuse` | 0.1% | 0.0% | No. |
+
+Thus a v2 candidate can win on train only through `within_file_repeat`. The other metrics can only
+block a candidate. The proposer must know this. A rule that does not target repeated sentences cannot
+be promoted on train, even when the files read better.
+
+### Train and holdout do not agree
+
+On v2, champion train `commercial_per_k` is 0.17, but champion holdout is 4.31. The train seeds do
+not show the commercial phrase problem, so the proposer cannot see it. Round 15 under v2 shows the
+same gap: train 4.48, holdout 3.90. The writer, not the policy, causes most of this variance (section
+5).
+
+### Rules for every v2 round
+
+1. **Receipt checklist.** Before a commit, check each receipt for these items:
+   - `grader_sha256` is the v2 digest.
+   - `samples` holds exactly two passages, and each `file` is in this round's train set.
+   - `samples_method` names the folder that the extractor read.
+   - `candidate_policy_sha256` matches `sha256sum` of the policy file.
+   - `decision` is the output of `realism_loop.decide`, not a hand-written value.
+2. **Stop on an empty result.** A helper that returns an empty list or a zero count for a whole
+   set is an error. Examine the input path before you record the result.
+3. **Plateau rule.** After three rejected rounds with the same failure reason, do not propose a fourth
+   rule of the same kind. Ask the user for a loop design change from section 6 or this section.
+   Loop v1 ran 13 rejected rounds in a row, and most failed on the same trade-off.
+4. **Length guard.** Record the prose word count of each candidate against the champion. If a
+   candidate writes less than 80% of the champion prose, report it as a writer failure, not as a
+   policy result. Rounds 7 and 11 had this problem.
+5. **One code change at a time.** Commit a loop code change, with its test, before the next round
+   starts. Do not change code while writers or builds run.
+
+### Recommended order of the next design changes
+
+These changes need user approval before they are made.
+
+1. **Repeat runs first.** Run two writers on each seed, and score the mean. Without this step, the
+   noise between two writers (0 and 32 commercial phrases) is larger than every band.
+2. **More train seeds.** Add train seeds that are not `2026` or `2027` and not holdout seeds. The
+   current train pair hides the commercial phrase problem that holdout shows.
+3. **A new signal for distance from real.** The judges still tell real from synthetic every time,
+   but the v2 vector is near the real median on train. The vector no longer measures the main gap.
+   Two candidates: prose density (words per MB without padding), and the judge error rate as a
+   scored metric, not only a guard.
+4. **An archive of near misses.** Round 15 is the first entry. It raised distinct sentences by 52%
+   and failed on commercial phrases only.
 
 ## Appendix A. Rounds
 
