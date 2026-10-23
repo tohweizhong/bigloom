@@ -186,5 +186,44 @@
       },
       "train_mean_floor": 0.038
     }
-  }
+  },
+  "train_room_floor_adjusted": {
+    "wl_id_per_k": {
+      "distance": 0.0,
+      "floor": 0.0,
+      "band": 0.5,
+      "room": false
+    },
+    "commercial_per_k": {
+      "distance": 0.0,
+      "floor": 0.0,
+      "band": 0.5,
+      "room": false
+    },
+    "retail_per_k": {
+      "distance": 0.243,
+      "floor": 0.0,
+      "band": 0.3,
+      "room": false
+    },
+    "within_file_repeat": {
+      "distance": 0.038,
+      "floor": 0.038,
+      "band": 0.01,
+      "room": false
+    },
+    "top_opener_share": {
+      "distance": 0.009,
+      "floor": 0.0,
+      "band": 0.01,
+      "room": false
+    },
+    "cross_document_reuse": {
+      "distance": 0.001,
+      "floor": 0.0,
+      "band": 0.01,
+      "room": false
+    }
+  },
+  "train_room_note": "train_room is the raw distance check. train_room_floor_adjusted applies self-improvement.md section 5 step 1: room = distance minus known floor > band."
 }
