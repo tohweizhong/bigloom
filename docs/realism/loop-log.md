@@ -35,6 +35,23 @@ Update this section at the end of each round and after each loop change.
    summary deck (WorldLoom deck templates quote fact nouns and the incident review), not from
    writer prose.
 
+### Level 2 change (proposed): `reader_directed_per_k`, grader v3 (pattern recorded 23 Oct 20:52 SGT, before any real-file measure)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT, confirmed by the monitor at
+  20:52 SGT.
+- **Cause.** In the rs016 and rescore-v2-017 judge runs (train passages only), the judges named
+  prose that tells the reader or a named role what to conclude or do: "Readers deciding whether to
+  wait should...", "For engineers, the lesson is...", advice to "the cluster finance partner".
+- **Pattern (fixed now, not tuned after the measure).** A sentence counts when it names a reader or
+  a role and also gives a direction:
+  - Reader or role: `readers?`, `you`, `engineers`, `management`, `leadership`, `service owners?`,
+    or `the` + one of `committee`, `board`, `cluster head`, `cluster finance partner`,
+    `finance lead`, `finance partner`, `controller`, `reader`, `executive committee`.
+  - Direction: `should`, `must`, `needs? to`, `(is|are) asked to`, `will want to`, `ought to`,
+    `the lesson`, `what this means`, `the point (for|is)`.
+  - The rate is counted sentences per 1000 words, like the other `_per_k` metrics.
+- **Stop rule.** If the real median is not clearly below the champion train value, stop and report.
+
 ### rescore-v2-017: champion on the target family rule (23 Oct 20:50 SGT)
 
 Receipt: `docs/realism/receipts/rescore-v2-017.json`. Fresh writers on `round-002.md`. All four seeds
