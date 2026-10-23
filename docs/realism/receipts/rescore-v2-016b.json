@@ -1,0 +1,35 @@
+{
+  "kind": "rescore",
+  "name": "rs016b: rs016 prose on the related-table fix",
+  "date_sgt": "2026-10-23 20:19",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop ec00450",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No new writer runs. Same accepted prose as rescore-v2-016.json. The Related documents table now shows a readable reference and the title, with no copied column.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.243,
+    "within_file_repeat": 0.038,
+    "top_opener_share": 0.062,
+    "unique_sentences": 43.833,
+    "words_per_mb": 361.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.203,
+    "within_file_repeat": 0.027,
+    "top_opener_share": 0.057,
+    "unique_sentences": 56.833,
+    "words_per_mb": 423.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "related_table_check": "bl-002-pdf-2mb_final.pdf Table A.1 columns: Reference (GTA/FIN/2026/019 ...) and Title"
+}

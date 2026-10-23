@@ -26,12 +26,28 @@ Update this section at the end of each round and after each loop change.
 
 1. Level 2 is open again: no metric has room on train (rs016 below). The masked judge measure is
    done (23 Oct 20:06 SGT): 20, 20, and 20 of 20 correct on the rs016 train set. The judges tell
-   real from synthetic by document family, not by commercial words. Ask the user for the next
-   Level 2 change.
+   real from synthetic by document family, not by commercial words. The repeated table cell is
+   fixed (`ec00450`). Next: propose the next Level 2 change with its quota cost.
 2. Done 23 Oct 20:05 SGT: only `policies/writer/round-002.md` had CRLF line ends (two lines). It
    now uses LF. Old sha256 `a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`, new
    sha256 `24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69`. The text did not
    change. Receipts before this commit name the old digest.
+
+### Level 2 change: related documents table (23 Oct 20:19 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT ("keep going. dont stop. I will
+  go with your recommendations."), confirmed by the monitor at 20:10 SGT.
+- **Cause.** The rs016 judges reported one table cell repeated across four columns. It was the
+  "Related documents" appendix: WorldLoom gives type and role the same words, and BigLoom replaced
+  the ID label with the title, so a row read "Board Paper | Board Paper | Board paper | Board paper".
+- **Change (`ec00450`).** The label is a readable reference (`GTA/FIN/2026/019`). Only the related
+  documents table drops a column that copies an earlier one. Figure tables keep every column.
+- **Tests.** The related table test fails on the old code with
+  `assert ['title', 'type', 'role'] == ['title', 'type']`. A guard test keeps a budget and an actual
+  column with the same value. Full suite passed.
+- **Rescore (`docs/realism/receipts/rescore-v2-016b.json`).** No writer runs. Both gates pass. The
+  vector does not change (table rows hold no sentence of six words or more). The table now reads
+  "Reference | Title".
 
 ### rs016 champion baseline on the new requests (23 Oct 20:05 SGT)
 
