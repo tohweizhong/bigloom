@@ -5,9 +5,9 @@ explains the loop that improves the prose in those files. It also states what th
 what it learned. The design follows WorldLoom `evalrun improve`: change one policy, measure it on a
 train set and on an unseen holdout set, and keep the change only when it wins on both.
 
-Status, 23 Oct 2026 10:20 SGT: 15 rounds have run (Round 0 to Round 14). One change was promoted
-(Round 2). Round 15 stopped before it had a result, because the writer subagents reached their model
-quota. Each round has a receipt in `docs/realism/receipts/`.
+Status, 23 Oct 2026 10:40 SGT: 16 rounds have run (Round 0 to Round 15) under loop v1. One change was
+promoted (Round 2). Loop v2 (grader v2, public-sector planted nouns, median real reference) is built
+on branch `realism-v2`. Each round has a receipt in `docs/realism/receipts/`.
 
 ## 1. The loop
 
@@ -192,8 +192,9 @@ These changes alter the loop design. They need approval before they are made.
    phrases from the planted content.
 4. **Fixes in the corpus.** Write the PPTX date footer so that it is not read as a sentence, and keep
    the word `margin` in the PDF so that the BM25 weight does not change.
-5. **Round 15.** Run `policies/writer/round-015.md` again after the quota resets. It adds sentence
-   length and three-paragraph rules to `QUALITY`. The three paragraphs keep the PPTX bullet count.
+5. **Round 15 result.** Round 15 raised train `unique_sentences` from 48.8 to 74.3 and gained `+4.119`
+   on holdout. It was rejected because train `commercial_per_k` rose from 2.26 to 6.47. Shorter
+   sentences again made writers name `gross profit` in more paragraphs.
 
 ## Appendix A. Rounds
 
@@ -217,7 +218,7 @@ samples, and the policy digest.
 | 12 | Sentences of 12 to 16 words (`8e383634…`) | Rejected | Retrieval gate failed on one seed |
 | 13 | `gross margin` in four named sections (`1bb77be6…`) | Rejected | `unique_sentences` 48.8 to 38.5 |
 | 14 | Two paragraphs of short sentences in each section (`89a09a12…`) | Rejected | `commercial_per_k` 3.48, PPTX footers raised `top_opener_share` to 16.6% |
-| 15 | Short sentences in three paragraphs | Not run | Writer quota reached |
+| 15 | Short sentences of 13 to 17 words in three paragraphs (`57dae3c7…`) | Rejected | `unique_sentences` 48.8 to 74.3, but `commercial_per_k` 2.26 to 6.47 |
 
 ## Appendix B. Files
 
@@ -229,6 +230,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-014.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round14.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-014.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-015.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round15.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-015.json` | Train-only receipts that the proposer reads |
