@@ -215,6 +215,15 @@ Start Level 2 when one of these conditions is true:
    digest in "Current state". Add the lesson to `lessons.md` with train numbers only. Update
    `policies/PROPOSER.md` if the proposer needs to know the change.
 
+### Before you add a new metric
+
+1. Define the pattern from train passages or judge clues. Commit the pattern and its reason before
+   you measure the real files. Do not change the pattern after the measure.
+2. Measure the real median on the real files.
+3. Estimate the band from the effect of one sentence on the champion train mean.
+4. Add the metric only when the gap between the champion and the real median, less any floor, is
+   larger than that band. If it is not, record the result and stop. Do not change the grader.
+
 ### Order of the design changes
 
 Propose these changes in this order, unless the evidence shows a better order:
