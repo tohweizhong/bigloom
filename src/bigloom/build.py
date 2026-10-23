@@ -63,6 +63,8 @@ def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
 #: finance documents and one incident review. `knowledge_article` is left out: its brief is about
 #: 380 words in 2 sections, which is thin for a 2 MB or 5 MB file.
 PREFERRED_TYPES: tuple[str, ...] = ("service_impact_assessment",)
+#: Types that are never a target (see `PREFERRED_TYPES` for the reason).
+EXCLUDED_TYPES: tuple[str, ...] = ("knowledge_article",)
 
 
 def family_rank(domain: str, artifact_type: str, used_domains: set[str]) -> tuple[int, int]:
@@ -90,7 +92,7 @@ def _choose(
         intent = intents.get(ir.intent_id)
         if intent is None or fmt not in formats_of.get(ir.id, ()) or ir.id in used_ids:
             continue
-        if intent.artifact_type in used_types:
+        if intent.artifact_type in used_types or intent.artifact_type in EXCLUDED_TYPES:
             continue
         visible = [s for s in ir.sections if not s.hidden]
         words = sum(len((s.body or "").split()) for s in visible)

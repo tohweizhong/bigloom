@@ -119,4 +119,38 @@ def test_build_targets_come_from_three_document_families(govtech_world: World) -
     picked = [_choose(govtech_world, fmt, formats_of, used_ids, used_types)[1] for fmt in fmts]
     domain = {i.artifact_type: str(i.domain) for i in govtech_world.artifact_intents}
     assert len({domain[t] for t in picked}) == 3, picked
-    assert "service_impact_assessment" in picked, picked
+    assert picked[0] == "service_impact_assessment", picked  # the DOCX target, the first format
+    assert "knowledge_article" not in picked, picked
+
+
+def test_knowledge_article_is_never_a_target_or_a_candidate(govtech_world: World) -> None:
+    """Loop v2: an excluded type is never chosen, even when every other type is used."""
+    from bigloom.build import CorpusError, _choose, _renderable
+
+    formats_of = _renderable(govtech_world, ["docx"])
+    used_ids: set[str] = set()
+    used_types: set[str] = set()
+    seen = []
+    while True:
+        try:
+            seen.append(_choose(govtech_world, "docx", formats_of, used_ids, used_types)[1])
+        except CorpusError:
+            break
+    assert seen and "knowledge_article" not in seen, seen
+
+
+def test_knowledge_article_is_never_a_candidate(tmp_path: Path) -> None:
+    """Loop v2: prepare never gives agent prose to an excluded type, even with many spares."""
+    import json as _json
+
+    from worldloom.world import World as _World
+
+    from bigloom.narration import prepare
+
+    p = prepare(tmp_path / "seed-2026", seed=2026, formats=("docx", "pdf", "pptx"), world_pack=str(PACK), spares=12)
+    world = _World.load(p.corpus_dir)
+    types = {i.id: i.artifact_type for i in world.artifact_intents}
+    intent_of = {ir.id: ir.intent_id for ir in world.artifact_irs}
+    chosen = _json.loads((p.requests_path.parent / "plan.json").read_text(encoding="utf-8"))["artifact_ids"]
+    kinds = [types[intent_of[a]] for a in chosen]
+    assert len(kinds) > 5 and "knowledge_article" not in kinds, kinds

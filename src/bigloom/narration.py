@@ -73,11 +73,11 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
     """Return the artifact ids that get agent prose.
 
     A candidate must render in one of `formats`. No two candidates share a document type,
-    because a test set uses each type once. Loop v2: a candidate from a family that no earlier
-    candidate uses comes first, then a preferred type (`build.family_rank`), then the largest
-    word brief.
+    because a test set uses each type once. Loop v2: one candidate for each format, in the build
+    order, with the build's ranking (`build.family_rank`: a new family first, then a preferred
+    type, then the largest word brief), then the spares. `build.EXCLUDED_TYPES` are never chosen.
     """
-    from .build import _renderable, family_rank
+    from .build import EXCLUDED_TYPES, _renderable, family_rank
 
     formats_of = _renderable(_composed(world), list(formats))  # type: ignore[arg-type]
     types = {i.id: i.artifact_type for i in world.artifact_intents}
@@ -89,20 +89,36 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
     chosen: list[str] = []
     used_types: set[str] = set()
     used_domains: set[str] = set()
-    pool = [a for a in words if set(formats) & formats_of.get(a, set())]
-    while pool and len(chosen) < len(formats) + spares:
-        # The same rule as `build._choose`: a new family first, then a preferred type, then the
-        # largest word brief. So the documents with agent prose are the ones the build will choose.
-        pool = [a for a in pool if types.get(intent_of.get(a, ""), "") not in used_types]
+
+    def kind(a: str) -> str:
+        return types.get(intent_of.get(a, ""), "")
+
+    def best(fmt: str | None) -> str | None:
+        # The same ranking as `build._choose`: a new family first, then a preferred type, then
+        # the largest word brief. An excluded type is never a candidate.
+        pool = [a for a in words
+                if kind(a) not in used_types and kind(a) not in EXCLUDED_TYPES
+                and ((fmt in formats_of.get(a, set())) if fmt else bool(set(formats) & formats_of.get(a, set())))]
         if not pool:
+            return None
+        return min(pool, key=lambda a: (*family_rank(domain_of.get(intent_of.get(a, ""), ""), kind(a), used_domains),
+                                        -words[a], a))
+
+    def take(a: str) -> None:
+        chosen.append(a)
+        used_types.add(kind(a))
+        used_domains.add(domain_of.get(intent_of.get(a, ""), ""))
+
+    # One candidate for each format, in the order the build chooses targets, then the spares.
+    for fmt in formats:
+        pick = best(fmt)
+        if pick is not None:
+            take(pick)
+    while len(chosen) < len(formats) + spares:
+        pick = best(None)
+        if pick is None:
             break
-        def key(a: str) -> tuple[int, int, int, str]:
-            intent = intent_of.get(a, "")
-            return (*family_rank(domain_of.get(intent, ""), types.get(intent, ""), used_domains), -words[a], a)
-        best = min(pool, key=key)
-        chosen.append(best)
-        used_types.add(types.get(intent_of.get(best, ""), ""))
-        used_domains.add(domain_of.get(intent_of.get(best, ""), ""))
+        take(pick)
     if not chosen:
         raise CorpusError(f"No WorldLoom document in this corpus renders as {', '.join(formats)}.")
     return chosen
