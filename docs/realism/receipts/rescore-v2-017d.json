@@ -1,0 +1,55 @@
+{
+  "kind": "rescore",
+  "name": "rs017d: rs017 prose on the deck terminology fix",
+  "date_sgt": "2026-10-23 21:15",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop dccb948",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No writer runs. Same accepted prose as rescore-v2-017. The render pass gives WorldLoom templates the public-sector measure words and renames them in template prose, headings, titles, and chart titles. Agent prose is unchanged.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.051,
+    "unique_sentences": 45.833,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "remaining_commercial_phrases_in_decks": {
+    "rs017dt/bl-003-pptx-2mb_final.pptx": {
+      "commercial": [],
+      "retail": []
+    },
+    "rs017dt/bl-003-pptx-5mb_final.pptx": {
+      "commercial": [],
+      "retail": []
+    },
+    "rs017dh/bl-003-pptx-2mb_final.pptx": {
+      "commercial": [],
+      "retail": [
+        "thousands) Category P&L (SGD thousands) Store Performance (SGD th"
+      ]
+    },
+    "rs017dh/bl-003-pptx-5mb_final.pptx": {
+      "commercial": [],
+      "retail": []
+    }
+  },
+  "remaining_commercial_note": "No commercial phrase remains in any deck or other file, train or holdout. So no agent body holds one either."
+}

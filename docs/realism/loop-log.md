@@ -14,7 +14,7 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 23 Oct 2026 20:50 SGT (rescore-v2-017 recorded) |
+| Updated | 23 Oct 2026 21:15 SGT (rs017d recorded) |
 | Loop version | v2 (merged into `realism-loop` at `65955eb`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Last round | Round 15, rejected |
@@ -34,6 +34,24 @@ Update this section at the end of each round and after each loop change.
    the receipt: all holdout commercial matches and the holdout reuse come from the 3101 executive
    summary deck (WorldLoom deck templates quote fact nouns and the incident review), not from
    writer prose.
+
+### Level 2 change: public-sector measure words in WorldLoom template text (23 Oct 21:15 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT, confirmed by the monitor at
+  20:54 SGT.
+- **Cause.** The 3101 executive summary deck held all holdout commercial phrases. The deck renderer
+  titles slides from `composer.measure_noun` ("gross profit") and quotes the template prose of
+  other pack documents ("Gross profit landed at SGD 5.1m").
+- **Change (`dccb948`).** For a public-sector pack, the render pass wraps `measure_noun` and renames
+  "gross profit" and "gross margin" in template prose, headings, titles, and chart titles. Agent
+  prose (documents in the narration plan) stays as written, so `commercial_per_k` still sees the
+  writer's words. The monitor asked for this limit.
+- **Tests.** `test_rendered_decks_use_public_sector_measure_words` fails on the old code and passes
+  on the new code. `test_agent_prose_keeps_its_commercial_words` shows that a writer section keeps
+  "gross profit". Full suite passed.
+- **Rescore (`docs/realism/receipts/rescore-v2-017d.json`).** No writer runs. Both gates pass.
+  Holdout `commercial_per_k` 2.08 to 0.00. No commercial phrase remains in any file, so no agent body
+  holds one.
 
 ### Level 2 change: records, not SKUs (23 Oct 21:04 SGT)
 
