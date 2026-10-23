@@ -75,6 +75,11 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    known floor for that metric in the newest rescore receipt, is larger than its band. A floor is a
    part of the value that the writer policy cannot change. If no metric has room, do not start a
    round. Go to Level 2 (section 7).
+
+   Two limits apply to the room check. First, record the evidence for each floor, file by file. A
+   floor without evidence is zero. Second, when the champion is on the clean side of the real
+   value (for example fewer repeated openers than real), the gap is not room. A rule that makes the
+   text worse to match a median is gaming the metric.
 2. **Propose.** Start a fresh proposer subagent. Give it `policies/PROPOSER.md`, the champion path,
    the output path `policies/writer/round-<NNN>.md`, and the list of metrics with room. Give it no
    number that you did not take from a train receipt. Check its output:
