@@ -57,7 +57,7 @@ Stop and correct the work at once if you break one of these rules.
 | Role | May read | Must never read |
 |---|---|---|
 | Proposer subagent | Champion policy, `docs/realism/loop/train-*.json`, `docs/realism/lessons.md`, `policies/PROPOSER.md` | Anything under `runs/`, `docs/realism/receipts/`, `docs/realism/loop-log.md`, this file |
-| Writer subagent | The candidate policy text, its own `requests.json` | Any other file under `runs/`, `policies/`, or `docs/` |
+| Writer subagent | The candidate policy text, its own `requests.json`, the WorldLoom file that the policy names. It may run the accept command that the policy names. | Any other file under `runs/`, `policies/`, or `docs/` |
 | Judge subagent | One `pairs.md` file | Receipts, policies, the answer key, file names |
 | Orchestrator (you) | Everything | Nothing is forbidden, but never copy holdout data into a proposer input |
 
@@ -86,9 +86,13 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
 4. **Write.** Start one fresh writer subagent for each seed. Use this prompt and nothing more:
 
    > You write prose for synthetic documents. Follow this policy exactly: `<full policy text>`.
-   > Read the requests in `<root>/seed-<n>/narration/requests.json`. Write one response for each
-   > request to `<root>/seed-<n>/narration/responses.json`, in the format that the requests file
-   > states. Do not read any other file.
+   > `{OUT}` in the policy is `<root>/seed-<n>`. Read only the policy, your `requests.json`, and the
+   > WorldLoom file that the policy names. You may run the accept command that the policy names.
+   > Do not read any other file.
+
+   Replace `{OUT}` in your head, not in the policy file. The policy text must stay byte-identical to
+   the file that `candidate_policy_sha256` covers. The writer's own accept runs do not count in
+   `writer_accept_rounds`. That field counts only the orchestrator runs in step 5.
 
 5. **Fact gate.** For each seed, run
    `bigloom narrate accept --out-dir <root>/seed-<n> --from <root>/seed-<n>/narration/responses.json`.
