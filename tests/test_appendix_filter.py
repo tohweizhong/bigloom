@@ -196,3 +196,37 @@ def test_review_record_keeps_one_row_for_each_comment_text(long_doc) -> None:  #
     out = filter_document(doc)
     assert len(out.comments) == 1
     assert out.comments[0].part == "1"
+
+
+def test_related_documents_table_has_no_copied_column_or_title_as_reference() -> None:
+    """Loop v2: the register shows a reference, and type and role are not the same column twice."""
+    from worldloom.models import Cell, Column, Row, Table
+
+    from bigloom.formats import longform_filter as lf
+
+    table = Table(key="related", title="Reference", columns=[
+        Column(key="title", label="Title"), Column(key="type", label="Type"), Column(key="role", label="Role in pack")],
+        rows=[Row(key=f"ART-00{n}", label=f"ART-00{n}", cells={
+            "title": Cell(value=f"March {t}"), "type": Cell(value=t.capitalize()), "role": Cell(value=t.capitalize())})
+            for n, t in ((19, "Board Paper"), (24, "Exco Update"))])
+    refs = getattr(lf, "_REFS", {})  # the old code has no map, so its failure shows the behaviour
+    refs.update({"ART-0019": "GTA/FIN/2026/019", "ART-0024": "GTA/FIN/2026/024"})
+    try:
+        out = lf._table(table)
+    finally:
+        refs.clear()
+    assert [c.key for c in out.columns] == ["title", "type"]
+    assert [r.label for r in out.rows] == ["GTA/FIN/2026/019", "GTA/FIN/2026/024"]
+
+
+def test_a_figure_table_with_two_equal_columns_keeps_both() -> None:
+    """Only the related documents table drops copied columns. A planted figure must stay."""
+    from worldloom.models import Cell, Column, Row, Table
+
+    from bigloom.formats import longform_filter as lf
+
+    table = Table(key="variance", title="Budget against actual", columns=[
+        Column(key="budget", label="Budget"), Column(key="actual", label="Actual")],
+        rows=[Row(key="r1", label="Services", cells={"budget": Cell(value=48.1), "actual": Cell(value=48.1)})])
+    out = lf._table(table)
+    assert [c.key for c in out.columns] == ["budget", "actual"]

@@ -30,6 +30,9 @@ if TYPE_CHECKING:  # pragma: no cover
 REMOVED_APPENDICES: tuple[str, ...] = ("Sources of figures", "Data lineage", "Measures and sources", "Chronology of events")
 #: Hidden IR sections that list ledger records. WorldLoom renders them as hidden workbook sheets.
 REMOVED_IR_SECTIONS: tuple[str, ...] = ("Lineage",)
+#: The key of WorldLoom's "Related documents" appendix table. Only this table drops copied columns,
+#: so a figure table with two equal columns (budget and actual) keeps both.
+RELATED_TABLE = "related"
 #: Table columns that hold only ledger IDs.
 ID_COLUMNS: tuple[str, ...] = ("reference",)
 _LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -93,6 +96,21 @@ def readable_reference(reference: str, company: str, period: str, artifact_id: s
 
 _NAMES: dict[str, str] = {}
 """ID to plain words, for the render pass in progress. `filtered_longform` fills it."""
+_REFS: dict[str, str] = {}
+"""Document ID to a readable reference ("GTA/FIN/2026/019"), for the render pass in progress."""
+
+
+def document_refs(world: World) -> dict[str, str]:
+    """Return a readable reference for each WorldLoom document, in the form of the document's own."""
+    out: dict[str, str] = {}
+    for ir in world.artifact_irs:
+        try:
+            domain = str(world.artifact_intents.by_id(ir.intent_id).domain)
+        except Exception:  # an IR with no intent keeps the generic domain
+            domain = "general"
+        raw = f"{world.company.id}-{domain.upper()}-{ir.id}"
+        out[ir.id] = readable_reference(raw, world.company.name, world.period or "", ir.id)
+    return out
 
 
 def _clean(text: str) -> str:
@@ -149,9 +167,34 @@ def _table(table: Any) -> Any:
         label = row.label
         if _is_id(label):
             title = cells.get("title")
-            label = str(title.value) if title is not None and title.value is not None else ""
+            ref = _REFS.get(label.strip())
+            label = ref or (str(title.value) if title is not None and title.value is not None else "")
         rows.append(row.model_copy(update={"cells": cells, "label": _clean(label)}))
+    if table.key == RELATED_TABLE:
+        columns, rows = _drop_copied_columns(columns, rows)
     return table.model_copy(update={"columns": columns, "rows": rows, "title": _clean(table.title)})
+
+
+def _drop_copied_columns(columns: list[Any], rows: list[Any]) -> tuple[list[Any], list[Any]]:
+    """Drop a column whose value equals an earlier column's value in every row (case is ignored).
+
+    WorldLoom's "Related documents" table gives each document the same words for its type and for
+    its role in the pack, so one column repeats the other. A real register does not.
+    """
+    def norm(row: Any, key: str) -> str:
+        cell = row.cells.get(key)
+        return " ".join(str(cell.value if cell is not None and cell.value is not None else "").split()).lower()
+
+    kept: list[Any] = []
+    for column in columns:
+        copied = rows and any(
+            all(norm(r, column.key) == norm(r, k.key) and norm(r, column.key) for r in rows) for k in kept
+        )
+        if not copied:
+            kept.append(column)
+    keys = {c.key for c in kept}
+    rows = [r.model_copy(update={"cells": {k: v for k, v in r.cells.items() if k in keys}}) for r in rows]
+    return kept, rows
 
 
 def _block(block: Block, old: str, new: str) -> Block:
@@ -249,6 +292,7 @@ def filtered_longform() -> Iterator[None]:
     def document(world: Any, *args: Any, **kwargs: Any) -> LongDocument:
         if not _NAMES:
             _NAMES.update(id_names(world))
+            _REFS.update(document_refs(world))
         return filter_document(original(world, *args, **kwargs))
 
     longform.document = document  # type: ignore[assignment]
@@ -257,3 +301,4 @@ def filtered_longform() -> Iterator[None]:
     finally:
         longform.document = original  # type: ignore[assignment]
         _NAMES.clear()
+        _REFS.clear()
