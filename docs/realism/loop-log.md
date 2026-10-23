@@ -35,6 +35,21 @@ Update this section at the end of each round and after each loop change.
    summary deck (WorldLoom deck templates quote fact nouns and the incident review), not from
    writer prose.
 
+### Level 2 change: records, not SKUs (23 Oct 21:04 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT, confirmed by the monitor at
+  20:54 SGT.
+- **Cause.** The govtech pack runs on the WorldLoom retail engine. The fact `ops.affected_records`
+  has the unit `SKUs`, so every incident document said "22,859 SKUs". It made the whole train
+  `retail_per_k` floor (0.60).
+- **Change (`ea3f1da`).** `build.public_units` spells the unit as "records" in the render pass of a
+  public-sector pack. Amounts, ids, the corpus on disk, and the writer requests do not change.
+- **Tests.** `test_rendered_documents_hold_no_skus` fails on the old code ("'SKU' is contained
+  here") and passes on the new code. Full suite passed.
+- **Rescore (`docs/realism/receipts/rescore-v2-017c.json`).** No writer runs. Both gates pass. Train
+  `retail_per_k` 0.60 to 0.00. Holdout `retail_per_k` 0.77 to 0.35. The rest is one appendix title
+  "Store Performance (SGD thousands)" in the 3101 executive summary deck (a WorldLoom workbook sheet).
+
 ### Level 2 change (proposed): `reader_directed_per_k`, grader v3 (pattern recorded 23 Oct 20:52 SGT, before any real-file measure)
 
 - **Approval.** The user's standing instruction at 23 Oct 10:39 SGT, confirmed by the monitor at

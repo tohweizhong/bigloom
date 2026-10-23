@@ -1,0 +1,55 @@
+{
+  "kind": "rescore",
+  "name": "rs017c: rs017 prose on the records unit fix",
+  "date_sgt": "2026-10-23 21:04",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop ea3f1da",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No writer runs. Same accepted prose as rescore-v2-017. The render pass spells the SKUs unit as records for a public-sector pack.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 2.083,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.051,
+    "unique_sentences": 45.833,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "holdout_remaining": {
+    "bl-003-pptx-2mb_final.pptx": {
+      "retail": [
+        " P&L (SGD thousands) Category P&L (SGD thousands) Store Performance (SGD th"
+      ],
+      "commercial": [
+        "8m budgeted. Services, Governance & Cybersecurity gross profit finished SGD 802k a",
+        "02k adverse against budget. Product & Engineering gross profit was SGD 1.8m agains",
+        "m. Government Digital Transformation is lowest on gross margin at 3.11% Gross prof",
+        "Transformation is lowest on gross margin at 3.11% Gross profit came in at SGD 4.3m",
+        "get, so the period does not meet plan. The gap on gross margin for the group is 17",
+        " on gross margin for the group is 176 bps adverse Gross margin finished the period"
+      ]
+    }
+  },
+  "known_floors": {
+    "retail_per_k": {
+      "train_mean_floor": 0.0,
+      "evidence": "No retail word in any train file after the fix."
+    }
+  }
+}
