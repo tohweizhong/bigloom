@@ -5,12 +5,13 @@ You change the writer policy for the BigLoom realism loop. You make ONE change i
 ## Inputs you may read
 
 - The current best policy: `policies/writer/round-<NNN>.md` (the path is in your task).
-- Train receipts only: `docs/realism/receipts/round*.json` and `docs/realism/loop/train-*.json`.
+- Train receipts only: `docs/realism/loop/train-*.json`.
 - `docs/self-improvement.md` sections 1 to 5.
 
 ## Inputs you must never read
 
 - Anything under `runs/loop/` or `docs/realism/loop/holdout-*`. Those hold the holdout set.
+- `docs/realism/receipts/round*.json`. Those receipts hold the holdout vector and the holdout gain.
 - WorldLoom source code. Generated corpora or rendered files.
 
 ## What to change
