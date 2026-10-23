@@ -241,12 +241,20 @@ The v2 champion rescore (train, grader v2) shows how much each metric can still 
 | `commercial_per_k` | 0.0 | 0.17 | No. The gap (0.17) is less than the band (0.5). |
 | `retail_per_k` | 0.0 | 0.21 | No. The gap (0.21) is less than the band (0.3). |
 | `top_opener_share` | 7.1% | 6.3% | No. The gap (0.8 points) is less than the band (1 point). |
-| `within_file_repeat` | 0.0% | 3.9% | Yes. This is the only metric that can promote a candidate. |
+| `within_file_repeat` | 0.0% | 3.9% | Not through the writer. See the next paragraph. |
 | `cross_document_reuse` | 0.1% | 0.0% | No. |
 
-Thus a v2 candidate can win on train only through `within_file_repeat`. The other metrics can only
-block a candidate. The proposer must know this. A rule that does not target repeated sentences cannot
-be promoted on train, even when the files read better.
+The champion repeats come from the PDF only. The DOCX and PPTX files have no repeated sentence. The
+PDF repeats have two sources, and neither source is the writer policy:
+
+- The review record table. WorldLoom gives one reviewer comment to several sections, so the same
+  comment occurs three times in each PDF.
+- The cover abstract. It copies sentences from the first executive summary paragraph.
+
+Thus no metric in the v2 vector can promote a writer policy on train at the moment. The other
+metrics can only block a candidate. Do not tell the proposer to target repeated sentences. First fix
+the two sources in BigLoom, rebuild the champion, and measure it again. If the vector still has no
+room after that, the loop needs a new signal (see the recommended order below).
 
 ### Train and holdout do not agree
 
