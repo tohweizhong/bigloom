@@ -24,7 +24,11 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Run the masked judges on the rescore-v2-017 train set (3 judge runs), with the same 11 real files.
+1. Done 23 Oct 20:50 SGT: the masked judges on the rescore-v2-017 train set scored 20, 20, and 20 of
+   20 (seed 17017, key rebuilt in memory after all three replied). 15 of 20 synthetic passages came
+   from the PDF incident review. The family rule did not change the judge result. The promotion
+   rule cannot reward a judge gain, because the judges only guard. Ask the user for the next Level 2
+   change.
 2. The room check shows room only on `top_opener_share` (5.9% against a real median of 7.1%). That
    would ask the writer for more repeated openers, which is not a realism gain. Discuss with the
    user before a proposer targets it.

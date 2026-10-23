@@ -52,6 +52,16 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
   - The real side is varied operational text: design-standard controls, step guides, a security
     profile, threat tables, and product pages, with PDF extraction noise.
 
+- **rescore-v2-017 (23 Oct 20:50 SGT, train passages, 3 fresh judges): 20, 20, and 20 of 20
+  correct.** 15 of the 20 synthetic passages came from the PDF incident review, because the longest
+  document gives the most passages. Only 3 came from the service impact assessment. The judges named:
+  - One invented incident review (stale code mapping, SKU counts, manual override) and one finance
+    Exco narrative, which repeat the same facts.
+  - Reader-directed lines that tell the reader what to conclude ("Six months from now...",
+    "Readers deciding whether to wait should...").
+  - The real side: control tables with parameters, step guides, product pages, a security profile,
+    and threat tables, with extraction noise.
+
 ## Writer behaviour
 
 - One writer run for each seed is noisy. Under the same policy, two writers wrote 0 and 32 commercial
