@@ -30,7 +30,7 @@ The loop has two levels:
 | Run rounds from | The `realism-loop` checkout, `/usr/local/google/home/weizhongt/coding/bigloom` |
 | Make Level 2 code changes on | `realism-v2`, worktree `/usr/local/google/home/weizhongt/coding/bigloom-v2` |
 | Raw corpus cache | `runs/loop/cache` (one `seed-<n>` folder for each seed) |
-| Real files for the judges | The path in "Current state" of `loop-log.md`. If it is missing, ask the user. |
+| Real files for the judges | `runs/realism/real/` (11 files, ignored by git). Their counts must match `docs/realism/reference-v2.json`. If the folder is missing, ask the user. |
 | Champion vectors | The newest receipt for the champion under the current grader: a promotion receipt or a `rescore-*.json` receipt |
 
 ## 3. Hard rules
