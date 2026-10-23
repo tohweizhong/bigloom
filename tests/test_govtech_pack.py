@@ -154,3 +154,35 @@ def test_knowledge_article_is_never_a_candidate(tmp_path: Path) -> None:
     chosen = _json.loads((p.requests_path.parent / "plan.json").read_text(encoding="utf-8"))["artifact_ids"]
     kinds = [types[intent_of[a]] for a in chosen]
     assert len(kinds) > 5 and "knowledge_article" not in kinds, kinds
+
+
+def test_public_sector_render_pass_counts_records_not_skus(govtech_world: World) -> None:
+    """Loop v2: a government document does not count records in SKUs. Amounts stay the same."""
+    from worldloom.narrative import references
+
+    from bigloom.build import public_units
+
+    skus = [f for f in govtech_world.facts if f.value is not None and f.value.unit == "SKUs"]
+    assert skus, "the govtech world has a fact in SKUs"
+    staged = public_units(govtech_world)
+    after = {f.id: f for f in staged.facts}
+    for fact in skus:
+        spelled = references.render_value(after[fact.id])
+        assert "SKU" not in spelled and spelled.endswith("records"), spelled
+        assert after[fact.id].value.amount == fact.value.amount
+
+
+def test_rendered_documents_hold_no_skus(govtech_world: World) -> None:
+    """Loop v2: the render pass of a public-sector pack writes no SKU count into any DOCX."""
+    import io
+
+    import docx as _docx
+
+    from bigloom.build import _render_pass
+
+    rendered = _render_pass(govtech_world, {ir.id: ir for ir in govtech_world.artifact_irs}, ["docx"])
+    texts = ["\n".join(p.text for p in _docx.Document(io.BytesIO(payload)).paragraphs)
+             for (_aid, kind), payload in rendered.items() if kind == "docx"]
+    assert texts
+    joined = "\n".join(texts)
+    assert "SKU" not in joined

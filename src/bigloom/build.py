@@ -150,12 +150,39 @@ def _unique_pct(rng: random.Random, used: set[str]) -> str:
             return value
 
 
+#: Retail units that a public-sector document does not use, and the word it uses instead. The
+#: govtech pack runs on the WorldLoom retail engine, so one fact counts "affected records" in SKUs.
+PUBLIC_SECTOR_UNITS: dict[str, str] = {"SKUs": "records"}
+
+
+def public_units(world: World) -> World:
+    """Return the world for rendering, with public-sector unit words for a public-sector pack.
+
+    Only the unit word changes, and only for this render pass. The fact ids, amounts, and the
+    corpus on disk do not change, so the writer requests and the fact checks stay the same.
+    """
+    from .questions import _public_sector
+
+    if not _public_sector(world):
+        return world
+    facts = []
+    changed = False
+    for fact in world.facts:
+        value = getattr(fact, "value", None)
+        unit = getattr(value, "unit", None) if value is not None else None
+        if unit in PUBLIC_SECTOR_UNITS:
+            fact = fact.model_copy(update={"value": value.model_copy(update={"unit": PUBLIC_SECTOR_UNITS[unit]})})
+            changed = True
+        facts.append(fact)
+    return replace(world, _facts=tuple(facts)) if changed else world
+
+
 def _render_pass(world: World, irs: Mapping[str, ArtifactIR], formats: Sequence[Format]) -> dict[tuple[str, str], bytes]:
     """Render the world with replaced IRs. Return payloads keyed by (artifact id, file kind).
 
     The file kind is the extension for a main file, or "v0.1.docx" for the first Word revision.
     """
-    staged = replace(world, _artifact_irs=tuple(scrub_ir(irs.get(ir.id, ir)) for ir in world.artifact_irs))
+    staged = replace(public_units(world), _artifact_irs=tuple(scrub_ir(irs.get(ir.id, ir)) for ir in world.artifact_irs))
     # Remove WorldLoom IDs and ledger appendices from every document of this pass.
     with filtered_longform():
         rendered = staged.render(*sorted(set(formats)))._rendered
