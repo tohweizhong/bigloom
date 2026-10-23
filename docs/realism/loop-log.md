@@ -24,9 +24,10 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Level 2 is open again: no metric has room on train (rs016 below). The next step is a measure,
-   not a change: run the masked judges on the rs016 champion set to see if they still tell real
-   from synthetic every time.
+1. Level 2 is open again: no metric has room on train (rs016 below). The masked judge measure is
+   done (23 Oct 20:06 SGT): 20, 20, and 20 of 20 correct on the rs016 train set. The judges tell
+   real from synthetic by document family, not by commercial words. Ask the user for the next
+   Level 2 change.
 2. Done 23 Oct 20:05 SGT: only `policies/writer/round-002.md` had CRLF line ends (two lines). It
    now uses LF. Old sha256 `a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`, new
    sha256 `24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69`. The text did not

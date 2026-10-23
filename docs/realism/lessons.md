@@ -41,6 +41,17 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 - Real side: PDF extraction marks, real external standards, and `.gov.sg` domains. The writer policy
   cannot change these real-side clues.
 
+- **rs016 champion baseline (23 Oct 20:06 SGT, train passages, 3 fresh judges): 20, 20, and 20 of
+  20 correct.** Commercial phrases did not appear as a clue. The judges named these clues:
+  - The synthetic side comes from only two document families: a budget utilisation report (or
+    Exco update) and an incident review about a stale code mapping.
+  - The synthetic prose is polished and gives advice to a named role ("the cluster finance
+    partner"). The incident review tells a neat story about a wrong theory, then closes on control
+    failure and ownership.
+  - One table repeats the same cell across all four columns.
+  - The real side is varied operational text: design-standard controls, step guides, a security
+    profile, threat tables, and product pages, with PDF extraction noise.
+
 ## Writer behaviour
 
 - One writer run for each seed is noisy. Under the same policy, two writers wrote 0 and 32 commercial
