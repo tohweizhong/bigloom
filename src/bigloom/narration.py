@@ -99,6 +99,29 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
     return chosen
 
 
+def public_terms(request: dict[str, Any], world: World) -> dict[str, Any]:
+    """Add public-sector terms to a request whose facts measure gross profit or gross margin.
+
+    Loop v2. The fact labels come from WorldLoom ledger keys (`financial.gross_profit.actual`), so
+    every writer reads "profit" many times and no other word. A statutory board reports a surplus.
+    The request `terminology` now names the word to write, the same word that BigLoom plants
+    (`questions.PUBLIC_SECTOR_NOUNS`). The fact keys and values do not change.
+    """
+    from .questions import PUBLIC_SECTOR_NOUNS, _public_sector
+
+    if not _public_sector(world):
+        return request
+    kinds = {str(f.get("kind", "")) for f in request.get("facts", [])}
+    terms = dict(request.get("terminology") or {})
+    for base, noun in PUBLIC_SECTOR_NOUNS.items():
+        if any(k.startswith(base + ".") or k == base for k in kinds):
+            stem = base.rsplit(".", 1)[-1]
+            terms[stem] = f"This agency reports a {noun}. Write \"{noun}\" for the {base} facts, never a profit or margin term."
+    if terms == (request.get("terminology") or {}):
+        return request
+    return {**request, "terminology": terms}
+
+
 def prepare(
     out_dir: Path,
     *,
@@ -119,7 +142,7 @@ def prepare(
     world = _load(corpus_dir)
     document = handshake.requests_document(world)
     chosen = choose_candidates(world, document["requests"], formats, spares)
-    document["requests"] = [r for r in document["requests"] if r["artifact_id"] in chosen]
+    document["requests"] = [public_terms(r, world) for r in document["requests"] if r["artifact_id"] in chosen]
     folder = out_dir / NARRATION_DIR
     folder.mkdir(parents=True, exist_ok=True)
     requests_path = folder / REQUESTS_FILE

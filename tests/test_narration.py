@@ -81,3 +81,19 @@ def test_cli_accept_exits_one_on_rejection(prepared, tmp_path: Path) -> None:  #
     res = runner.invoke(app, ["narrate", "accept", "--out-dir", str(out), "--from", str(path)])
     assert res.exit_code == 1
     assert json.loads(res.output)["accepted"] is False
+
+
+def test_public_sector_requests_name_a_surplus(tmp_path: Path) -> None:
+    """Loop v2: the requests a writer reads name the public-sector term for gross profit facts."""
+    import json as _json
+
+    from bigloom.narration import prepare
+    from bigloom.realism_loop import FORMATS, PACK
+
+    pack = Path(__file__).resolve().parents[1] / PACK
+    p = prepare(tmp_path / "seed-2026", seed=2026, formats=FORMATS, world_pack=str(pack))
+    requests = _json.loads(p.requests_path.read_text(encoding="utf-8"))["requests"]
+    with_profit = [r for r in requests if any("gross_profit" in str(f.get("kind", "")) for f in r["facts"])]
+    assert with_profit, "the govtech world has gross profit facts"
+    for r in with_profit:
+        assert "gross surplus" in r["terminology"]["gross_profit"]
