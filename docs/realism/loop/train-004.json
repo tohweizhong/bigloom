@@ -12,15 +12,11 @@
   },
   "writer_accept_rounds": {
     "seed_2026": 1,
-    "seed_2027": 1,
-    "seed_3101": 1,
-    "seed_3102": 1
+    "seed_2027": 1
   },
   "agent_words": {
     "seed_2026": 4744,
-    "seed_2027": 4189,
-    "seed_3101": 5147,
-    "seed_3102": 1739
+    "seed_2027": 4189
   },
   "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
   "gate_passed": true,
@@ -104,7 +100,6 @@
     }
   ],
   "writer_notes": [
-    "Train and holdout both passed all hard gates on the first validation round, and train top_opener_share improved from 0.130 to 0.090.",
     "Writers used longer compound sentences (about 29 to 35 words per sentence vs 21 to 26 in Round 2) to avoid commercial words while maintaining target_words (4,744 and 4,189 words), which reduced unique_sentences from 48.833 to 35.333 (beyond the 5.0 band)."
   ],
   "samples": [
@@ -116,17 +111,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "For the cluster finance partner, these figures confirm that strong programme demand in Product & Engineering is currently being undermined by elevated unit delivery costs across core engineering teams. Because top-line funding is already tracking at full plan capacity, the division cannot rely on additional billing volume to close its net recovery gap in the near term. Left unchecked, elevated cloud compute and external specialist spend will continue to compress the cluster's net contribution even in months when programme drawdowns exceed the approved budget. Finance and engineering leads should audit non-production cloud environments and contractor renewal schedules to identify immediate cost savings before the next monthly cycle. A targeted review of contractor utilisation and cloud environment consumption charges within the engineering teams is necessary to restore the planned surplus rate without curbing programme output or delaying platform releases."
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "top_opener_share"
-    ],
-    "worsened": [
-      "unique_sentences"
-    ],
-    "reasons": [
-      "train dimensions worsened beyond their band: unique_sentences"
-    ]
-  }
+  ]
 }

@@ -12,15 +12,11 @@
   },
   "writer_accept_rounds": {
     "seed_2026": 1,
-    "seed_2027": 1,
-    "seed_3101": 1,
-    "seed_3102": 1
+    "seed_2027": 1
   },
   "agent_words": {
     "seed_2026": 4943,
-    "seed_2027": 2165,
-    "seed_3101": 2012,
-    "seed_3102": 2317
+    "seed_2027": 2165
   },
   "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
   "gate_passed": true,
@@ -105,7 +101,6 @@
   ],
   "writer_notes": [
     "Re-evaluated from scratch with four fresh writer subagents using only policies/writer/round-011.md.",
-    "Round 11 passed all hard qualification and retrieval gates on both train and holdout (zero violations).",
     "However, fresh writers noted that ART-0020/Summary and ART-0024/Headline do not match the section titles in requests.json (Overall utilisation and In brief), and without a sentence-length rule, fresh writers wrote fewer total sentences (train unique_sentences 31.167 vs 48.833 champion) and higher commercial_per_k (3.265 vs 2.257) because shorter prose increased per-1000-word table density.",
     "Therefore policies/writer/round-002.md remains the promoted champion policy."
   ],

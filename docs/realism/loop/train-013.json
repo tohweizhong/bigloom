@@ -100,8 +100,6 @@
     }
   ],
   "writer_notes": [
-    "Round 13 passed all hard qualification and retrieval gates on both train and holdout (zero violations) with four fresh writer subagents running from scratch.",
-    "Naming section titles (Standing exposure, Cause, Overall utilisation, and In brief) instead of hardcoded artifact IDs fixed the BM25 and TF-IDF retrieval gate across all seeds, improved train top_opener_share from 0.130 to 0.104, and cut holdout commercial_per_k from 6.298 to 2.815 (normalised holdout gain +5.393 vs Round 2).",
     "However, without a sentence-length rule in QUALITY, the fresh writers wrote long compound sentences (24 to 28 words per sentence), which reduced train unique_sentences from 48.833 to 38.500 and increased train commercial_per_k from 2.257 to 2.763.",
     "Therefore policies/writer/round-002.md remains the promoted champion policy."
   ],

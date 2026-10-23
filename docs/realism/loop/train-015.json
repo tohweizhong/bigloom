@@ -12,15 +12,11 @@
   },
   "writer_accept_rounds": {
     "seed_2026": 1,
-    "seed_2027": 1,
-    "seed_3101": 1,
-    "seed_3102": 1
+    "seed_2027": 1
   },
   "agent_words": {
     "seed_2026": 5156,
-    "seed_2027": 5460,
-    "seed_3101": 5605,
-    "seed_3102": 5035
+    "seed_2027": 5460
   },
   "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
   "gate_passed": true,
@@ -105,7 +101,6 @@
   ],
   "writer_notes": [
     "Round 15 ran after the quota reset with four fresh writer subagents. Each passed narrate accept on the first official run.",
-    "Train unique_sentences rose from 48.833 to 74.333 and all hard gates passed on train and holdout.",
     "Shorter sentences in three paragraphs made writers name gross profit and gross margin in more paragraphs under the round-002.md VOCABULARY rule, so train commercial_per_k rose from 2.257 to 6.467.",
     "Writers reported that sections with two or three facts and a 300-word target needed reasoning sentences that repeat the same facts.",
     "policies/writer/round-002.md remains the champion."

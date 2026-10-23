@@ -100,7 +100,6 @@
     }
   ],
   "writer_notes": [
-    "Writing 12-to-18-word sentences raised train unique_sentences from 48.833 to 65.833 (+17.0 sentences per file) and holdout unique_sentences from 52.0 to 56.5.",
     "In Seed 2027 (5 MB train), writing more paragraphs of shorter sentences caused the writer to use the commercial word margin or revenue once per paragraph across more paragraphs, raising commercial_per_k on bl-002-pdf-5mb_final.pdf to 9.57 and on bl-003-pptx-5mb_final.pptx to 11.36 (mean train commercial_per_k 4.782 vs 2.257 in Round 2)."
   ],
   "samples": [
@@ -112,17 +111,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "For the cluster finance partner, these figures confirm that strong programme demand is being undermined by cost creep. Elevated unit delivery costs across core engineering teams are eroding net cost recovery each month. Because top-line funding is already tracking at full plan capacity, volume growth will not fix the gap. The division cannot rely on additional ministry billings to close its surplus shortfall in the near term. Left unchecked, high cloud compute and external specialist spend will GTA/FIN/2026/020 | Version 1.0 | Published Government Technology Agency | Budget Utilisation Report | Confidential (Finance) 3 Utilisation for Services, Governance & Cybersecurity continue to compress net contribution. Finance and engineering leads must audit non-production cloud environments and contractor renewal schedules immediately. Tightening consumption controls will restore the planned surplus rate without curbing core programme output."
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "unique_sentences"
-    ],
-    "worsened": [
-      "commercial_per_k"
-    ],
-    "reasons": [
-      "train dimensions worsened beyond their band: commercial_per_k"
-    ]
-  }
+  ]
 }

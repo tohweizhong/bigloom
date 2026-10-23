@@ -114,18 +114,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "2 Utilisation for Product & Engineering Within Product & Engineering, monthly revenue reached SGD 61.9m against a budgeted target of SGD 61.8m, producing a favourable variance of SGD 100k as programme billings held steady across service users. Despite meeting its top-line funding plan, the division recorded a gross profit variance of SGD 948k adverse because delivery resource costs exceeded baseline estimates. Actual operating surplus for Product & Engineering finished at SGD 2.1m compared with a budgeted allocation of SGD 3.1m, confirming that higher engineering support outlays compressed the net position. Consequently, the divisional margin rate stood at 3.46% against a planned rate of 5.00% for For the cluster finance partner, these results show that budget utilisation risk in Product & Engineering sits on the expenditure side rather than in programme fee collection. Divisional accounting officers have verified all contractor timesheets and cloud hosting charges across legacy and cloud agency codes,"
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [],
-    "worsened": [
-      "commercial_per_k",
-      "unique_sentences"
-    ],
-    "reasons": [
-      "hard gate failed on train: bl-001-docx-5mb-text: target_or_trap_not_in_top3",
-      "no train dimension improved by more than its band",
-      "train dimensions worsened beyond their band: commercial_per_k, unique_sentences"
-    ]
-  }
+  ]
 }

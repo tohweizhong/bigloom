@@ -112,20 +112,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "must separate approved fee waivers from unplanned operational cost overruns when reviewing next month's programme allocations with division heads. The finance lead is asked to approve the two-part remediation workstream for the product hierarchy sync service, where One ticket automates code mapping validation; one assigns mapping table ownership with a mandatory reviewer. Approving both work packages is essential so that the agency does not settle for a partial technical check while leaving governance unaddressed. Right now, the governance gap remains open because the owner for the Agency Reference Data Register is unassigned, and only formal ownership assignment with mandatory review fixes the underlying control rather than detection alone. Until that governance step is completed, the platform stays exposed to the confirmed root cause where control failure: the mapping table has no registered owner and no required reviewer, as hand-maintained cross-walks between legacy and cloud agency codes can still be altered"
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "retail_per_k",
-      "top_opener_share"
-    ],
-    "worsened": [
-      "commercial_per_k",
-      "unique_sentences"
-    ],
-    "reasons": [
-      "train dimensions worsened beyond their band: commercial_per_k, unique_sentences",
-      "holdout did not gain (normalised gain -2.373)"
-    ]
-  }
+  ]
 }

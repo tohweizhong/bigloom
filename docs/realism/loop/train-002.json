@@ -158,13 +158,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "The conclusion for the cluster finance partner is that this is a cost of delivery question, and it should be treated as one. A division that hits its funding target and still misses its surplus by this much is spending more to deliver the same programme than the budget assumed, whether through contractor rates, a change in the mix of work, or costs that fell into the month earlier than planned. A line-by-line view of delivery cost against budget is the first step, showing which items moved and whether the movement is likely to recur. If it is structural, the budget for the rest of the year needs to be rebased. If it is a timing effect, that needs to be stated explicitly, so that the forecast does not carry a correction that will reverse on its own. Either answer is acceptable. Carrying the gap forward without an explanation is"
     }
-  ],
-  "decision": {
-    "promote": true,
-    "improved": [
-      "commercial_per_k"
-    ],
-    "worsened": [],
-    "reasons": []
-  }
+  ]
 }

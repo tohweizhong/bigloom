@@ -12,15 +12,11 @@
   },
   "writer_accept_rounds": {
     "seed_2026": 1,
-    "seed_2027": 1,
-    "seed_3101": 1,
-    "seed_3102": 1
+    "seed_2027": 1
   },
   "agent_words": {
     "seed_2026": 5275,
-    "seed_2027": 5695,
-    "seed_3101": 5457,
-    "seed_3102": 3521
+    "seed_2027": 5695
   },
   "grader_sha256": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
   "gate_passed": true,
@@ -104,7 +100,6 @@
     }
   ],
   "writer_notes": [
-    "Round 14 passed all hard qualification and retrieval gates on both train and holdout (zero violations) with four fresh writer subagents running from scratch.",
     "Train unique_sentences improved from 48.833 to 62.667 (+13.8 sentences per file, with 104 and 87 unique sentences on DOCX and 89 and 73 on PDF).",
     "However, two effects worsened commercial_per_k (3.482 vs 2.257) and top_opener_share (0.166 vs 0.130): first, under round-002.md VOCABULARY (name each commercial measure at most once in a paragraph), writers named both gross profit and gross margin in both paragraphs of each PDF section (14 matches per PDF file vs 7 in Round 2); second, writing PPTX slide sections as two paragraphs instead of three caused the PPTX slide renderer (which takes the first sentence of each paragraph as a bullet) to extract only two bullets per slide, reducing PPTX total sentences from 16 to 10 so five slide date footers (# April #) accounted for 50% of PPTX sentences.",
     "Therefore policies/writer/round-002.md remains the promoted champion policy."

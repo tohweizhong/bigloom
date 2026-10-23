@@ -198,6 +198,16 @@ change those clues.
 
 ## 5. What we learned
 
+**Holdout exposure in loop v1 (found 23 Oct 10:50 SGT).** In loop v1 the proposer could read data
+from the holdout seeds by two paths. First, `policies/PROPOSER.md` allowed
+`docs/realism/receipts/round*.json`, which hold the holdout vector and the holdout gain (closed in
+`c25eeb1`). Second, `docs/realism/loop/train-*.json` held holdout seed keys (`seed_3101`,
+`seed_3102`) with word counts in Rounds 4, 11, 14, and 15, a `decision` field with the holdout gain,
+and writer notes with holdout numbers in Rounds 4, 5, 6, 8, 11, 13, 14, and 15. These were removed
+from all train receipts before any v2 proposer ran. No one can prove that the v1 proposer did not
+read them. Thus the v1 holdout results for Rounds 3 to 15 are not fully independent. No v1 round
+was promoted after Round 2, so the champion is not affected.
+
 **One rule change moves two metrics in opposite directions.** Shorter sentences raise
 `unique_sentences`, but writers then name `gross profit` once in each new paragraph (Rounds 5, 8,
 14). Fewer commercial words lower `commercial_per_k`, but writers then join facts into long compound

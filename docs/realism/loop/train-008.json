@@ -99,10 +99,7 @@
       "top_opener_share": 0.278
     }
   ],
-  "writer_notes": [
-    "Fresh writers wrote 5188 and 6091 words on train and 6254 and 5285 words on holdout, raising train unique_sentences from 48.833 to 58.0 and improving top_opener_share from 0.130 to 0.115.",
-    "Holdout gained +5.173 normalised distance (commercial_per_k fell from 6.298 to 5.158, top_opener_share fell from 0.135 to 0.113, and unique_sentences rose from 52.0 to 57.167)."
-  ],
+  "writer_notes": [],
   "samples": [
     {
       "file": "bl-001-docx-2mb_final.docx",
@@ -112,18 +109,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "2 Utilisation for Product & Engineering Within Product & Engineering, recognised revenue reached SGD 61.9m against the approved budget of SGD 61.8m, producing a positive top-line variance of SGD 100k. Despite meeting its billing target, the division recorded a surplus variance of SGD 948k adverse because direct delivery expenditure exceeded planned cost assumptions. Higher platform engineering effort and cloud hosting consumption absorbed the slight gain in programme cost recovery. Whereas billing milestones for core application builds proceeded on schedule, resource utilisation across development squads ran above standard cost rates. The cluster therefore held its funding line but carried the largest divisional share of Actual divisional surplus closed at SGD 2.1m compared with the budgeted allocation of SGD 3.1m for the month. That expenditure overrun compressed margin in the cluster to 3.46% against the planned benchmark of 5.00%. Comparing the stable income figure with the reduced net return highlights a pure"
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "top_opener_share",
-      "unique_sentences"
-    ],
-    "worsened": [
-      "commercial_per_k"
-    ],
-    "reasons": [
-      "train dimensions worsened beyond their band: commercial_per_k"
-    ]
-  }
+  ]
 }

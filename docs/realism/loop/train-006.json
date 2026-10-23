@@ -100,7 +100,6 @@
     }
   ],
   "writer_notes": [
-    "Train unique_sentences rose from 48.833 to 65.833 and cross_document_reuse was 0.0, while holdout gained +9.543 normalised distance (commercial_per_k 2.243, top_opener_share 0.123, unique_sentences 57.0).",
     "Reusing the Seed 2027 writer subagent in the same conversation carried over its Round 5 text (5137 words), which kept Seed 2027 commercial_per_k high (4.775 train mean vs 2.257 in Round 2)."
   ],
   "samples": [
@@ -112,17 +111,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "From a financial control perspective, strong programme demand in Product & Engineering is being undermined by cost creep. Rising engineering delivery costs across core platform teams are eroding net cost recovery each month. Because top-line funding is already tracking at full plan capacity, volume growth will not fix the gap. The division cannot rely on additional ministry billings to close its surplus shortfall in the near term. Left unchecked, high cloud compute and external specialist spend will GTA/FIN/2026/020 | Version 1.0 | Published Government Technology Agency | Budget Utilisation Report | Confidential (Finance) 3 Utilisation for Services, Governance & Cybersecurity continue to compress net contribution. Finance and engineering leads must audit non-production cloud environments and contractor renewal schedules immediately. Tightening consumption controls will restore the planned surplus rate without curbing core programme output."
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "unique_sentences"
-    ],
-    "worsened": [
-      "commercial_per_k"
-    ],
-    "reasons": [
-      "train dimensions worsened beyond their band: commercial_per_k"
-    ]
-  }
+  ]
 }

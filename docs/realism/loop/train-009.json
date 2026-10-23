@@ -115,16 +115,5 @@
       "file": "bl-002-pdf-2mb_final.pdf",
       "text": "2 Utilisation for Product & Engineering Within Product & Engineering, recognised operating income reached SGD 61.9m against the approved budget of SGD 61.8m, producing a positive top-line variance of SGD 100k. Despite meeting its billing target, the division recorded a surplus variance of SGD 948k adverse because direct delivery expenditure exceeded planned cost assumptions. Higher platform engineering effort and cloud hosting consumption absorbed the slight gain in programme cost recovery. Whereas billing milestones for core application builds proceeded on schedule, resource utilisation across development squads ran above standard cost rates. The cluster therefore held its funding line but carried the largest divisional share of Actual divisional surplus closed at SGD 2.1m compared with the budgeted allocation of SGD 3.1m for the month. That expenditure overrun compressed the surplus rate in the cluster to 3.46% against the planned benchmark of 5.00%. Comparing the stable income figure with the reduced net return"
     }
-  ],
-  "decision": {
-    "promote": false,
-    "improved": [
-      "top_opener_share",
-      "unique_sentences"
-    ],
-    "worsened": [],
-    "reasons": [
-      "hard qualification gate failed: bl-001-docx-5mb-image: target_or_trap_not_in_top3"
-    ]
-  }
+  ]
 }
