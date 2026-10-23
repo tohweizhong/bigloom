@@ -14,7 +14,7 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 23 Oct 2026 20:05 SGT (rs016 champion baseline recorded) |
+| Updated | 23 Oct 2026 20:50 SGT (rescore-v2-017 recorded) |
 | Loop version | v2 (merged into `realism-loop` at `65955eb`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Last round | Round 15, rejected |
@@ -24,14 +24,35 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Level 2 is open again: no metric has room on train (rs016 below). The masked judge measure is
-   done (23 Oct 20:06 SGT): 20, 20, and 20 of 20 correct on the rs016 train set. The judges tell
-   real from synthetic by document family, not by commercial words. The repeated table cell is
-   fixed (`ec00450`). Next: propose the next Level 2 change with its quota cost.
-2. Done 23 Oct 20:05 SGT: only `policies/writer/round-002.md` had CRLF line ends (two lines). It
-   now uses LF. Old sha256 `a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`, new
-   sha256 `24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69`. The text did not
-   change. Receipts before this commit name the old digest.
+1. Run the masked judges on the rescore-v2-017 train set (3 judge runs), with the same 11 real files.
+2. The room check shows room only on `top_opener_share` (5.9% against a real median of 7.1%). That
+   would ask the writer for more repeated openers, which is not a realism gain. Discuss with the
+   user before a proposer targets it.
+
+### rescore-v2-017: champion on the target family rule (23 Oct 20:50 SGT)
+
+Receipt: `docs/realism/receipts/rescore-v2-017.json`. Fresh writers on `round-002.md`. All four seeds
+passed the fact gate on the first orchestrator run. Both build gates pass, including the 570-word
+service impact assessment. New reference: do not compare with rs016 as a gain or a loss.
+
+| Metric | Train | Holdout | Real median | Floor (train) | Room after floor |
+|---|---|---|---|---|---|
+| `commercial_per_k` | 0.00 | 2.08 | 0.0 | 0 | No |
+| `retail_per_k` | 0.60 | 0.77 | 0.0 | 0.60 | No |
+| `within_file_repeat` | 2.4% | 2.8% | 0.0% | 2.4% | No |
+| `top_opener_share` | 5.9% | 5.1% | 7.1% | 0 | Yes (1.2 points), but in the wrong direction for realism |
+| `cross_document_reuse` | 0.0% | 3.6% | 0.1% | 0 | No |
+
+- **Targets.** Train: DOCX service impact assessment, PDF incident review, PPTX Exco update. Holdout
+  3101: incident review, budget report, executive summary. Holdout 3102: same as train.
+- **New floor.** `retail_per_k` 0.60 comes from one fact value that renders as "22,859 SKUs"
+  (WorldLoom ledger unit). A writer must cite it.
+- **Known limits.** The 3101 executive summary deck has 220 words of agent prose, and its slide
+  titles come from WorldLoom templates that say "gross profit" (holdout `commercial_per_k` 2.08).
+  The 3102 writer reused sentences across its own documents (holdout reuse 3.6%).
+- **Cost.** Agent prose for each seed fell from about 5,750 to about 3,650 words. The DOCX service
+  impact assessment holds about 720 words.
+- **Length guard reference from now:** 2026: 3,484, 2027: 3,518, 3101: 3,230, 3102: 3,103.
 
 ### Level 2 change: target selection prefers a new family (recorded 23 Oct 20:25 SGT, before the baseline)
 

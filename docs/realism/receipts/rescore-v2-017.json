@@ -1,0 +1,175 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-017: champion on target family rule",
+  "date_sgt": "2026-10-23 20:49",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop 15f94d1 (target family rule)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "New reference. Do not compare its vector with rs016 as a gain or a loss. Agent prose fell from about 5,750 to about 3,650 words for each seed, a known cost of the family rule.",
+  "writers": {
+    "seed_2026": "c1ebd467",
+    "seed_2027": "3c22b932",
+    "seed_3101": "8920a431",
+    "seed_3102": "e60d7b9f"
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 3484,
+    "seed_2027": 3518,
+    "seed_3101": 3230,
+    "seed_3102": 3103
+  },
+  "length_guard_reference_from_now": {
+    "seed_2026": 3484,
+    "seed_2027": 3518,
+    "seed_3101": 3230,
+    "seed_3102": 3103
+  },
+  "targets": {
+    "train": "DOCX service_impact_assessment, PDF incident_rca, PPTX exco_update (both seeds)",
+    "holdout": "3101: DOCX incident_rca, PDF budget_utilisation_report, PPTX executive_summary; 3102: DOCX service_impact_assessment, PDF incident_rca, PPTX exco_update"
+  },
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.602,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 2.083,
+    "retail_per_k": 0.77,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.051,
+    "unique_sentences": 45.833,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "train_by_file": {
+    "bl-001-docx-2mb_final.docx": {
+      "words": 722,
+      "retail_hits": 1,
+      "repeated": 0,
+      "sentences": 33,
+      "repeat_examples": []
+    },
+    "bl-001-docx-5mb_final.docx": {
+      "words": 716,
+      "retail_hits": 1,
+      "repeated": 0,
+      "sentences": 35,
+      "repeat_examples": []
+    },
+    "bl-002-pdf-2mb_final.pdf": {
+      "words": 2396,
+      "retail_hits": 1,
+      "repeated": 6,
+      "sentences": 94,
+      "repeat_examples": [
+        "That finding is confirmed and it replaces the explanation the team worked from d",
+        "At the outset the cause was recorded as Overnight ERP outage, and for some hours"
+      ]
+    },
+    "bl-002-pdf-5mb_final.pdf": {
+      "words": 2480,
+      "retail_hits": 1,
+      "repeated": 8,
+      "sentences": 97,
+      "repeat_examples": [
+        "That is the confirmed cause, and the rest of this review follows from it.",
+        "It was not the first explanation on record."
+      ]
+    },
+    "bl-003-pptx-2mb_final.pptx": {
+      "words": 353,
+      "retail_hits": 0,
+      "repeated": 0,
+      "sentences": 15,
+      "repeat_examples": []
+    },
+    "bl-003-pptx-5mb_final.pptx": {
+      "words": 328,
+      "retail_hits": 0,
+      "repeated": 0,
+      "sentences": 15,
+      "repeat_examples": []
+    }
+  },
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "known_limits": [
+    "Seed 3101 PPTX target is executive_summary with 220 words of agent prose. Its slide titles come from WorldLoom deck templates and say 'gross profit' and 'gross margin', which gives holdout commercial_per_k 2.083 from that one file. No special case is added.",
+    "Holdout cross_document_reuse 0.036: the 3102 writer reused sentences across its own documents."
+  ],
+  "train_room_floor_adjusted": {
+    "wl_id_per_k": {
+      "distance": 0.0,
+      "floor": 0.0,
+      "band": 0.5,
+      "room": false
+    },
+    "commercial_per_k": {
+      "distance": 0.0,
+      "floor": 0.0,
+      "band": 0.5,
+      "room": false
+    },
+    "retail_per_k": {
+      "distance": 0.602,
+      "floor": 0.6,
+      "band": 0.3,
+      "room": false
+    },
+    "within_file_repeat": {
+      "distance": 0.024,
+      "floor": 0.024,
+      "band": 0.01,
+      "room": false
+    },
+    "top_opener_share": {
+      "distance": 0.012,
+      "floor": 0.0,
+      "band": 0.01,
+      "room": true
+    },
+    "cross_document_reuse": {
+      "distance": 0.001,
+      "floor": 0.0,
+      "band": 0.01,
+      "room": false
+    }
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The inventory valuation service has stopped producing usable output: its feed status is failed. Every report, reconciliation or posting that reads from that feed should be treated as unavailable until the status changes. The size of the problem sits upstream, in the product hierarchy sync service, where the confirmed count of affected records is 22,859 SKUs. That number is not an estimate and it is not a sample. There is no budget or forecast for a failure of this kind, so the only baseline is normal operation, in which the count is nil and the feed completes without intervention. For anyone deciding what to do in the next hour, the scale changes the options. A population of this size will not be corrected record by record before the close deadline, so the realistic choices are a controlled workaround or a delay to the dependent run. Waiting for the feed to"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Read together, these three facts show how far a reference data defect travels before anyone sees it. A single stale entry in one table became a failed feed in a second service, and the failed feed became a late close for the whole group. None of that registered as a platform fault: compute, storage and network all behaved normally throughout. The measure that matters to the business is therefore the record count and the slipped close, not uptime. Any future alert for this class of failure has to watch the data, because the infrastructure will look healthy while the close is already slipping. The cost would have been larger had the close fallen in a quarter-end month, when more reporting lines depend on the same valuation output and the slack in the timetable is thinner."
+    }
+  ],
+  "samples_method": "realism_pairs.samples(runs/loop/rs017t/set/large)"
+}
