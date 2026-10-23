@@ -70,12 +70,14 @@ def _composed(world: World) -> World:
 
 
 def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], formats: Sequence[str], spares: int) -> list[str]:
-    """Return the artifact ids that get agent prose: the documents with the largest word briefs.
+    """Return the artifact ids that get agent prose.
 
     A candidate must render in one of `formats`. No two candidates share a document type,
-    because a test set uses each type once.
+    because a test set uses each type once. Loop v2: a candidate from a family that no earlier
+    candidate uses comes first, then a preferred type (`build.family_rank`), then the largest
+    word brief.
     """
-    from .build import _renderable
+    from .build import _renderable, family_rank
 
     formats_of = _renderable(_composed(world), list(formats))  # type: ignore[arg-type]
     types = {i.id: i.artifact_type for i in world.artifact_intents}
@@ -83,17 +85,24 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
     words: dict[str, int] = {}
     for req in requests:
         words[req["artifact_id"]] = words.get(req["artifact_id"], 0) + int(req.get("target_words", 0))
-    ranked = sorted(words, key=lambda a: (-words[a], a))
+    domain_of = {i.id: str(i.domain) for i in world.artifact_intents}
     chosen: list[str] = []
     used_types: set[str] = set()
-    for artifact_id in ranked:
-        kind = types.get(intent_of.get(artifact_id, ""), "")
-        if not set(formats) & formats_of.get(artifact_id, set()) or kind in used_types:
-            continue
-        chosen.append(artifact_id)
-        used_types.add(kind)
-        if len(chosen) >= len(formats) + spares:
+    used_domains: set[str] = set()
+    pool = [a for a in words if set(formats) & formats_of.get(a, set())]
+    while pool and len(chosen) < len(formats) + spares:
+        # The same rule as `build._choose`: a new family first, then a preferred type, then the
+        # largest word brief. So the documents with agent prose are the ones the build will choose.
+        pool = [a for a in pool if types.get(intent_of.get(a, ""), "") not in used_types]
+        if not pool:
             break
+        def key(a: str) -> tuple[int, int, int, str]:
+            intent = intent_of.get(a, "")
+            return (*family_rank(domain_of.get(intent, ""), types.get(intent, ""), used_domains), -words[a], a)
+        best = min(pool, key=key)
+        chosen.append(best)
+        used_types.add(types.get(intent_of.get(best, ""), ""))
+        used_domains.add(domain_of.get(intent_of.get(best, ""), ""))
     if not chosen:
         raise CorpusError(f"No WorldLoom document in this corpus renders as {', '.join(formats)}.")
     return chosen
