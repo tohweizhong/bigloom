@@ -71,8 +71,10 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
 `realism_loop.HOLDOUT`.
 
 1. **Room check.** For each key in `realism_loop.BANDS`, compute the champion's train distance to
-   `real_reference()` with `realism_loop.distances`. A metric has room when its distance is larger
-   than its band. If no metric has room, do not start a round. Go to Level 2 (section 7).
+   `real_reference()` with `realism_loop.distances`. A metric has room when its distance, less the
+   known floor for that metric in the newest rescore receipt, is larger than its band. A floor is a
+   part of the value that the writer policy cannot change. If no metric has room, do not start a
+   round. Go to Level 2 (section 7).
 2. **Propose.** Start a fresh proposer subagent. Give it `policies/PROPOSER.md`, the champion path,
    the output path `policies/writer/round-<NNN>.md`, and the list of metrics with room. Give it no
    number that you did not take from a train receipt. Check its output:
