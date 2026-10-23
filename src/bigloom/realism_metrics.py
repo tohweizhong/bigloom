@@ -11,6 +11,9 @@ rounds are comparable when both run through this module. Two changes:
 2. The output holds `grader_sha256`, the digest of this file. A loop round must not change
    the grader, so each receipt records the digest.
 
+Grader version 2 (loop v2) skips slide date, footer, and slide number placeholders in PPTX
+text. Version 1 digests (`eeb607b3…`) and version 2 digests are not comparable.
+
 Rates are per 1000 words, so file size does not change them.
 """
 
@@ -52,6 +55,23 @@ def grader_digest() -> str:
     return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
+def _furniture(shape: Any) -> bool:
+    """Return True for a slide date, footer, or slide number placeholder.
+
+    Grader version 2. A deck repeats these on every slide. They are not prose, and the real
+    reference set holds no deck, so version 1 counted each date footer as a sentence opener.
+    """
+    from pptx.enum.shapes import PP_PLACEHOLDER
+
+    if not getattr(shape, "is_placeholder", False):
+        return False
+    try:
+        kind = shape.placeholder_format.type
+    except ValueError:
+        return False
+    return kind in (PP_PLACEHOLDER.DATE, PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER)
+
+
 def text_of(path: Path) -> str:
     """Return the text a reader sees: `pdftotext -layout` for PDF, paragraphs for DOCX, text frames for PPTX."""
     suffix = path.suffix.lower()
@@ -66,7 +86,7 @@ def text_of(path: Path) -> str:
 
         out: list[str] = []
         for slide in pptx.Presentation(str(path)).slides:
-            out.extend(sh.text_frame.text for sh in slide.shapes if sh.has_text_frame)
+            out.extend(sh.text_frame.text for sh in slide.shapes if sh.has_text_frame and not _furniture(sh))
         return "\n".join(out)
     return ""
 

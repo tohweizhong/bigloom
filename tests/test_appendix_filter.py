@@ -182,3 +182,17 @@ def test_bare_ids_in_comments_become_plain_words(world, monkeypatch: pytest.Monk
     assert fact.id not in out
     assert fact.text_value.split()[0] in out
     assert lf._clean("See the model (ART-0002).") == "See the model."
+
+
+def test_review_record_keeps_one_row_for_each_comment_text(long_doc) -> None:  # type: ignore[no-untyped-def]
+    """Loop v2: a reviewer does not write the same comment on every section."""
+    from dataclasses import replace
+
+    from bigloom.formats.longform_filter import filter_document
+
+    assert long_doc.comments, "the fixture document has a review record"
+    first = long_doc.comments[0]
+    doc = replace(long_doc, comments=tuple(replace(first, part=str(i)) for i in range(1, 5)))
+    out = filter_document(doc)
+    assert len(out.comments) == 1
+    assert out.comments[0].part == "1"

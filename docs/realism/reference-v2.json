@@ -1,0 +1,149 @@
+{
+  "note": "Real reference for loop v2 (grader v2). Targets are the median of 11 real agency files. The set holds no PPTX, so grader v2 gives the same per-file values as grader v1 for these files. cross_document_reuse is a set-level value.",
+  "source_grader_sha256_v1": "eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b",
+  "median": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.071,
+    "unique_sentences": 39.0,
+    "words_per_mb": 3395.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.001
+  },
+  "mean_v1": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.784,
+    "within_file_repeat": 0.04,
+    "top_opener_share": 0.074,
+    "unique_sentences": 146.727,
+    "words_per_mb": 4032.182,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.001
+  },
+  "files": [
+    {
+      "file": "Baseline Design Practices.pdf",
+      "mb": 0.23,
+      "words": 913,
+      "words_per_mb": 4034,
+      "unique_sentences": 47,
+      "top_opener_share": 0.085,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Cybersecurity_Playbook_for_Large_Language_Model_LLM_Applications.pdf",
+      "mb": 0.48,
+      "words": 3637,
+      "words_per_mb": 7536,
+      "unique_sentences": 117,
+      "top_opener_share": 0.026,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 4.12,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "DPO Registration Instruction Guide_Mar2024.pdf",
+      "mb": 1.88,
+      "words": 683,
+      "words_per_mb": 364,
+      "unique_sentences": 32,
+      "top_opener_share": 0.225,
+      "within_file_repeat": 0.325,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "GITSIR RFC 2350 Profile.pdf",
+      "mb": 0.09,
+      "words": 897,
+      "words_per_mb": 9498,
+      "unique_sentences": 39,
+      "top_opener_share": 0.026,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "GovText _ Government Technology Agency of Singapore (GovTech Singapore).pdf",
+      "mb": 2.69,
+      "words": 519,
+      "words_per_mb": 193,
+      "unique_sentences": 22,
+      "top_opener_share": 0.087,
+      "within_file_repeat": 0.087,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Performance and Reliability.pdf",
+      "mb": 0.24,
+      "words": 799,
+      "words_per_mb": 3395,
+      "unique_sentences": 42,
+      "top_opener_share": 0.095,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Singapore Government Tech Stack (SGTS) _ Government Technology Agency of Singapore (GovTech Singapore).pdf",
+      "mb": 3.55,
+      "words": 576,
+      "words_per_mb": 162,
+      "unique_sentences": 27,
+      "top_opener_share": 0.074,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Transactions and Payments.pdf",
+      "mb": 0.27,
+      "words": 1195,
+      "words_per_mb": 4358,
+      "unique_sentences": 52,
+      "top_opener_share": 0.058,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Trust and Legitimacy.pdf",
+      "mb": 0.27,
+      "words": 666,
+      "words_per_mb": 2463,
+      "unique_sentences": 28,
+      "top_opener_share": 0.071,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 4.5,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "Understand Users.pdf",
+      "mb": 0.23,
+      "words": 399,
+      "words_per_mb": 1766,
+      "unique_sentences": 18,
+      "top_opener_share": 0.056,
+      "within_file_repeat": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    },
+    {
+      "file": "spp model development procedure manual 2021 v5.0.docx",
+      "mb": 2.77,
+      "words": 29351,
+      "words_per_mb": 10585,
+      "unique_sentences": 1190,
+      "top_opener_share": 0.007,
+      "within_file_repeat": 0.028,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0
+    }
+  ]
+}

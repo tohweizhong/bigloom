@@ -21,6 +21,13 @@ if TYPE_CHECKING:  # pragma: no cover
 
 # Test design: the final document holds a revised forecast. The draft holds another value.
 PLANTED_QUALIFIER = "revised {noun} forecast"
+#: Planted measure nouns for a public-sector pack. A statutory board reports a surplus, not a
+#: profit. WorldLoom packs forbid extra fields, so BigLoom holds this map. The fact kinds and
+#: the values do not change: only the words in the planted label, chart title, and question.
+PUBLIC_SECTOR_NOUNS: dict[str, str] = {
+    "financial.gross_profit": "gross surplus",
+    "financial.gross_margin_pct": "surplus rate",
+}
 # A question that opens "What was" or "What is" with no article before the noun phrase.
 _ARTICLE_GAP = re.compile(r"^(What (?:was|is))\s+(?!the\b|a\b|an\b)", flags=re.IGNORECASE)
 
@@ -72,11 +79,17 @@ def _is_money(unit: str, currency: str) -> bool:
     return unit.endswith(("_thousands", "_millions"))
 
 
+def _public_sector(world: World) -> bool:
+    pack = (world.recipe or {}).get("pack") if isinstance(world.recipe, dict) else None
+    return bool(pack) and str(pack.get("industry", "")).strip().lower() == "public sector"
+
+
 def _measures(world: World, fact_ids: Sequence[str] | None, *, money: bool) -> list[Measure]:
     """Return the measures in `fact_ids` (or the whole world), most frequent first."""
     from worldloom.narrative.composer import measure_noun
 
     currency = (world.company.currency or "").upper()
+    overrides = PUBLIC_SECTOR_NOUNS if _public_sector(world) else {}
     wanted = set(fact_ids) if fact_ids is not None else None
     counts: Counter[str] = Counter()
     nouns: dict[str, str] = {}
@@ -93,7 +106,7 @@ def _measures(world: World, fact_ids: Sequence[str] | None, *, money: bool) -> l
         if not money and unit != "percent":
             continue
         base = _base(fact.kind)
-        noun = measure_noun(base) or measure_noun(fact.kind)
+        noun = overrides.get(base) or measure_noun(base) or measure_noun(fact.kind)
         if not noun:
             continue
         counts[base] += 1

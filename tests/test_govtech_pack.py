@@ -92,3 +92,17 @@ def test_loaded_govtech_corpus_renders_every_pack_type(tmp_path: Path) -> None:
     got = {types[r.artifact_id] for r in rendered if r.artifact_id in types}
     missing = sorted(set(_pack_types()) - got)
     assert not missing, f"Pack types with no Word file after load: {missing}"
+
+
+def test_public_sector_planted_labels_name_a_surplus(govtech_world: World, retail_world: World) -> None:
+    """Loop v2: a public-sector pack plants surplus nouns, and a retail build keeps its own."""
+    from bigloom.questions import plan_targets
+
+    irs = govtech_world.artifact_irs[:6]
+    plans = plan_targets(govtech_world, irs, [0] * len(irs), set())
+    planted = " ".join(f"{p.text_label} {p.chart_title} {p.text_question} {p.image_question}" for p in plans).lower()
+    assert "gross profit" not in planted and "gross margin" not in planted
+    assert "surplus" in planted
+
+    rplans = plan_targets(retail_world, retail_world.artifact_irs[:6], [0] * 6, set())
+    assert not any("surplus" in p.text_label for p in rplans)
