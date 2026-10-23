@@ -76,3 +76,29 @@ def test_manifest_document_type_marks_twins(tmp_path: Path) -> None:
     result = rm.metrics(tmp_path)
     assert result["size_twins"] == [("x_2mb.docx", "x_5mb.docx")]
     assert result["cross_document_reuse"] == 0.0
+
+
+def test_pptx_text_skips_slide_date_footer_and_number(tmp_path: Path) -> None:
+    """Grader v2: slide furniture is not prose, so it is not a sentence."""
+    import copy
+
+    import pptx
+    from pptx.enum.shapes import PP_PLACEHOLDER
+
+    prs = pptx.Presentation()
+    layout = prs.slide_layouts[1]
+    for _ in range(3):
+        slide = prs.slides.add_slide(layout)
+        slide.shapes.title.text = "Results for the month"
+        slide.placeholders[1].text = PROSE[0]
+        for ph in layout.placeholders:
+            if ph.placeholder_format.type in (PP_PLACEHOLDER.DATE, PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER):
+                el = copy.deepcopy(ph._element)
+                slide.shapes._spTree.append(el)
+                for t in el.iter("{http://schemas.openxmlformats.org/drawingml/2006/main}t"):
+                    t.text = "08 April 2026 synthetic agency footer text here"
+    path = tmp_path / "deck.pptx"
+    prs.save(str(path))
+    text = rm.text_of(path)
+    assert "08 April 2026" not in text
+    assert text.count(PROSE[0]) == 3
