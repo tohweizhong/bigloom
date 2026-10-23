@@ -28,9 +28,10 @@ Update this section at the end of each round and after each loop change.
    holdout (cost: 4 writer runs). Blocked by model quota until about 23 Oct 19:44 SGT.
 2. Rescore the champion on those responses. The terminology change works only if holdout
    `commercial_per_k` falls well below 4.35. Then run the room check before Round 16.
-3. Judges are blocked: the real files folder
-   (`~/.gemini/jetski/brain/962bad5e-.../scratch/realism/real`) no longer exists. The user must give
-   its location. This blocks only the judge step of a promoted round.
+3. Resolved 23 Oct 11:25 SGT: the 11 real files are in `runs/realism/real/` (git ignores `runs/`).
+   They were downloaded read-only from the SharePoint site `sharepoint-site-demo1` (folders
+   `GovTech Products and Services Apr26`, `Web Search Apr26`, and the library root). All 11 files
+   give the same word and sentence counts as `docs/realism/reference-v2.json`. The judges can run.
 
 ### Champion rescore on v2 code (23 Oct 10:50 SGT)
 
