@@ -69,6 +69,13 @@ that remains.
 - **Cache.** The old cache is in `runs/loop/cache-backup-20261023-1110`. The new cache holds the new
   requests for seeds 2026, 2027, 3101, and 3102.
 - **Effect.** Not measured yet. The champion prose must be written again on the new requests.
+- **Build gate risk (checked 23 Oct 11:12 SGT).** In v1, prose without the word "margin" made the
+  DOCX chart query fail the retrieval gate, because "margin" became rare (Rounds 9, 10, 12). In the
+  rebuilt v2 cache, no planted label, chart title, or eval question holds "margin" or "profit".
+  They name "surplus" (117 to 120 times for each seed). The v1 failure path does not apply. The new
+  requests make "surplus" common in the prose, which lowers its BM25 weight. The chart titles then
+  differ by their last words ("by business unit", "by category", "by site"). The build gate of the
+  rescore will confirm this. No code change is made for this risk.
 
 ## History of the loop design (v1)
 
