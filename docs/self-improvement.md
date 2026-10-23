@@ -1,336 +1,166 @@
-# Realism self-improvement loop
+# Realism self-improvement loop: instructions
 
-BigLoom builds large DOCX, PDF, and PPTX files that must read like real agency documents. This page
-explains the loop that improves the prose in those files. It also states what the loop measured and
-what it learned. The design follows WorldLoom `evalrun improve`: change one policy, measure it on a
-train set and on an unseen holdout set, and keep the change only when it wins on both.
+These are the instructions for the agent that runs the BigLoom realism loop (the orchestrator).
+Follow them in order. This file holds instructions only. Results go to
+[`docs/realism/loop-log.md`](realism/loop-log.md). Lessons for the proposer go to
+[`docs/realism/lessons.md`](realism/lessons.md).
 
-Status, 23 Oct 2026 10:40 SGT: 16 rounds have run (Round 0 to Round 15) under loop v1. One change was
-promoted (Round 2). Loop v2 (grader v2, public-sector planted nouns, median real reference) is built
-on branch `realism-v2`. Each round has a receipt in `docs/realism/receipts/`.
+## 1. Goal
 
-## 1. The loop
+Make the DOCX, PDF, and PPTX files that BigLoom builds read like real Singapore agency documents.
+The loop has two levels:
 
-```mermaid
-flowchart LR
-    champ["Champion writer policy"] --> prop["Proposer: one rule change"]
-    prop --> write["Fresh writer subagents, 4 seeds"]
-    write --> accept["Hard gate: narrate accept"]
-    accept --> build["Build and qualify: hard gate"]
-    build --> vec["Metric vector, train and holdout"]
-    vec --> decide{"Promotion rule"}
-    decide -->|"win"| judges["Masked blind judges"]
-    judges --> champ
-    decide -->|"loss"| receipt["Receipt, champion unchanged"]
-    receipt --> prop
-```
+- **Level 1, the writer policy.** Each round changes one rule in the writer policy and keeps the
+  change only when it wins on train and on holdout.
+- **Level 2, the loop itself.** When Level 1 stops making progress, you find the cause and propose a
+  change to the metrics, the corpus, or the procedure. The user must approve each Level 2 change.
 
-Each round has six steps:
+## 2. Start of each session
 
-1. **Proposal.** The proposer subagent reads the train receipts. It writes
-   `policies/writer/round-<NNN>.md`, which is the champion policy with one rule changed.
-2. **Writing.** Four fresh writer subagents answer the WorldLoom narration requests. Each one sees
-   only the text of the candidate policy. Two seeds are train (`2026` at 2 MB, `2027` at 5 MB). Two
-   seeds are holdout, one at 2 MB and one at 5 MB. Section 7 names them. The proposer does not read
-   section 7.
-3. **Fact gate.** `bigloom narrate accept` runs the WorldLoom claim checks. A section with an
-   unsupported claim, a typed digit, or an invented entity fails.
-4. **Build gate.** `bigloom qualify` builds the files and checks leakage, fact depth, and retrieval.
-   The retrieval check requires the target file to rank in the BM25 and TF-IDF top 3 for its query.
-5. **Score.** `realism_metrics` measures the metric vector on train and on holdout (section 2).
-6. **Decision.** `realism_loop.decide` applies the promotion rule. A promoted candidate then goes to
-   three masked blind judges (section 4).
+1. Read the "Current state" and "Open items" sections of `docs/realism/loop-log.md`.
+2. Run `git log --oneline -5` on `realism-loop` and on `realism-v2`. Make sure that they agree with
+   the current state.
+3. Make sure that `main` is at `ba4b981`.
+4. Do the open items in order. Start a new round only when no open item blocks it.
 
-### Promotion rule
+## 3. Hard rules
 
-A candidate is promoted only when all four conditions are true:
+Stop and correct the work at once if you break one of these rules.
 
-- On train, at least one metric moves closer to the real value by more than its band.
-- On train, no metric moves away from the real value by more than its band.
-- On holdout, the summed normalised distance to the real values falls.
-- The judge guard does not trip.
+1. **One change.** A candidate policy changes one rule of the champion and nothing else.
+2. **Holdout isolation.** No proposer message, proposer input, or file that the proposer reads
+   contains a holdout seed (`3101`, `3102`), a holdout number, or a holdout passage.
+3. **Fresh writers.** Each round uses new writer subagents. A writer sees only the text of the
+   candidate policy and its own requests. Never give a writer an earlier `responses.json`, and never
+   tell a writer to copy earlier output.
+4. **No code change during a run.** Do not change code while the writers or a build of a round run.
+5. **Protected places.** Never commit or merge to `main`. Do not edit the WorldLoom repository. Do not
+   upload files. Do not use Vertex AI. Every model role is a Jetski subagent.
+6. **Real samples.** Each receipt holds two sample passages from the current round's train set.
+7. **No facade work.** No dummy content and no facade tests. A new test must fail on the old code.
+   Show the failing run.
+8. **Writing.** Write in Simplified Technical English. Report each time in SGT (GMT+8).
 
-| Metric | Band |
-|---|---|
-| `commercial_per_k` | 0.5 |
-| `retail_per_k` | 0.3 |
-| `wl_id_per_k` | 0.5 |
-| `within_file_repeat` | 0.01 |
-| `top_opener_share` | 0.01 |
-| `unique_sentences` | 5.0 |
-| `cross_document_reuse` | 0.01 |
+## 4. Information barriers
 
-### Rules that do not change
-
-- **Frozen grader.** Each receipt records `grader_sha256`
-  (`eeb607b3b32acbfc02a99f24c97da73e0a94d871c1272b4d2e456b66f56dd32b`). The loop stops if the grader
-  changes.
-- **One change in each round.** A candidate changes one rule of the champion and nothing else.
-- **Holdout isolation.** The proposer never sees holdout numbers, holdout seeds, or holdout passages.
-- **Fresh writers.** Each round uses new writer subagents. A writer never sees an earlier round's
-  `responses.json`.
-- **Masked judges.** Product and organisation names are masked (`[PRODUCT-1]`, `[ORG-1]`) on both
-  sides of every judge pair.
-- **No Vertex AI.** Every model role is a Jetski subagent.
-
-## 2. What the metrics measure, and their limits
-
-The metric vector uses no model calls. Rates are per 1000 words. The real reference comes from 11
-real agency files.
-
-| Metric | What it counts | Real value |
+| Role | May read | Must never read |
 |---|---|---|
-| `commercial_per_k` | The phrases `gross profit`, `gross margin`, `operating margin`, `EBITDA`, `sales volume` | 0.0 |
-| `retail_per_k` | Retail words such as `store`, `SKU`, `footfall` | 0.78 |
-| `wl_id_per_k` | WorldLoom ledger IDs such as `FACT-0028` | 0.0 |
-| `within_file_repeat` | The share of sentences that repeat in one file | 4.0% |
-| `top_opener_share` | The share of sentences that start with the most common three-word opener | 7.4% |
-| `unique_sentences` | Distinct sentences in each file | 146.7 |
-| `cross_document_reuse` | The share of sentences that also occur in a different document | 0.1% |
+| Proposer subagent | Champion policy, `docs/realism/loop/train-*.json`, `docs/realism/lessons.md`, `policies/PROPOSER.md` | `docs/realism/receipts/round*.json`, `docs/realism/loop-log.md`, this file, `runs/` |
+| Writer subagent | The candidate policy text, its own `requests.json` | Any other file under `runs/`, `policies/`, or `docs/` |
+| Judge subagent | Masked passage pairs only | Receipts, policies, file names |
+| Orchestrator (you) | Everything | Nothing is forbidden, but never copy holdout data into a proposer input |
 
-Three properties of the corpus limit what a writer policy can change.
+## 5. Round procedure (Level 1)
 
-**The `commercial_per_k` floor.** The planted chart captions and tables hold fixed commercial
-phrases: one in each DOCX, six in each PDF, and one in each PPTX. With zero commercial phrases in the
-prose, train `commercial_per_k` is still about 2.0. The champion is at 2.26. Thus this metric cannot
-improve by more than its 0.5 band. A promotion must come from `unique_sentences` or
-`top_opener_share`.
+Use the v2 code. Round `N` uses the folders `runs/loop/r<NNN>t` (train) and `runs/loop/r<NNN>h`
+(holdout). The train seeds are `2026` (2 MB) and `2027` (5 MB). The holdout seeds are `3101` (2 MB)
+and `3102` (5 MB). The values are in `realism_loop.TRAIN` and `realism_loop.HOLDOUT`.
 
-**PPTX slide footers.** The PPTX renderer makes one slide bullet from each paragraph. Each slide also
-has a date footer, which the metric reads as a sentence that starts with `# April #`. A deck has five
-such footers. With three paragraphs in each section, a deck has about 16 sentences and the footers
-make 31% of the openers. With two paragraphs, a deck has about 10 sentences and the footers make 50%.
-Thus fewer paragraphs raise `top_opener_share`, even when the prose is varied.
+1. **Propose.** Start a fresh proposer subagent. Give it `policies/PROPOSER.md`, the champion path,
+   and the output path `policies/writer/round-<NNN>.md`. Check its output:
+   - The diff against the champion holds one rule change only.
+   - The reply names one target metric, and the "why" cites a train number only.
+   - The target metric can gain more than its band on train (section 7, step 1). If it cannot, reject
+     the proposal and ask again.
+2. **Prepare.** Run `realism_loop.prepare_round` for the train seeds and the holdout seeds. It copies
+   the cached raw corpus and removes old responses.
+3. **Write.** Start one fresh writer subagent for each seed. Give each writer the full text of the
+   candidate policy and the path of its `seed-<n>/narration/requests.json`. Tell it to write
+   `seed-<n>/narration/responses.json`. Give it nothing else.
+4. **Fact gate.** Run `bigloom narrate accept --out-dir <seed-n> --from <responses.json>` for each
+   seed. If a seed fails, start one new fresh writer for that seed. If it fails a second time, record
+   the round as rejected for the fact gate.
+5. **Build gate.** Run `realism_loop.build_round` for train and for holdout. A gate violation rejects
+   the round. Record the violation.
+6. **Length guard.** Compare the prose word count of each file with the champion. If a file has less
+   than 80% of the champion prose, record a writer failure, not a policy result. Run that seed again
+   with a fresh writer one time.
+7. **Decide.** Call `realism_loop.decide` with the champion and candidate vectors. Use its output as
+   the decision. Never write a decision by hand.
+8. **Judges.** If the decision is a promotion, run three masked judge subagents on 20 pairs each
+   (`realism_pairs.build_pairs`). Give the judge results to `decide` again for the judge guard.
+9. **Record.** Write the receipt and the train receipt (section 6). Commit them on `realism-loop`.
+10. **Promote.** If the candidate wins, it becomes the champion. Update "Current state" in
+    `loop-log.md`.
 
-**BM25 and the word `margin`.** The DOCX image query asks about the chart "Revised gross margin
-forecast by business unit". When the PDF and PPTX prose do not use the word `margin`, its BM25 weight
-rises. Then a PPTX, whose chart caption holds `margin`, can rank above the target DOCX, and the
-retrieval gate fails. This caused the gate failures in Rounds 9, 10, and 12. The single word `margin`
-does not count in `commercial_per_k`. Only the two-word phrases count.
+## 6. Receipts and records
 
-## 3. Measured results
+After each round, write these files:
 
-The champion is `policies/writer/round-002.md`
-(`a60c857a9f108744c69896cf49cd8a56be5a322e8da5729f1d2d2ec5ee6f5b98`).
-
-| Metric | Real | Round 0 train (template writer) | Round 1 train (first writer policy) | Champion train |
-|---|---|---|---|---|
-| `wl_id_per_k` | 0.0 | 20.50 | 0.00 | 0.00 |
-| `commercial_per_k` | 0.0 | 20.44 | 7.55 | 2.26 |
-| `retail_per_k` | 0.78 | 1.40 | 0.21 | 0.21 |
-| `within_file_repeat` | 4.0% | 16.0% | 4.4% | 3.9% |
-| `top_opener_share` | 7.4% | 20.1% | 12.0% | 13.0% |
-| `unique_sentences` | 146.7 | 30.5 | 51.3 | 48.8 |
-| `cross_document_reuse` | 0.1% | 6.6% | 0.0% | 0.0% |
-| Words per MB | 4,032 | 443 | 440 | 435 |
-
-The champion holdout values are in section 7, because the proposer reads sections 1 to 5.
-
-Most of the gain came before the loop started. The handshake writer and the appendix filter (Round 1)
-removed the ledger IDs and the reused template sentences. Round 2 then cut train `commercial_per_k`
-from 7.55 to 2.26.
-
-Rounds 3 to 14 did not promote a change. Eight of the twelve candidates passed the hard gates on
-both sets. Several candidates gained on holdout. Each one still lost on train, because a second metric got
-worse by more than its band.
-
-The files are still far from real on two metrics. Real files have about three times as many distinct
-sentences (146.7 against 48.8). Their text is also about nine times more dense (4,032 words per MB
-against 435). The masked judges can still tell real from synthetic every time (section 4).
-
-## 4. Blind judges
-
-Three judges each see 20 pairs. Each pair holds one real passage and one synthetic passage, with
-names masked. A judge error rate of 50% means the judges cannot tell the two sides apart.
-
-| Round | Correct verdicts | Mean error | Main clues the judges gave |
-|---|---|---|---|
-| Round 0 (unmasked) | 60 of 60 | 0% | WorldLoom IDs, lineage tables, template phrases |
-| Round 1 (unmasked) | 60 of 60 | 0% | Real product and framework names on the real side |
-| Round 1 (masked) | 20 of 60 | 67% | Each judge sorted the pairs into two series, and two judges reversed which series was real |
-| Round 2 (masked) | 60 of 60 | 0% | PDF extraction marks on the real side, polished narrative tone on the synthetic side |
-| Round 11 (masked) | 60 of 60 | 0% | Real external standards and `.gov.sg` domains on the real side, capital letters in mid-sentence fact splices on the synthetic side |
-
-A judge gives one label to a whole document series, so its 20 verdicts are not independent. The judge
-guard therefore blocks a promotion only when every judge does better on the candidate and the mean
-error falls by more than `JUDGE_BAND` (0.10).
-
-Most judge clues are about the real side (extraction marks, real standards). The prose rules cannot
-change those clues.
-
-## 5. What we learned
-
-**One rule change moves two metrics in opposite directions.** Shorter sentences raise
-`unique_sentences`, but writers then name `gross profit` once in each new paragraph (Rounds 5, 8,
-14). Fewer commercial words lower `commercial_per_k`, but writers then join facts into long compound
-sentences of 25 to 30 words, which lowers `unique_sentences` (Rounds 4, 11, 13). Each fix to one metric
-made the other metric worse.
-
-**One run for each seed is a noisy test.** Under the same policy, two fresh writers wrote 0 and 32
-commercial phrases (Round 5 and Round 8, seeds 2026 and 2027). In Round 7 and Round 11, fresh writers
-wrote half the target length. A single run cannot tell a policy effect from writer variance. WorldLoom
-found the same problem in its first live pilot.
-
-**The real limits are in the corpus, not in the policy.** The `commercial_per_k` floor, the PPTX
-footers, and the BM25 effect (section 2) each come from the planted content or the renderer. The
-proposer can only change the writer policy, so it cannot remove them.
-
-**Near misses are discarded.** Rounds 5, 8, 9, and 12 each gained on holdout and improved one or two
-train metrics. The loop keeps no archive, so later rounds start again from the champion and cannot
-build on these candidates.
-
-**Process errors invalidate a round.** The supervisor stopped four errors: two rules in one round, a
-receipt with passages from an earlier round, holdout numbers in a proposer message, and writers
-told to copy earlier output. Each affected round ran again from scratch. The rules in section 1 now
-prevent these errors.
-
-**An empty field is a silent error.** The first Round 15 receipt had no sample passages. The sample
-extractor read `runs/loop/r015t/set`, but the files are in `set/large`. The extractor returned an
-empty list and no error. Commit `1ab566a` added the two passages. The receipt checklist in section 7
-now catches this error before a commit.
-
-## 6. Next levers
-
-These changes alter the loop design. They need approval before they are made.
-
-1. **Repeat runs.** Run two writers on each seed and compare the means. This reduces writer variance.
-2. **An archive of near misses.** Keep candidates that gained on holdout, and let the proposer start
-   from one of them.
-3. **A floor-aware band.** Measure `commercial_per_k` on the prose only, or subtract the fixed
-   phrases from the planted content.
-4. **Fixes in the corpus.** Write the PPTX date footer so that it is not read as a sentence, and keep
-   the word `margin` in the PDF so that the BM25 weight does not change.
-5. **Round 15 result.** Round 15 raised train `unique_sentences` from 48.8 to 74.3 and gained `+4.119`
-   on holdout. It was rejected because train `commercial_per_k` rose from 2.26 to 6.47. Shorter
-   sentences again made writers name `gross profit` in more paragraphs.
-
-## 7. Loop v2: guidance for the next rounds
-
-This section was added by the loop monitor on 23 Oct 2026 10:45 SGT. It applies to every round that
-runs on loop v2 code.
-
-> [!IMPORTANT]
-> This section holds holdout seeds and holdout numbers. The proposer must not read it. The proposer
-> reads sections 1 to 5 only (`policies/PROPOSER.md`).
-
-### Holdout set (not for the proposer)
-
-The holdout seeds are `3101` (2 MB) and `3102` (5 MB). Loop v1 champion holdout (grader v1):
-`wl_id_per_k` 0.00, `commercial_per_k` 6.30, `retail_per_k` 0.23, `within_file_repeat` 4.0%,
-`top_opener_share` 13.5%, `unique_sentences` 52.0, `cross_document_reuse` 0.0%, words per MB 390.
-
-### What changed in loop v2
-
-| Item | Loop v1 | Loop v2 |
+| File | Content | Proposer may read |
 |---|---|---|
-| Grader digest | `eeb607b3…` | `b1ff1f40…` (skips PPTX date, footer, and slide number text) |
-| Planted nouns in a public-sector pack | `gross profit`, `gross margin` | `gross surplus`, `surplus rate` |
-| Real reference | Mean of 11 real files | Median of 11 real files (`docs/realism/reference-v2.json`) |
-| `unique_sentences` in the promotion rule | Scored, band 5.0 | Not scored. Receipts report it only. User approved, 23 Oct 10:39 SGT. |
+| `docs/realism/receipts/round<N>.json` | Full receipt: train and holdout vectors, decision, samples | No |
+| `docs/realism/loop/train-<NNN>.json` | Train vector, per-file train numbers, writer notes, samples | Yes |
+| `docs/realism/loop-log.md` | One row in Appendix A, update to "Current state" | No |
+| `docs/realism/lessons.md` | One row in "Loop v2 rounds" with train numbers only, plus any new lesson | Yes |
 
-A v1 receipt and a v2 receipt use different graders. Do not compare their numbers directly. To compare
-a v1 policy with a v2 policy, rebuild the v1 prose on v2 code and score it again. A rescore is not a
-new round. Label it as a rescore in the receipt.
+Check each receipt before you commit it:
 
-### The v2 vector has little room on train
+- `grader_sha256` is the digest in "Current state". If the digest changed, stop. A grader change is a
+  Level 2 change.
+- `samples` holds exactly two passages. Each `file` comes from `runs/loop/r<NNN>t/set/large`.
+- `samples_method` names the folder that the extractor read.
+- `candidate_policy_sha256` matches `sha256sum` of the policy file.
+- `decision` is the output of `realism_loop.decide`.
+- Known floors are recorded, for example the cover abstract repeats in each PDF.
 
-The v2 champion rescore (train, grader v2) shows how much each metric can still gain:
+A helper that returns an empty list or a zero count for a whole set is an error. Examine the input
+path before you record the result.
 
-| Metric | Real median | Champion train | Can it gain more than its band? |
-|---|---|---|---|
-| `commercial_per_k` | 0.0 | 0.17 | No. The gap (0.17) is less than the band (0.5). |
-| `retail_per_k` | 0.0 | 0.21 | No. The gap (0.21) is less than the band (0.3). |
-| `top_opener_share` | 7.1% | 6.3% | No. The gap (0.8 points) is less than the band (1 point). |
-| `within_file_repeat` | 0.0% | 3.9% | Not through the writer. See the next paragraph. |
-| `cross_document_reuse` | 0.1% | 0.0% | No. |
+## 7. Improve the loop (Level 2)
 
-The champion repeats come from the PDF only. The DOCX and PPTX files have no repeated sentence. The
-PDF repeats have two sources, and neither source is the writer policy:
+### When to start Level 2
 
-- The review record table. WorldLoom gives one reviewer comment to several sections, so the same
-  comment occurs three times in each PDF.
-- The cover abstract. It copies sentences from the first executive summary paragraph.
+Start Level 2 when one of these conditions is true:
 
-Thus no metric in the v2 vector can promote a writer policy on train at the moment. The other
-metrics can only block a candidate. Do not tell the proposer to target repeated sentences. First fix
-the two sources in BigLoom, rebuild the champion, and measure it again. If the vector still has no
-room after that, the loop needs a new signal (see the recommended order below).
+- **No room.** No metric can gain more than its band on train. Measure this before each proposal:
+  for each metric in `realism_loop.BANDS`, compare the champion's distance to the real median with
+  the band.
+- **Plateau.** Three rounds in a row were rejected for the same reason.
+- **Disagreement.** Train and holdout move in opposite directions on the same metric for two rounds.
+- **Judges.** The masked judges still tell real from synthetic every time after a promotion.
 
-### Train and holdout do not agree
+### How to do Level 2
 
-On v2, champion train `commercial_per_k` is 0.17, but champion holdout is 4.31. The train seeds do
-not show the commercial phrase problem, so the proposer cannot see it. Round 15 under v2 shows the
-same gap: train 4.48, holdout 3.90. The writer, not the policy, causes most of this variance (section
-5).
+1. **Find the cause.** Look at the files, not only the vector. For each metric with a problem, list
+   the sentences or phrases that cause it, and find which part of BigLoom or WorldLoom made them.
+2. **Classify the cause.** The cause is one of: writer policy, BigLoom corpus or renderer, grader,
+   real reference, or procedure (seeds, number of writers).
+3. **Propose one change to the user.** State the cause, the change, the expected effect, and the
+   test that will show it. Wait for approval.
+4. **Make the change on `realism-v2`.** Add a test that fails on the old code. Show the failing run
+   and the passing run. Do not change code while a round runs.
+5. **Measure the champion again.** Rebuild the champion prose on the new code with no new writer
+   runs. Record it as a rescore, not a round. Old and new receipts use different graders. Do not
+   compare their numbers directly.
+6. **Record.** Add the change and the rescore to `loop-log.md`. Add the lesson to `lessons.md`
+   with train numbers only. Update `policies/PROPOSER.md` if the proposer needs to know the change.
+7. **Merge.** Merge `realism-v2` into `realism-loop` and push. Never merge into `main`.
 
-### Rules for every v2 round
+### Order of the design changes
 
-1. **Receipt checklist.** Before a commit, check each receipt for these items:
-   - `grader_sha256` is the v2 digest.
-   - `samples` holds exactly two passages, and each `file` is in this round's train set.
-   - `samples_method` names the folder that the extractor read.
-   - `candidate_policy_sha256` matches `sha256sum` of the policy file.
-   - `decision` is the output of `realism_loop.decide`, not a hand-written value.
-2. **Stop on an empty result.** A helper that returns an empty list or a zero count for a whole
-   set is an error. Examine the input path before you record the result.
-3. **Plateau rule.** After three rejected rounds with the same failure reason, do not propose a fourth
-   rule of the same kind. Ask the user for a loop design change from section 6 or this section.
-   Loop v1 ran 13 rejected rounds in a row, and most failed on the same trade-off.
-4. **Length guard.** Record the prose word count of each candidate against the champion. If a
-   candidate writes less than 80% of the champion prose, report it as a writer failure, not as a
-   policy result. Rounds 7 and 11 had this problem.
-5. **One code change at a time.** Commit a loop code change, with its test, before the next round
-   starts. Do not change code while writers or builds run.
+Propose these changes in this order, unless the evidence shows a better order:
 
-### Recommended order of the next design changes
+1. **Repeat runs.** Run two writers on each seed and score the mean. The noise between two writers is
+   larger than every band.
+2. **More train seeds.** Add new train seeds that are not holdout seeds. The current train pair does
+   not show the commercial phrase problem.
+3. **A new signal for distance from real.** Add a metric that the judges' clues point to, for
+   example prose density without padding, or the judge error rate as a scored metric.
+4. **An archive of near misses.** Keep candidates that won on holdout but lost on train. Let the
+   proposer start from one of them.
 
-These changes need user approval before they are made.
+## 8. Stop and ask the user
 
-1. **Repeat runs first.** Run two writers on each seed, and score the mean. Without this step, the
-   noise between two writers (0 and 32 commercial phrases) is larger than every band.
-2. **More train seeds.** Add train seeds that are not `2026` or `2027` and not holdout seeds. The
-   current train pair hides the commercial phrase problem that holdout shows.
-3. **A new signal for distance from real.** The judges still tell real from synthetic every time,
-   but the v2 vector is near the real median on train. The vector no longer measures the main gap.
-   Two candidates: prose density (words per MB without padding), and the judge error rate as a
-   scored metric, not only a guard.
-4. **An archive of near misses.** Round 15 is the first entry. It raised distinct sentences by 52%
-   and failed on commercial phrases only.
+Stop the loop and ask the user when one of these happens:
 
-## Appendix A. Rounds
+- A quota error (429). Report the reset time in SGT. Do not retry.
+- A permission or credential error. Give the exact command that fixes it.
+- The grader digest changes without an approved Level 2 change.
+- A Level 2 condition is true (section 7).
+- The review set is ready. Give the folder path and the file names.
 
-The receipt for each row is `docs/realism/receipts/round<N>.json`. It holds the full vectors, the
-samples, and the policy digest.
+## 9. Report
 
-| Round | Change under test | Result | Main reason |
-|---|---|---|---|
-| 0 | WorldLoom template writer | Baseline | Not applicable |
-| 1 | Handshake writer, appendix and ID filter, single-column measure table (`bda2a5cd…`) | Baseline champion | Not applicable |
-| 2 | `VOCABULARY`: name commercial measures at most once in a paragraph (`a60c857a…`) | **Promoted** | `commercial_per_k` 7.55 to 2.26 on train |
-| 3 | Opener cap and thin-fact procedure rule (`b739d290…`) | Rejected | Two rules in one round. Retrieval gate failed. |
-| 4 | Each commercial word once in each section (`b10737ef…`) | Rejected | `unique_sentences` 48.8 to 35.3 |
-| 5 | Sentences of 12 to 18 words (`69b1350e…`) | Rejected | `commercial_per_k` 2.26 to 4.78 |
-| 6 | Opener cap of two in each document (`41278114…`) | Rejected | A reused writer carried Round 5 text |
-| 7 | Each commercial measure once in each section, fresh writers (`5fd47221…`) | Rejected | Writers wrote half length, `unique_sentences` 29.2 |
-| 8 | Word and sentence floor in each section (`8c9f8b23…`) | Rejected | `commercial_per_k` 2.26 to 4.09 |
-| 9 | Commercial words once in each document (`e940cc6a…`) | Rejected | Retrieval gate failed (BM25 effect) |
-| 10 | `gross margin` once in each section of one document (`db8c8714…`) | Rejected | Retrieval gate failed (BM25 effect) |
-| 11 | `gross margin` in three named sections (`75139cfa…`) | Rejected | Wrong section names, `unique_sentences` 31.2 |
-| 12 | Sentences of 12 to 16 words (`8e383634…`) | Rejected | Retrieval gate failed on one seed |
-| 13 | `gross margin` in four named sections (`1bb77be6…`) | Rejected | `unique_sentences` 48.8 to 38.5 |
-| 14 | Two paragraphs of short sentences in each section (`89a09a12…`) | Rejected | `commercial_per_k` 3.48, PPTX footers raised `top_opener_share` to 16.6% |
-| 15 | Short sentences of 13 to 17 words in three paragraphs (`57dae3c7…`) | Rejected | `unique_sentences` 48.8 to 74.3, but `commercial_per_k` 2.26 to 6.47 |
-
-## Appendix B. Files
-
-| File | Purpose |
-|---|---|
-| `src/bigloom/realism_metrics.py` | The metric vector and the grader digest |
-| `src/bigloom/realism_loop.py` | Train and holdout preparation, build runner, promotion rule, receipt writer |
-| `src/bigloom/realism_pairs.py` | Masked blind pair builder, scorer, and sample extractor |
-| `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
-| `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
-| `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-015.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round15.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-015.json` | Train-only receipts that the proposer reads |
+After each round or Level 2 change, report in five lines or fewer: the step, the result, the
+decision, any rule break, and any blocker. Use SGT for every time.
