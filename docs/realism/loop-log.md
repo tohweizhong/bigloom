@@ -51,6 +51,15 @@ Update this section at the end of each round and after each loop change.
     `the lesson`, `what this means`, `the point (for|is)`.
   - The rate is counted sentences per 1000 words, like the other `_per_k` metrics.
 - **Stop rule.** If the real median is not clearly below the champion train value, stop and report.
+- **Measure (23 Oct 20:52 SGT, pattern unchanged).** Real median 0.00 per 1000 words (9 of 11 real
+  files have 0; the DPO guide has 3 sentences, the SGTS page 1). Champion rescore-v2-017 train mean
+  1.18: only 3 sentences in 6 files (1 in the 2 MB DOCX, 2 in the 2 MB deck, where a short file makes
+  2 sentences worth 5.67). Holdout mean 1.64 (8 sentences).
+- **Result: stopped, not adopted.** The gap rests on 3 train sentences. One sentence in a short deck
+  moves the mean by about 0.9, so a sensible band is about 1.0, and the room after the band is
+  about 0.2. The pattern also misses most of the lines that the judges quoted, because they give no
+  modal verb ("For engineers, the lesson is..." is caught, "Six months from now..." is not). The
+  metric is too sparse and too noisy for a grader change. The grader stays at v2 (`b1ff1f40...`).
 
 ### rescore-v2-017: champion on the target family rule (23 Oct 20:50 SGT)
 
