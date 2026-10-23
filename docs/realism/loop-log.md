@@ -51,6 +51,21 @@ Update this section at the end of each round and after each loop change.
 - **Gates.** If a new target fails a gate, report it. Do not lower a gate.
 - **Baseline.** The new baseline is `rescore-v2-017`. It is a new reference. Do not compare its
   vector with rs016 as a gain or a loss.
+- **Correction after the first cache (`15f94d1`).** The first version filled the five candidate
+  slots by family alone, so the PPTX deck lost its agent prose and `knowledge_article` entered on
+  seed 3101. The fix picks one candidate for each format in the build order with the build's
+  ranking, then the spares, and excludes `knowledge_article` by name. The first symptom was seen on
+  holdout seed 3101. The fix rests on the general cause (slots filled by family, not by format), so
+  the monitor accepted it. After this change, no selection change may rest on a holdout output.
+- **Candidates on the rebuilt cache (23 Oct 20:40 SGT).** Seeds 2026, 2027, 3102:
+  `service_impact_assessment` 570, `incident_rca` 1500, `exco_update` 950,
+  `audit_observations_response` 380, `executive_summary` 220 (3,620 words). Expected targets: DOCX
+  service impact assessment (operations), PDF incident review (engineering), PPTX Exco update
+  (finance). Seed 3101 has no service impact assessment: `incident_rca` 1500,
+  `budget_utilisation_report` 1200, `executive_summary` 220, `audit_observations_response` 380,
+  `data_quality_review` 380 (3,680 words). Expected targets: DOCX incident review, PDF budget report,
+  PPTX executive summary. **Known limit:** the 3101 PPTX target has only 220 words of agent prose.
+  No special case is added for it.
 
 ### Level 2 change: related documents table (23 Oct 20:19 SGT)
 
