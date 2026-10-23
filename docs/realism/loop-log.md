@@ -33,6 +33,25 @@ Update this section at the end of each round and after each loop change.
    sha256 `24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69`. The text did not
    change. Receipts before this commit name the old digest.
 
+### Level 2 change: target selection prefers a new family (recorded 23 Oct 20:25 SGT, before the baseline)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT, confirmed by the monitor at
+  20:22 SGT. The user did not choose between option A and option B by name.
+- **Cause.** The rs016 judges saw only two synthetic families (budget report, incident review). The
+  old targets were the documents with the most prose, which were all finance documents and one
+  incident review.
+- **Rule.** In `narration.choose_candidates` and `build._choose`: first a document from a family
+  (WorldLoom filing domain) that no earlier target uses, then a preferred type, then the most
+  prose. One rule in two functions.
+- **Preference list (fixed now, not tuned after judge results):** `service_impact_assessment` only.
+  Reason: the real set (file names only) holds 5 service standards. It is the operations type that
+  renders as DOCX or PDF with the longest brief (570 words, 3 sections, seed 2026).
+- **Left out:** `knowledge_article` (380 words, 2 sections on seed 2026), which is thin for a 2 MB or
+  5 MB file and may fail the fact-depth or retrieval gate.
+- **Gates.** If a new target fails a gate, report it. Do not lower a gate.
+- **Baseline.** The new baseline is `rescore-v2-017`. It is a new reference. Do not compare its
+  vector with rs016 as a gain or a loss.
+
 ### Level 2 change: related documents table (23 Oct 20:19 SGT)
 
 - **Approval.** The user's standing instruction at 23 Oct 10:39 SGT ("keep going. dont stop. I will
