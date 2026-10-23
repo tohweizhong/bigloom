@@ -142,7 +142,8 @@ Start Level 2 when one of these conditions is true:
 Propose these changes in this order, unless the evidence shows a better order:
 
 1. **Repeat runs.** Run two writers on each seed and score the mean. The noise between two writers is
-   larger than every band.
+   larger than every band. This change doubles the writer quota for each round. State this cost
+   when you ask the user.
 2. **More train seeds.** Add new train seeds that are not holdout seeds. The current train pair does
    not show the commercial phrase problem.
 3. **A new signal for distance from real.** Add a metric that the judges' clues point to, for
