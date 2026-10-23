@@ -19,6 +19,7 @@ Update this section at the end of each round and after each loop change.
 | Champion policy | `policies/writer/round-002.md` (`a60c857a…`) |
 | Last round | Round 15, rejected |
 | Next round number | 16 |
+| Real files for the judges | `/usr/local/google/home/weizhongt/.gemini/jetski/brain/962bad5e-098a-42ae-a058-de8668e68825/scratch/realism/real` MISSING. The folder does not exist on 23 Oct 10:52 SGT. The judges cannot run until the user gives the location of the 11 real files. |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items

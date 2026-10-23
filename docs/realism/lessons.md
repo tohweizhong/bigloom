@@ -32,6 +32,15 @@ in [`docs/self-improvement.md`](../self-improvement.md).
 - **Named sections fail.** Rules that name sections by title failed, because the section titles
   differ between documents (Round 11).
 
+## Judge clues (masked judges, train passages)
+
+The masked judges told real from synthetic in every pair after Rounds 2 and 11. Their clues:
+
+- Synthetic side: a polished narrative tone, and capital letters in the middle of a sentence where a
+  fact is joined into the text.
+- Real side: PDF extraction marks, real external standards, and `.gov.sg` domains. The writer policy
+  cannot change these real-side clues.
+
 ## Writer behaviour
 
 - One writer run for each seed is noisy. Under the same policy, two writers wrote 0 and 32 commercial

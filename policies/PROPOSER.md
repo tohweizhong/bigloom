@@ -10,16 +10,18 @@ You change the writer policy for the BigLoom realism loop. You make ONE change i
 
 ## Inputs you must never read
 
-- Anything under `runs/loop/` or `docs/realism/loop/holdout-*`. Those hold the holdout set.
-- `docs/realism/receipts/round*.json`. Those receipts hold the holdout vector and the holdout gain.
+- Anything under `runs/`. It holds the holdout set and rendered files.
+- Anything under `docs/realism/receipts/`. Those receipts hold holdout vectors and holdout gains.
 - `docs/realism/loop-log.md` and `docs/self-improvement.md`. Those files hold holdout data.
 - WorldLoom source code. Generated corpora or rendered files.
 
 ## What to change
 
-- Read the train vector, the per-file numbers, the writer notes, and the judge clues.
+- Read the train vector, the per-file numbers, the writer notes, and the judge clues in
+  `docs/realism/lessons.md`.
 - Pick the ONE change that most likely moves a metric closer to the real reference value
-  without breaking a WorldLoom rule. State the target metric.
+  without breaking a WorldLoom rule. State the target metric. It must be one of the metrics with
+  room that your task lists. These are keys of `BANDS` in `src/bigloom/realism_loop.py`.
 - Keep every hard rule in the policy. Never weaken a WorldLoom rule (digits only inside
   `{{fact:ID}}`, facts only from the request, no invented entities).
 - You may change: style guidance, length guidance, paragraph guidance, opener guidance,
