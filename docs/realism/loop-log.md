@@ -24,8 +24,13 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Level 2 is open: no metric has room on train (rescore below). Ask the user for one design
-   change before Round 16.
+1. Run 4 fresh writers on the champion policy (`round-002.md`) with the new requests, train and
+   holdout (cost: 4 writer runs). Blocked by model quota until about 23 Oct 19:44 SGT.
+2. Rescore the champion on those responses. The terminology change works only if holdout
+   `commercial_per_k` falls well below 4.35. Then run the room check before Round 16.
+3. Judges are blocked: the real files folder
+   (`~/.gemini/jetski/brain/962bad5e-.../scratch/realism/real`) no longer exists. The user must give
+   its location. This blocks only the judge step of a promoted round.
 
 ### Champion rescore on v2 code (23 Oct 10:50 SGT)
 
@@ -44,6 +49,26 @@ The `within_file_repeat` floor comes from the PDF cover Summary box: 4 of 64 sen
 PDF and 6 of 66 in the 5 MB PDF. The train mean floor is 2.6%. The train pair shows almost no
 commercial phrases (0.18), but the holdout pair shows 4.35. The train seeds do not show the problem
 that remains.
+
+### Level 2 change: public-sector terms in the writer requests (23 Oct 11:10 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT: "keep going. dont stop. I will
+  go with your recommendations." The user did not approve this change by name.
+- **Cause.** Every `requests.json` named "profit" about 73 times and "surplus" never. The words come
+  from the fact labels, which WorldLoom builds from ledger keys (`financial.gross_profit.actual`).
+  Writer variance then decided how many commercial phrases a file held (train 0.18, holdout 4.35).
+- **Change.** `narration.public_terms` (commit `4a708a6`) adds a `terminology` entry to each request
+  whose facts measure gross profit or gross margin, for a public-sector pack only. The entry names
+  "gross surplus" and "surplus rate", the same words that BigLoom plants. Fact keys and values do
+  not change.
+- **Corpus, not policy.** The entry is part of the requests for the champion and for every
+  candidate. It is not a policy rule.
+- **Test.** `test_public_sector_requests_name_a_surplus` passes on `4a708a6` and fails on `baf748a`
+  with `KeyError: 'gross_profit'`. `narrate accept` still accepts the old Round 2 prose against the
+  new requests (21 of 21). Full suite: 168 passed.
+- **Cache.** The old cache is in `runs/loop/cache-backup-20261023-1110`. The new cache holds the new
+  requests for seeds 2026, 2027, 3101, and 3102.
+- **Effect.** Not measured yet. The champion prose must be written again on the new requests.
 
 ## History of the loop design (v1)
 
