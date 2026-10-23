@@ -57,6 +57,19 @@ def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
     return out
 
 
+#: Loop v2 target selection. A target prefers a document family (the WorldLoom filing domain) that
+#: no earlier target in the group uses, then a type from this list, then the most prose. The real
+#: reference holds service standards, guides, and product pages, while the old targets were all
+#: finance documents and one incident review. `knowledge_article` is left out: its brief is about
+#: 380 words in 2 sections, which is thin for a 2 MB or 5 MB file.
+PREFERRED_TYPES: tuple[str, ...] = ("service_impact_assessment",)
+
+
+def family_rank(domain: str, artifact_type: str, used_domains: set[str]) -> tuple[int, int]:
+    """Return the selection rank of a document type: a new family first, then a preferred type."""
+    return (int(domain in used_domains), int(artifact_type not in PREFERRED_TYPES))
+
+
 def _choose(
     world: World,
     fmt: Format,
@@ -67,9 +80,11 @@ def _choose(
 ) -> tuple[ArtifactIR, str]:
     """Choose an unused document of a type not yet used, among the documents WorldLoom renders in `fmt`.
 
-    The document with the most body prose wins, then the one with the most visible sections.
+    A document from a family that no earlier target uses wins, then a preferred type
+    (`family_rank`), then the most body prose, then the most visible sections.
     """
     intents = {i.id: i for i in world.artifact_intents}
+    used_domains = {str(i.domain) for i in world.artifact_intents if i.artifact_type in used_types}
     candidates = []
     for ir in world.artifact_irs:
         intent = intents.get(ir.intent_id)
@@ -79,15 +94,16 @@ def _choose(
             continue
         visible = [s for s in ir.sections if not s.hidden]
         words = sum(len((s.body or "").split()) for s in visible)
-        candidates.append((-words, -len(visible), ir.id, ir, intent.artifact_type))
+        rank = family_rank(str(intent.domain), intent.artifact_type, used_domains)
+        candidates.append((rank, -words, -len(visible), ir.id, ir, intent.artifact_type))
     if not candidates:
         why = f" Rejected: {'; '.join(rejected)}." if rejected else ""
         raise CorpusError(
             f"No unused WorldLoom document type renders as {fmt} in this world.{why} Use other formats, "
             "fewer sizes, or a pack with more document types (for example packs/govtech.json)."
         )
-    candidates.sort(key=lambda c: (c[0], c[1], c[2]))
-    _, _, _, ir, artifact_type = candidates[0]
+    candidates.sort(key=lambda c: (c[0], c[1], c[2], c[3]))
+    _, _, _, _, ir, artifact_type = candidates[0]
     used_ids.add(ir.id)
     used_types.add(artifact_type)
     return ir, artifact_type

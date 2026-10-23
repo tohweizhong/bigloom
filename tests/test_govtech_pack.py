@@ -106,3 +106,17 @@ def test_public_sector_planted_labels_name_a_surplus(govtech_world: World, retai
 
     rplans = plan_targets(retail_world, retail_world.artifact_irs[:6], [0] * 6, set())
     assert not any("surplus" in p.text_label for p in rplans)
+
+
+def test_build_targets_come_from_three_document_families(govtech_world: World) -> None:
+    """Loop v2: the targets that build chooses span three families and include the operations type."""
+    from bigloom.build import _choose, _renderable
+
+    fmts = ["docx", "pdf", "pptx"]
+    formats_of = _renderable(govtech_world, fmts)
+    used_ids: set[str] = set()
+    used_types: set[str] = set()
+    picked = [_choose(govtech_world, fmt, formats_of, used_ids, used_types)[1] for fmt in fmts]
+    domain = {i.artifact_type: str(i.domain) for i in govtech_world.artifact_intents}
+    assert len({domain[t] for t in picked}) == 3, picked
+    assert "service_impact_assessment" in picked, picked
