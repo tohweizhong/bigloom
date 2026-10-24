@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import json
 import shutil
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -70,6 +70,18 @@ def distances(vector: Mapping[str, float], real: Mapping[str, float]) -> dict[st
     return {k: round(abs(float(vector[k]) - float(real[k])), 4) for k in BANDS}
 
 
+#: Grader v3: the judge error rate is a scored dimension. Its real target is 0.5 (the judges cannot
+#: tell real from synthetic). Its band is `JUDGE_BAND` (6 of 60 verdicts).
+JUDGE_TARGET = 0.5
+
+
+def judge_error(correct: Sequence[int] | None, pairs_per_judge: int = 20) -> float | None:
+    """Return the judge error rate `1 - correct / (pairs x judges)`, or None without counts."""
+    if not correct:
+        return None
+    return round(1 - sum(correct) / (pairs_per_judge * len(correct)), 4)
+
+
 def decide(
     best_train: Mapping[str, float],
     cand_train: Mapping[str, float],
@@ -78,6 +90,8 @@ def decide(
     real: Mapping[str, float],
     best_judge_correct: list[int] | None = None,
     cand_judge_correct: list[int] | None = None,
+    best_holdout_judge_correct: list[int] | None = None,
+    cand_holdout_judge_correct: list[int] | None = None,
 ) -> Decision:
     """Apply the promotion rule.
 
@@ -85,16 +99,24 @@ def decide(
     by more than its band and no dimension moves away by more than its band, and on the holdout
     set the summed normalised distance also falls.
 
-    The judges guard against text that games the cheap metrics without reading as real. With
-    masked names, one judge labels a whole file by "series", so its 20 verdicts are not
-    independent. The guard therefore blocks only when EVERY judge is right more often on the
-    candidate than on the champion, and the mean error rate falls by more than `JUDGE_BAND`.
+    Grader v3: `judge_error` is one of the dimensions. Its distance is `|judge_error - 0.5|` and
+    its band is `JUDGE_BAND`. It enters the train check when both train sides have judge counts,
+    and the holdout gain when both holdout sides have them. A side without counts skips it.
     """
     bt, ct = distances(best_train, real), distances(cand_train, real)
-    improved = tuple(k for k in BANDS if round(bt[k] - ct[k], 6) > BANDS[k])
-    worsened = tuple(k for k in BANDS if round(ct[k] - bt[k], 6) > BANDS[k])
     bh, ch = distances(best_holdout, real), distances(cand_holdout, real)
-    gain = round(sum((bh[k] - ch[k]) / BANDS[k] for k in BANDS), 3)
+    bands = dict(BANDS)
+    bj, cj = judge_error(best_judge_correct), judge_error(cand_judge_correct)
+    if bj is not None and cj is not None:
+        bands["judge_error"] = JUDGE_BAND
+        bt["judge_error"], ct["judge_error"] = abs(bj - JUDGE_TARGET), abs(cj - JUDGE_TARGET)
+    improved = tuple(k for k in bt if k in bands and round(bt[k] - ct[k], 6) > bands[k])
+    worsened = tuple(k for k in bt if k in bands and round(ct[k] - bt[k], 6) > bands[k])
+    hbj, hcj = judge_error(best_holdout_judge_correct), judge_error(cand_holdout_judge_correct)
+    gain_terms = [(bh[k] - ch[k]) / BANDS[k] for k in BANDS]
+    if hbj is not None and hcj is not None:
+        gain_terms.append((abs(hbj - JUDGE_TARGET) - abs(hcj - JUDGE_TARGET)) / JUDGE_BAND)
+    gain = round(sum(gain_terms), 3)
     reasons: list[str] = []
     if not improved:
         reasons.append("no train dimension improved by more than its band")
@@ -102,12 +124,6 @@ def decide(
         reasons.append(f"train dimensions worsened beyond their band: {', '.join(worsened)}")
     if gain <= 0:
         reasons.append(f"holdout did not gain (normalised gain {gain})")
-    if best_judge_correct and cand_judge_correct and len(best_judge_correct) == len(cand_judge_correct):
-        pairs = 20 * len(best_judge_correct)
-        best_err = 1 - sum(best_judge_correct) / pairs
-        cand_err = 1 - sum(cand_judge_correct) / pairs
-        if all(c > b for c, b in zip(cand_judge_correct, best_judge_correct, strict=True)) and best_err - cand_err > JUDGE_BAND:
-            reasons.append(f"every judge read the candidate as less real (error {best_err:.2f} -> {cand_err:.2f})")
     return Decision(promote=not reasons, improved=improved, worsened=worsened, holdout_gain=gain, reasons=tuple(reasons))
 
 

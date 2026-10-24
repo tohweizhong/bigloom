@@ -59,12 +59,26 @@ def test_receipt_round_trips(tmp_path: Path) -> None:
     assert data["round"] == 2 and data["decision"]["promote"] is False
 
 
-def test_judge_guard_blocks_only_when_every_judge_agrees() -> None:
+def test_judge_error_alone_can_promote() -> None:
+    """Grader v3: judges that cannot tell real from synthetic count as a train and holdout gain."""
+    best, cand = [20, 20, 20], [10, 10, 10]  # error 0.0 -> 0.5, the real target
+    d = rl.decide(BEST, BEST, BEST, BEST, REAL, best_judge_correct=best, cand_judge_correct=cand,
+                  best_holdout_judge_correct=best, cand_holdout_judge_correct=cand)
+    assert d.promote and d.improved == ("judge_error",), d
+    assert d.holdout_gain == round(0.5 / rl.JUDGE_BAND, 3)
+
+
+def test_judge_error_moving_away_from_half_is_worsened() -> None:
+    """Grader v3: a candidate that the judges spot more easily is blocked, even with a metric gain."""
     cand = {**BEST, "top_opener_share": 0.09}
-    one_flip = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[20, 0, 0], cand_judge_correct=[20, 20, 0])
-    assert one_flip.promote
-    all_agree = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[10, 2, 3], cand_judge_correct=[20, 18, 19])
-    assert not all_agree.promote and any("every judge" in r for r in all_agree.reasons)
+    d = rl.decide(BEST, cand, BEST, cand, REAL, best_judge_correct=[10, 12, 9], cand_judge_correct=[17, 18, 16])
+    assert not d.promote and "judge_error" in d.worsened, d
+
+
+def test_judge_error_is_skipped_without_counts() -> None:
+    cand = {**BEST, "top_opener_share": 0.09}
+    d = rl.decide(BEST, cand, BEST, {**BEST, "top_opener_share": 0.10}, REAL)
+    assert d.promote and "judge_error" not in d.improved + d.worsened
 
 
 def test_v2_reference_is_the_median_of_the_real_files() -> None:
