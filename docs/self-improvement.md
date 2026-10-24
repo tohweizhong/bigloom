@@ -150,9 +150,9 @@ After each round, write these files:
 | File | Content | Proposer may read |
 |---|---|---|
 | `docs/realism/receipts/round<N>.json` | Full receipt (fields below) | No |
-| `docs/realism/loop/train-<NNN>.json` | The full receipt with every holdout field, every holdout seed key, and `decision` removed | Yes |
+| `docs/realism/loop/train-<NNN>.json` | The full receipt with every holdout field, every holdout seed key, every holdout gate violation, and `decision` removed | Yes |
 | `docs/realism/loop-log.md` | One row in Appendix A, update to "Current state" | No |
-| `docs/realism/lessons.md` | One row in "Loop v2 rounds" with train numbers only, plus any new lesson | Yes |
+| `docs/realism/lessons.md` | One row in "Loop v2 rounds" with train numbers and train gate results only, plus any new lesson | Yes |
 
 Fields of the full receipt:
 
@@ -164,7 +164,7 @@ Fields of the full receipt:
 | `proposer_change` | The proposer's JSON reply |
 | `writer_accept_rounds`, `agent_words` | Steps 5 and 6, one key for each seed |
 | `grader_sha256` | `grader_sha256` from the `build_round` result |
-| `gate_passed`, `gate_violations` | `gate_passed` and `violations` from both `build_round` results |
+| `gate_passed`, `gate_violations` | `gate_passed` and `violations` from both `build_round` results. In `train-<NNN>.json`, use the train `build_round` result only. |
 | `champion_train_vector`, `champion_holdout_vector` | The champion vectors from section 2 |
 | `vector`, `holdout_vector` | `vector` from the train and the holdout `build_round` results |
 | `per_file` | `files` from the train `build_round` result |
