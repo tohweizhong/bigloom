@@ -14,7 +14,7 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 23 Oct 2026 21:15 SGT (rs017d recorded) |
+| Updated | 24 Oct 2026 15:14 SGT (judge metric rule recorded) |
 | Loop version | v2 (merged into `realism-loop` at `65955eb`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Last round | Round 15, rejected |
@@ -24,16 +24,26 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Done 23 Oct 20:50 SGT: the masked judges on the rescore-v2-017 train set scored 20, 20, and 20 of
-   20 (seed 17017, key rebuilt in memory after all three replied). 15 of 20 synthetic passages came
-   from the PDF incident review. The family rule did not change the judge result. The promotion
-   rule cannot reward a judge gain, because the judges only guard. Ask the user for the next Level 2
-   change.
-2. No room on train. `top_opener_share` (5.9%) is on the clean side of the real median (7.1%), so
-   it has no room (rule in `91f26cd`). Evidence for the retail floor and the holdout causes is in
-   the receipt: all holdout commercial matches and the holdout reuse come from the 3101 executive
-   summary deck (WorldLoom deck templates quote fact nouns and the incident review), not from
-   writer prose.
+1. Build grader v3 with `judge_error` as a scored dimension (rule below), merge, then judge the
+   rs017d champion on train and holdout (6 judge runs).
+2. Then run Round 17 and later rounds under `self-improvement.md`, without waiting for the user.
+
+### Level 2 change: judge error rate as a scored metric, grader v3 (rule recorded 24 Oct 15:14 SGT, before code or measure)
+
+- **Approval.** The user at 24 Oct 15:12 SGT: "yes" to the judge error rate as a scored metric, and
+  "dont stop".
+- **Definition.** `judge_error = 1 - correct / (20 x 3)` for one set: 3 fresh masked judges, 20 pairs
+  each. Real target 0.5 (the judges cannot tell). Distance `|judge_error - 0.5|`. Band 0.10 (6 of 60
+  verdicts).
+- **In `decide`.** `judge_error` is one more dimension in the train improved and worsened checks
+  and in the holdout normalised gain. The old judge guard is removed: a worse `judge_error` beyond
+  its band now blocks as "worsened". A side without judge counts skips the dimension.
+- **When.** Judges run on the train set and the holdout set of every candidate that passes the fact
+  gate and the build gate.
+- **Pair seed.** One seed for each baseline, used for the champion and every candidate until the
+  champion changes: `18000 + baseline round number` (rs017d: 18017). Real set: `runs/realism/real`.
+- **Champion.** Judged once for each baseline, on train and holdout.
+- **Cost for each round.** 4 writer runs and 6 judge runs. Baseline now: 6 judge runs.
 
 ### Level 2 change: public-sector measure words in WorldLoom template text (23 Oct 21:15 SGT)
 
