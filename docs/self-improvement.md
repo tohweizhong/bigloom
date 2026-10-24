@@ -118,24 +118,22 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    attempts by length or by metrics. Record both attempts in the rescore receipt.
 7. **Build gate.** Run `build_round(Path("runs/loop/r<NNN>t"), TRAIN)` and
    `build_round(Path("runs/loop/r<NNN>h"), HOLDOUT)`. A gate violation rejects the round.
-8. **Decide.** Call:
-
-   ```python
-   decide(champ_train, cand_train, champ_holdout, cand_holdout, real_reference())
-   ```
-
-   Use the vector from each `build_round` result and the champion vectors from section 2. Use the
-   output as the decision. Never write a decision by hand.
-9. **Judges (only if step 8 promotes).** Build pairs for the champion set and for the candidate set
-   with `build_pairs(real_dir, synth_dir, out_dir, 20, seed)`. Use `<root>/set/large` of the train
-   build as `synth_dir`, and the same `seed` for both sets. Keep the answer key in memory. Do not
-   write it to disk until all judges reply. Start three fresh judge subagents for each set:
+8. **Judges (every candidate that passes steps 5 to 7).** Build pairs for the candidate train set
+   and the candidate holdout set with `build_pairs(real_dir, synth_dir, out_dir, 20, seed)`. Use
+   `<root>/set/large` of each build as `synth_dir`. Use the pair seed of the current baseline
+   (`18000 +` the baseline round number), the same seed that the champion used. Keep the answer key
+   in memory. Do not write it to disk until all judges reply. Start three fresh judge subagents for
+   each set:
 
    > Read `<out_dir>/pairs.md`. Each pair has one real passage and one synthetic passage. For each
    > pair, reply with `{"pair": "P01", "real": "A"}` or `"B"`. Reply with a JSON list only.
 
-   Count correct verdicts with `score(key, verdicts)` for each judge. Call `decide` again with
-   `best_judge_correct` and `cand_judge_correct` (lists of three counts). Use this second decision.
+   Count correct verdicts with `score(key, verdicts)` for each judge. The champion counts come from
+   its baseline receipt. The champion is judged one time for each baseline, on train and holdout.
+   Holdout verdicts and holdout clues never go to a proposer input.
+9. **Decide.** Call `decide` with the champion and candidate vectors, `real_reference()`, and the
+   judge counts for train and holdout, as its signature requires. `judge_error` is one dimension:
+   target 0.5, band 0.10. Use the output as the decision. Never write a decision by hand.
 10. **Record and promote.** Write the receipts (section 6). Commit them on `realism-loop` and push.
     If the decision promotes, the candidate becomes the champion. Update "Current state" in
     `loop-log.md`.
@@ -168,7 +166,8 @@ Fields of the full receipt:
 | `writer_notes` | Short notes from the writers, if any |
 | `samples`, `samples_method` | `samples(Path("runs/loop/r<NNN>t/set/large"))`, and that call as text |
 | `known_floors` | Floors from the newest rescore receipt, for example the cover abstract repeats |
-| `decision` | The output of step 8, or of step 9 when the judges ran |
+| `judge_seed`, `judge_correct_train`, `judge_correct_holdout` | Step 8: the pair seed and three counts for each set. Remove the holdout counts from `train-<NNN>.json`. |
+| `decision` | The output of step 9 |
 
 Check each new receipt before you commit it. These checks apply to receipts made under the current
 grader. Do not apply them to old receipts.
