@@ -14,12 +14,12 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 17:06 SGT (Round 20 recorded; train passed all gates, holdout `3101` failed `bl-001-docx-2mb-image`) |
+| Updated | 24 Oct 2026 17:41 SGT (Round 21 recorded; both train and holdout passed build and retrieval gates, rejected on `seed_2026` length guard) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2 retrieval fix merged in `efddbb4`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
-| Last round | Round 20, rejected (train passed all gates and improved `within_file_repeat` 0.024 to 0.013 with `holdout_gain` +3.163; train judges 20/20/20; holdout `3101` failed `bl-001-docx-2mb-image`) |
-| Next round number | 21 |
+| Last round | Round 21, rejected (both train and holdout passed all build and retrieval gates with `holdout_gain` +3.097, but `seed_2026` wrote 2554 and 2377 words vs 2787.2 length guard threshold) |
+| Next round number | 22 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
@@ -562,6 +562,7 @@ samples, and the policy digest.
 | 18 | Add `"Expand each point with concrete system workflows, control checks, and operational steps instead of essay commentary or reader advice"` (`2aee9ca5…`) | Rejected | Retrieval gate failed on train (`bl-001-docx-2mb-image`, `bl-002-pdf-2mb-image`) and holdout (`bl-001-docx-2mb-image`); train `retail_per_k` 0.0 to 0.453 (`store`/`stores`) and `top_opener_share` 0.059 to 0.044 |
 | 19 | Replace `"say what they mean"` with `"and state their effect on divisions and registers without commentary or reader advice"` (`e192e4b1…`) | Rejected | Train `within_file_repeat` improved 0.024 to 0.013 with zero worsened dimensions and `holdout_gain` +3.48, but `bl-002-pdf-5mb-image` failed `target_or_trap_not_in_top3` |
 | 20 | Re-test Round 19 rule (`e192e4b1…`) after Level 2 retrieval fix | Rejected | Train passed all gates and improved `within_file_repeat` 0.024 to 0.013 with zero worsened dimensions (`judge_correct_train` `[20, 20, 20]`) and `holdout_gain` +3.163, but holdout `3101` failed `bl-001-docx-2mb-image: target_or_trap_not_in_top3` |
+| 21 | Add `"Place every capitalised text fact at the start of a sentence or after a colon."` (`1ec8d4a2…`) | Rejected | Both train and holdout passed all build and retrieval gates (`holdout_gain` +3.097), but `seed_2026` failed the 80% length guard on both attempts (2554 and 2377 words vs 2787.2 threshold) |
 
 ## Appendix B. Files
 
