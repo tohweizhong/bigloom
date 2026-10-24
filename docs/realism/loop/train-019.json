@@ -1,0 +1,190 @@
+{
+  "round": 19,
+  "date_sgt": "2026-10-24 16:28",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-019.md",
+  "candidate_policy_sha256": "e192e4b16e80340a9fb75196fe7ee0038331aeaa81910fc991fcdc5e3f19bc22",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace 'say what they mean' with a rule to state the effect on divisions and registers without commentary or reader advice.",
+    "why": "Train judge_error is 0.0 in rs017d from essay commentary, while naming divisions and registers prevents the 0.453 retail_per_k and BM25 drop in Round 18."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3715,
+    "seed_2027": 3551
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": false,
+  "gate_violations": [
+    "bl-002-pdf-5mb-image: target_or_trap_not_in_top3"
+  ],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.013,
+    "top_opener_share": 0.075,
+    "unique_sentences": 38.167,
+    "words_per_mb": 408.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 752,
+      "words_per_mb": 359,
+      "sentences": 29,
+      "unique_sentences": 29,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.034,
+      "text_gzip_ratio": 0.417,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 726,
+      "words_per_mb": 138,
+      "sentences": 28,
+      "unique_sentences": 28,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.406,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2526,
+      "words_per_mb": 1204,
+      "sentences": 79,
+      "unique_sentences": 77,
+      "within_file_repeat": 0.051,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.279,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2460,
+      "words_per_mb": 469,
+      "sentences": 68,
+      "unique_sentences": 67,
+      "within_file_repeat": 0.029,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.268,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 409,
+      "words_per_mb": 195,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.2,
+      "text_gzip_ratio": 0.435,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 443,
+      "words_per_mb": 84,
+      "sentences": 13,
+      "unique_sentences": 13,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.077,
+      "text_gzip_ratio": 0.414,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed the fact gate and the 80% length guard on the first attempt.",
+    "Train vector had zero commercial_per_k and zero retail_per_k, with within_file_repeat at 0.013 and top_opener_share at 0.075.",
+    "Train failed the retrieval gate on bl-002-pdf-5mb-image (target_or_trap_not_in_top3) because the two PPTX slides outranked traps/bl-002-pdf-5mb_draft.pdf by 0.15 BM25 points."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Across the shared data platform, the morning batch run for the inventory valuation service is currently recorded as failed in the operational monitoring console. Upstream within the product hierarchy sync service, the synchronization halt has isolated 22,859 records that cannot resolve agency identifiers across legacy and cloud registers. Against a normal operational baseline where every active catalogue entry clears staging before the morning cut-off, this unmapped batch represents a substantial block of suspended programme records. Automated ingestion queues have held the affected items in staging storage so that partial balances do not overwrite verified division ledgers. For engineering leads assessing immediate service readiness, any downstream pipeline that reads consolidated valuation tables from the inventory valuation service must hold its scheduled jobs until a clean run finishes. Conversely, operational systems that consume unrelated programme feeds outside the product hierarchy sync service remain unaffected and can continue standard processing for service users."
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "For platform engineering and agency division leads, these figures show that a single reference register defect can halt period-end accounting across the entire group even when cloud compute and storage layers operate normally. Because legacy and cloud agency codes must align for every item in the GTA/ENG/2026/007 | Version 1.0 | Approved Government Technology Agency | Incident RCA | Confidential (Technology) 3 How we got there catalogue, a synchronization failure in the product hierarchy sync service cascades directly into the inventory valuation service and stalls financial sign-off. Hand-maintained lookup tables carried over from the cloud transition therefore impose a direct schedule risk on statutory reporting cycles. Technology teams must treat reference data registers with the same release discipline applied to core application code so that routine catalogue updates do not stall agency budget reconciliation for service users. Protecting the period close schedule requires automated pre-flight checks that reject mismatched agency"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r019t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "judge_correct_train": null
+}

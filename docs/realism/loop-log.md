@@ -14,12 +14,12 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 16:07 SGT (Round 18 recorded; starting Round 19) |
+| Updated | 24 Oct 2026 16:31 SGT (Round 19 recorded; 3-round retrieval gate plateau reached) |
 | Loop version | v3 (`judge_error` scored in `decide`, merged into `realism-loop` from `e647dab`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
-| Last round | Round 18, rejected (train and holdout `*-image` retrieval gates failed; train `retail_per_k` 0.0 to 0.453 and `top_opener_share` 0.059 to 0.044) |
-| Next round number | 19 |
+| Last round | Round 19, rejected (vector improved on `within_file_repeat` 0.024 to 0.013 with `holdout_gain` +3.48 and zero `commercial_per_k`/`retail_per_k`, but `bl-002-pdf-5mb-image` failed `target_or_trap_not_in_top3`) |
+| Next round number | 20 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
@@ -553,6 +553,7 @@ samples, and the policy digest.
 | 15 | Short sentences of 13 to 17 words in three paragraphs (`57dae3c7…`) | Rejected | `unique_sentences` 48.8 to 74.3, but `commercial_per_k` 2.26 to 6.47 |
 | 17 | Replace `"Lead with the position, group related facts, say what they mean"` with `"Use a flat record tone that states facts and actions without essay commentary or reader advice"` (`f78fe8f8…`) | Rejected | Train length guard failed on `seed_2027` (2631 and 2553 words vs 2815 threshold); retrieval gate failed on train (`bl-002-pdf-5mb-image`) and holdout (`bl-001-docx-2mb-image`); train `retail_per_k` 0.0 to 0.705 |
 | 18 | Add `"Expand each point with concrete system workflows, control checks, and operational steps instead of essay commentary or reader advice"` (`2aee9ca5…`) | Rejected | Retrieval gate failed on train (`bl-001-docx-2mb-image`, `bl-002-pdf-2mb-image`) and holdout (`bl-001-docx-2mb-image`); train `retail_per_k` 0.0 to 0.453 (`store`/`stores`) and `top_opener_share` 0.059 to 0.044 |
+| 19 | Replace `"say what they mean"` with `"and state their effect on divisions and registers without commentary or reader advice"` (`e192e4b1…`) | Rejected | Train `within_file_repeat` improved 0.024 to 0.013 with zero worsened dimensions and `holdout_gain` +3.48, but `bl-002-pdf-5mb-image` failed `target_or_trap_not_in_top3` |
 
 ## Appendix B. Files
 
