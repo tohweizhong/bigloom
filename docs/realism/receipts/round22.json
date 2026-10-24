@@ -1,0 +1,360 @@
+{
+  "round": 22,
+  "date_sgt": "2026-10-24 18:11",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-022.md",
+  "candidate_policy_sha256": "7ff4067486e19aed46d3e8e92c07990ffbaea741c2d3ac1d54a5f25f6c07bec2",
+  "proposer": "19c30255",
+  "proposer_rejected_attempt": {
+    "subagent": "dd173cc8",
+    "reason": "Combined two rule changes (colon placement and 95 percent word count rule) in one policy."
+  },
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace \"say what they mean\" with a rule to explain the operational effect on programme delivery and budgets without essay commentary or reader advice.",
+    "why": "Train judge_error is 0.0 in rs017d from essay commentary, while explaining operational effect keeps sections above the 2787-word length guard with 0.0 commercial_per_k."
+  },
+  "writers": {
+    "seed_2026": "9eff7d52",
+    "seed_2026_attempt_1": "aad3016c",
+    "seed_2027": "4fd3a9a5",
+    "seed_3101": "65dfb256",
+    "seed_3102": "94aebd67"
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 2,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words_attempts": {
+    "seed_2026": [
+      2543,
+      3209
+    ],
+    "seed_2027": [
+      3163
+    ],
+    "seed_3101": [
+      3487
+    ],
+    "seed_3102": [
+      3412
+    ]
+  },
+  "agent_words": {
+    "seed_2026": 3209,
+    "seed_2027": 3163,
+    "seed_3101": 3487,
+    "seed_3102": 3412
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": false,
+  "gate_violations": {
+    "train": [],
+    "holdout": [
+      "bl-001-docx-2mb-image: target_or_trap_not_in_top3"
+    ]
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.072,
+    "within_file_repeat": 0.013,
+    "top_opener_share": 0.059,
+    "unique_sentences": 39.333,
+    "words_per_mb": 389.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.051,
+    "unique_sentences": 45.833,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.295,
+    "within_file_repeat": 0.02,
+    "top_opener_share": 0.052,
+    "unique_sentences": 42.333,
+    "words_per_mb": 432.667,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.031
+  },
+  "train_files": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 700,
+      "words_per_mb": 334,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.423,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 673,
+      "words_per_mb": 128,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.077,
+      "text_gzip_ratio": 0.421,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2401,
+      "words_per_mb": 1145,
+      "sentences": 84,
+      "unique_sentences": 82,
+      "within_file_repeat": 0.048,
+      "top_opener_share": 0.036,
+      "text_gzip_ratio": 0.28,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2321,
+      "words_per_mb": 443,
+      "sentences": 66,
+      "unique_sentences": 65,
+      "within_file_repeat": 0.03,
+      "top_opener_share": 0.03,
+      "text_gzip_ratio": 0.27,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.43,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 423,
+      "words_per_mb": 202,
+      "sentences": 16,
+      "unique_sentences": 16,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.443,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 435,
+      "words_per_mb": 83,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.435,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "holdout_files": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 1685,
+      "words_per_mb": 803,
+      "sentences": 67,
+      "unique_sentences": 67,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.045,
+      "text_gzip_ratio": 0.371,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 699,
+      "words_per_mb": 133,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.422,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1792,
+      "words_per_mb": 854,
+      "sentences": 61,
+      "unique_sentences": 59,
+      "within_file_repeat": 0.066,
+      "top_opener_share": 0.066,
+      "text_gzip_ratio": 0.263,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "08 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2429,
+      "words_per_mb": 463,
+      "sentences": 71,
+      "unique_sentences": 69,
+      "within_file_repeat": 0.056,
+      "top_opener_share": 0.042,
+      "text_gzip_ratio": 0.279,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 566,
+      "words_per_mb": 270,
+      "sentences": 18,
+      "unique_sentences": 18,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.056,
+      "text_gzip_ratio": 0.431,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 1.77,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 384,
+      "words_per_mb": 73,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.067,
+      "text_gzip_ratio": 0.437,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "judge_seed": 18017,
+  "judges": {
+    "train": [
+      "225231d4",
+      "f56a9022",
+      "54578580"
+    ],
+    "holdout": []
+  },
+  "champion_judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "champion_judge_correct_holdout": [
+    20,
+    20,
+    19
+  ],
+  "judge_correct_holdout": null,
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Automated morning processing halted when the ingestion feed for the inventory valuation service was recorded as failed on the cloud data platform. Across the product hierarchy sync service, translation rejections prevented 22,859 records from reconciling between legacy agency identifiers and cloud records. Because legacy and cloud agency codes are not interchangeable, the batch job stopped rather than writing unmapped records into downstream valuation tables. Every unmapped entry sits quarantined in the staging queue while platform engineers verify the active code register against legacy agency tables. No partial or corrupted valuation entries were written into the core reporting repository during the aborted run. Until those quarantined records clear validation, downstream finance and reporting pipelines cannot consume current period valuation outputs from the platform. Service teams that rely on the overnight valuation table must hold dependent batch jobs and avoid triggering manual retries against the incomplete dataset. Repeated retry attempts against the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Beyond the immediate calendar disruption, this incident shows how a single unvalidated lookup table can halt agency-wide reporting at the end of a period. Even when direct budget expenditure does not change, losing processing time during the monthly close forces finance and technology officers into GTA/ENG/2026/007 | Version 1.0 | Approved Government Technology Agency | Incident RCA | Confidential (Technology) 3 How we got there urgent manual reconciliation work. Downstream programme teams cannot finalise their resource position until the inventory valuation service completes a clean run across all active records. Protecting the monthly close calendar therefore depends on treating reference data tables with the same release discipline applied to core production code. Every hour spent repairing preventable batch rejections reduces engineering capacity available for core platform modernisation across the agency. Reliable period-end reporting requires automated controls over shared reference data before each close"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r022t/set/large\"))",
+  "decision": {
+    "promote": false,
+    "improved": [
+      "within_file_repeat"
+    ],
+    "worsened": [],
+    "holdout_gain": 1.573,
+    "reasons": [
+      "build or fact gate failed"
+    ]
+  }
+}

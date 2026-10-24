@@ -563,6 +563,7 @@ samples, and the policy digest.
 | 19 | Replace `"say what they mean"` with `"and state their effect on divisions and registers without commentary or reader advice"` (`e192e4b1…`) | Rejected | Train `within_file_repeat` improved 0.024 to 0.013 with zero worsened dimensions and `holdout_gain` +3.48, but `bl-002-pdf-5mb-image` failed `target_or_trap_not_in_top3` |
 | 20 | Re-test Round 19 rule (`e192e4b1…`) after Level 2 retrieval fix | Rejected | Train passed all gates and improved `within_file_repeat` 0.024 to 0.013 with zero worsened dimensions (`judge_correct_train` `[20, 20, 20]`) and `holdout_gain` +3.163, but holdout `3101` failed `bl-001-docx-2mb-image: target_or_trap_not_in_top3` |
 | 21 | Add `"Place every capitalised text fact at the start of a sentence or after a colon."` (`1ec8d4a2…`) | Rejected | Both train and holdout passed all build and retrieval gates (`holdout_gain` +3.097), but `seed_2026` failed the 80% length guard on both attempts (2554 and 2377 words vs 2787.2 threshold) |
+| 22 | Replace `"say what they mean"` with `"and explain their operational effect on programme delivery and budgets without essay commentary or reader advice"` (`7ff40674…`) | Rejected | Train passed all gates and improved `within_file_repeat` 0.024 to 0.013 with zero worsened dimensions (`judge_correct_train` `[20, 20, 20]`) and `holdout_gain` +1.573 (`commercial_per_k` 0.0 on holdout), but holdout `3101` failed `bl-001-docx-2mb-image: target_or_trap_not_in_top3` |
 
 ## Appendix B. Files
 
