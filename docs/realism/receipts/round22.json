@@ -356,5 +356,149 @@
     "reasons": [
       "build or fact gate failed"
     ]
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.072,
+    "within_file_repeat": 0.013,
+    "top_opener_share": 0.059,
+    "unique_sentences": 39.333,
+    "words_per_mb": 389.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 700,
+      "words_per_mb": 334,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.423,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 673,
+      "words_per_mb": 128,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.077,
+      "text_gzip_ratio": 0.421,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2401,
+      "words_per_mb": 1145,
+      "sentences": 84,
+      "unique_sentences": 82,
+      "within_file_repeat": 0.048,
+      "top_opener_share": 0.036,
+      "text_gzip_ratio": 0.28,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2321,
+      "words_per_mb": 443,
+      "sentences": 66,
+      "unique_sentences": 65,
+      "within_file_repeat": 0.03,
+      "top_opener_share": 0.03,
+      "text_gzip_ratio": 0.27,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.43,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 423,
+      "words_per_mb": 202,
+      "sentences": 16,
+      "unique_sentences": 16,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.443,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 435,
+      "words_per_mb": 83,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.435,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "seed_2026: 1 accept round on retry (3209 words; attempt 1 wrote 2543 words). Expanding single-move and exempt-floor sections to 300 words while varying openers and avoiding commercial terms required operational detail.",
+    "seed_2027: 1 accept round (3163 words). Separating thousands and millions figures across sentences avoided mixed-precision number_spelling rejections, and neutral verbs avoided double-direction rejections on adverse variance facts."
+  ],
+  "judge_clues_train": [
+    "All 3 masked train judges scored 20/20 (judge_error 0.0).",
+    "Clue 1: Mid-sentence capital letters where a capitalised text fact (such as ERP logs show no interruption during the valuation window or Asset valuation completed) is inserted after a lowercase word.",
+    "Clue 2: Repeated GTA/ENG/2026/007 incident narrative, document control table, and review comment table across passages from the 2 MB and 5 MB RCA reports.",
+    "Clue 3: Recognisable real-world Singapore government standards and external references in the real pool (SGDS, MAESTRO, SHIP-HATS, BizFile, GITSIR RFC 2350, PSS/E relay models, NIST 800-53, MITRE ATLAS, 1799 helpline)."
+  ],
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
   }
 }
