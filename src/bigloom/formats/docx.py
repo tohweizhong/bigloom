@@ -28,8 +28,10 @@ def docx_add_picture(data: bytes, png: bytes, caption: str, *, near: str | None 
     cap = doc.add_paragraph(caption)
     table = None
     if near:
-        table = next((tb for tb in doc.tables for cell in tb._cells if cell.text.strip() == near), None)
+        table = next((tb for tb in reversed(doc.tables) for cell in tb._cells if cell.text.strip() == near), None)
     if table is not None:
+        row = table.add_row()
+        row.cells[0].text = caption
         table._tbl.addnext(cap._p)
         table._tbl.addnext(pic._p)
     else:

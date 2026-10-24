@@ -308,3 +308,38 @@ def test_canary_ir_includes_chart_caption_for_trap_retrieval() -> None:
     labels = [r.label for r in out.sections[0].table.rows]
     assert any(t.caption in label for label in labels)
 
+
+def test_docx_add_picture_places_chart_at_evidence_table_not_cover_toc() -> None:
+    from io import BytesIO
+    from docx import Document
+    from bigloom.evidence import fact_chart_png
+    from bigloom.formats.docx import docx_add_picture
+
+    doc = Document()
+    doc.add_paragraph("Cover title")
+    toc = doc.add_table(rows=2, cols=2)
+    toc.cell(0, 0).text = "In this paper"
+    toc.cell(1, 0).text = "6"
+    toc.cell(1, 1).text = "Revised revenue forecast"
+    for i in range(1, 6):
+        doc.add_paragraph(f"Section {i} body prose with enough words to separate sections.")
+    doc.add_paragraph("6 Revised revenue forecast")
+    ev = doc.add_table(rows=2, cols=2)
+    ev.cell(0, 0).text = "Revised revenue forecast"
+    ev.cell(0, 1).text = "Value"
+    ev.cell(1, 0).text = "Revised revenue forecast"
+    ev.cell(1, 1).text = "SGD 1,996,881"
+    buf = BytesIO()
+    doc.save(buf)
+
+    caption = "Figure: Revised surplus rate forecast by business unit. Bars: Product & Engineering."
+    png = fact_chart_png("Revised surplus rate forecast", ("Product & Engineering",), "52.93%", 1)
+    out = docx_add_picture(buf.getvalue(), png, caption, near="Revised revenue forecast")
+    snap = inspect_file_bytes(out, ".docx")
+
+    para_texts = [u.text for u in snap.units if u.locator.startswith("paragraph:")]
+    assert para_texts.index(caption) > para_texts.index("6 Revised revenue forecast")
+    table_texts = [u.text for u in snap.units if u.locator.startswith("table:2/")]
+    assert caption in table_texts
+
+
