@@ -1,0 +1,82 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-025: rs017d prose with cover abstract cleared and mid-sentence text facts lowercased",
+  "date_sgt": "2026-10-24 19:40",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop ce575de (merged realism-v2 557b742)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No writer runs. Same accepted prose as rescore-v2-017d. filter_document clears LongDocument.abstract, and _clean lowercases mid-sentence text-valued facts that start with a capitalised regular word.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.064,
+    "unique_sentences": 47.0,
+    "words_per_mb": 379.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.059,
+    "unique_sentences": 45.833,
+    "words_per_mb": 394.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.044
+  },
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. Clearing LongDocument.abstract removed the PDF cover Summary box repeat.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18017,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs": 20,
+    "train": {
+      "ids": [
+        "7f411e81",
+        "cf4ab5b3",
+        "eab867f7"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "d0cb1041",
+        "2d5a5feb",
+        "5b415dea"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    }
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The inventory valuation service has stopped producing usable output: its feed status is failed. Every report, reconciliation or posting that reads from that feed should be treated as unavailable until the status changes. The size of the problem sits upstream, in the product hierarchy sync service, where the confirmed count of affected records is 22,859 records. That number is not an estimate and it is not a sample. There is no budget or forecast for a failure of this kind, so the only baseline is normal operation, in which the count is nil and the feed completes without intervention. For anyone deciding what to do in the next hour, the scale changes the options. A population of this size will not be corrected record by record before the close deadline, so the realistic choices are a controlled workaround or a delay to the dependent run. Waiting for the feed to"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "GTA/ENG/2026/007 | Version 1.0 | Approved Government Technology Agency | Incident RCA | Confidential (Technology) 3 How we got there The incident entered the record when INC0080099 opened at priority P2 against inventory-valuation. At that point the working assumption was that an upstream system had dropped out overnight, and the first responders organised their checks around that idea. It was a reasonable starting point and it was wrong. The upstream logs settled the matter: ERP logs show no interruption during the valuation window. That finding cost the team its leading theory but saved it from chasing a fault that had not happened. Attention moved to the reference data feeding the valuation, where the code mapping was examined entry by entry. The sequence closes with the service reporting asset valuation completed, so the immediate business need was met before the review began. Between the ruling-out and the completed run, the team"
+    }
+  ],
+  "samples_method": "realism_pairs.samples(Path('runs/loop/rs017dt/set/large'))"
+}

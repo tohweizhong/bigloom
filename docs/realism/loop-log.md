@@ -14,18 +14,26 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 17:41 SGT (Round 21 recorded; both train and holdout passed build and retrieval gates, rejected on `seed_2026` length guard) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2 retrieval fix merged in `efddbb4`) |
+| Updated | 24 Oct 2026 19:41 SGT (Level 2 change `557b742` merged as `ce575de`, champion rescored in `rescore-v2-025.json` with `within_file_repeat` 0.0 on train and holdout) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2 cover abstract and mid-sentence text-fact filter merged in `ce575de`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
-| Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
-| Last round | Round 21, rejected (both train and holdout passed all build and retrieval gates with `holdout_gain` +3.097, but `seed_2026` wrote 2554 and 2377 words vs 2787.2 length guard threshold) |
-| Next round number | 22 |
+| Champion baseline receipt | `docs/realism/receipts/rescore-v2-025.json` (train view `docs/realism/loop/train-025r.json`) |
+| Last round | Round 25, rejected (`within_file_repeat` 0.024 to 0.014 within 0.01 band, `top_opener_share` 0.063 to 0.046, judges `[20, 20, 20]`); followed by Level 2 rescore `rescore-v2-025.json` |
+| Next round number | 26 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 20 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error`.
+1. Run Round 26 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error`.
+
+### Level 2 change: clear cover abstract and lowercase mid-sentence text facts (24 Oct 19:41 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT and 24 Oct 15:18 SGT, confirmed by the monitor at 24 Oct 19:26 SGT after three consecutive rounds on `05fdb96` (Rounds 23, 24, and 25) did not promote.
+- **Cause.** First, `worldloom.longform.document()` sets `LongDocument.abstract` to the opening paragraph of Section 1, which repeated two sentences on every PDF cover page (`within_file_repeat` floor) and caused `pdftotext` to stitch cover metadata onto Section 1's opening paragraph in `pairs.md`. Second, WorldLoom text-valued facts start with a capitalised regular word (`Stale...`, `Manual...`, `Overnight...`, `Asset...`, `One...`, `The...`, `A...`) that stayed capitalised when substituted mid-sentence after `[a-z,;:]\s+`.
+- **Change (`557b742`, merged as `ce575de`).** `longform_filter.filter_document` clears `abstract=""`, and `_clean` lowercases the leading letter of text-valued facts from `text_fact_phrases(world)` when preceded by `[a-z,;:]\s+`.
+- **Tests.** `test_filter_clears_abstract_and_lowercases_mid_sentence_text_facts` failed on the old code and passed on the new code (`17 passed in 78.91s`).
+- **Rescore (`docs/realism/receipts/rescore-v2-025.json`, `docs/realism/loop/train-025r.json`).** No writer runs. Both gates pass. Train `within_file_repeat` fell from `0.024` to `0.0`, and holdout `within_file_repeat` fell from `0.028` to `0.0`. Six fresh judges (`7f411e81`, `cf4ab5b3`, `eab867f7`, `d0cb1041`, `2d5a5feb`, `5b415dea`) scored `[20, 20, 20]` on train and holdout (`judge_error` `0.0`).
 
 ### Level 2 change: PPTX passage deduplication, trap chart caption, and `gate_passed` guard (24 Oct 16:45 SGT)
 
@@ -568,6 +576,7 @@ samples, and the policy digest.
 | 23 | Re-test Round 22 rule (`7ff40674…`) on `05fdb96` | Rejected | Both train and holdout passed all build and retrieval gates with zero violations (`holdout_gain` +2.223), but `seed_2026` failed the 80% length guard on both attempts (2070 and 2580 words vs 2787.2 threshold) |
 | 24 | Replace `"say what they mean"` with `"and explain their operational effect on programme delivery, schedules, and budgets in full paragraphs so every section reaches at least 90 percent of target_words without essay commentary or reader advice"` (`09a2dc68…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 and both sets passed all build and retrieval gates (`holdout_gain` +1.29), but train `within_file_repeat` (`0.024` to `0.016`) did not exceed the `0.01` band and judges scored `[20, 20, 20]` |
 | 25 | Replace `"say what they mean"` with `"and explain their operational effect on programme delivery, schedules, and budgets in sentences of 18 to 24 words so every section reaches at least 95 percent of target_words without essay commentary or reader advice"` (`1d9a1bed…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3536, 3580, 3424, 3323) and both sets passed all build and retrieval gates, but train `within_file_repeat` (`0.024` to `0.014`, delta `0.010`) did not strictly exceed the `0.01` band, `top_opener_share` moved from `0.063` to `0.046` (away from the `0.071` real median), and judges scored `[20, 20, 20]` |
+| L2 (after 25) | `longform_filter` clears `LongDocument.abstract` and lowercases mid-sentence text-valued facts (`557b742`, merged as `ce575de`, `rescore-v2-025.json`) | Rescore | Both train and holdout pass all gates with `within_file_repeat` 0.0 (down from 0.024 and 0.028); 6 fresh judges (`7f411e81`, `cf4ab5b3`, `eab867f7`, `d0cb1041`, `2d5a5feb`, `5b415dea`) scored `[20, 20, 20]` |
 
 ## Appendix B. Files
 
