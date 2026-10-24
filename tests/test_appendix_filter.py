@@ -230,3 +230,26 @@ def test_a_figure_table_with_two_equal_columns_keeps_both() -> None:
         rows=[Row(key="r1", label="Services", cells={"budget": Cell(value=48.1), "actual": Cell(value=48.1)})])
     out = lf._table(table)
     assert [c.key for c in out.columns] == ["budget", "actual"]
+
+
+def test_filter_clears_abstract_and_lowercases_mid_sentence_text_facts(long_doc, world, monkeypatch: pytest.MonkeyPatch) -> None:  # type: ignore[no-untyped-def]
+    """Loop v2: the cover abstract does not repeat Section 1, and mid-sentence text facts start lowercase."""
+    assert long_doc.abstract
+    out = lf.filter_document(long_doc)
+    assert out.abstract == ""
+    phrases = lf.text_fact_phrases(world)
+    assert "Stale legacy-to-new product hierarchy mapping in the merchandising master" in phrases
+    assert not any(p.startswith(("ERP ", "INC", "General Merchandise")) for p in phrases)
+    monkeypatch.setattr(lf, "_TEXT_FACTS", phrases)
+    sample = (
+        "The cause was Stale legacy-to-new product hierarchy mapping in the merchandising master, "
+        "which required: Manual hierarchy mapping override applied to complete valuation for the period. "
+        "Stale legacy-to-new product hierarchy mapping in the merchandising master opened the second sentence, "
+        "and ERP logs show no interruption during the valuation window."
+    )
+    cleaned = lf._clean(sample)
+    assert "was stale legacy-to-new product hierarchy mapping" in cleaned
+    assert "required: manual hierarchy mapping override" in cleaned
+    assert ". Stale legacy-to-new product hierarchy mapping in the merchandising master opened" in cleaned
+    assert "and ERP logs show no interruption" in cleaned
+
