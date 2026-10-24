@@ -119,12 +119,13 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    attempts by length or by metrics. Record both attempts in the rescore receipt.
 7. **Build gate.** Run `build_round(Path("runs/loop/r<NNN>t"), TRAIN)` and
    `build_round(Path("runs/loop/r<NNN>h"), HOLDOUT)`. A gate violation rejects the round.
-8. **Judges (every candidate that passes steps 5 to 7).** Build pairs for the candidate train set
-   and the candidate holdout set with `build_pairs(real_dir, synth_dir, out_dir, 20, seed)`. Use
-   `<root>/set/large` of each build as `synth_dir`. Use the pair seed of the current baseline
-   (`18000 +` the baseline round number), the same seed that the champion used. Keep the answer key
-   in memory. Do not write it to disk until all judges reply. Start three fresh judge subagents for
-   each set:
+8. **Judges.** Judge the candidate train set whenever train passes steps 5 to 7. Judge the candidate
+   holdout set only when both train and holdout pass steps 5 to 7. This gives `train-<NNN>.json` a
+   train judge score on every valid train build and never reveals a holdout gate failure. Build pairs
+   with `build_pairs(real_dir, synth_dir, out_dir, 20, seed)`. Use `<root>/set/large` of each build as
+   `synth_dir`. Use the pair seed of the current baseline (`18000 +` the baseline round number), the
+   same seed that the champion used. Keep the answer key in memory. Do not write it to disk until all
+   judges reply. Start three fresh judge subagents for each judged set:
 
    > Read `<out_dir>/pairs.md`. Each pair has one real passage and one synthetic passage. For each
    > pair, reply with `{"pair": "P01", "real": "A"}` or `"B"`. Reply with a JSON list only.
