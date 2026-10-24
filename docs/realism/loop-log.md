@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 15:46 SGT (Round 17 recorded; starting Round 18) |
+| Updated | 24 Oct 2026 16:07 SGT (Round 18 recorded; starting Round 19) |
 | Loop version | v3 (`judge_error` scored in `decide`, merged into `realism-loop` from `e647dab`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
-| Last round | Round 17, rejected (train length guard `seed_2027` 2553 < 2815, train and holdout retrieval gates failed, train `retail_per_k` 0.0 to 0.705) |
-| Next round number | 18 |
+| Last round | Round 18, rejected (train and holdout `*-image` retrieval gates failed; train `retail_per_k` 0.0 to 0.453 and `top_opener_share` 0.059 to 0.044) |
+| Next round number | 19 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 18 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error` (the only metric with room on `rs017d`).
+1. Run Round 19 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error` (the only metric with room on `rs017d`). If Round 19 also fails for the same reason, trigger Level 2 (3-round plateau).
 
 ### Level 2 change: judge error rate as a scored metric, grader v3 (rule recorded 24 Oct 15:14 SGT, before code or measure)
 
@@ -552,6 +552,7 @@ samples, and the policy digest.
 | 14 | Two paragraphs of short sentences in each section (`89a09a12…`) | Rejected | `commercial_per_k` 3.48, PPTX footers raised `top_opener_share` to 16.6% |
 | 15 | Short sentences of 13 to 17 words in three paragraphs (`57dae3c7…`) | Rejected | `unique_sentences` 48.8 to 74.3, but `commercial_per_k` 2.26 to 6.47 |
 | 17 | Replace `"Lead with the position, group related facts, say what they mean"` with `"Use a flat record tone that states facts and actions without essay commentary or reader advice"` (`f78fe8f8…`) | Rejected | Train length guard failed on `seed_2027` (2631 and 2553 words vs 2815 threshold); retrieval gate failed on train (`bl-002-pdf-5mb-image`) and holdout (`bl-001-docx-2mb-image`); train `retail_per_k` 0.0 to 0.705 |
+| 18 | Add `"Expand each point with concrete system workflows, control checks, and operational steps instead of essay commentary or reader advice"` (`2aee9ca5…`) | Rejected | Retrieval gate failed on train (`bl-001-docx-2mb-image`, `bl-002-pdf-2mb-image`) and holdout (`bl-001-docx-2mb-image`); train `retail_per_k` 0.0 to 0.453 (`store`/`stores`) and `top_opener_share` 0.059 to 0.044 |
 
 ## Appendix B. Files
 

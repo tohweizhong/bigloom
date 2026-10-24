@@ -1,0 +1,190 @@
+{
+  "round": 18,
+  "date_sgt": "2026-10-24 16:02",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-018.md",
+  "candidate_policy_sha256": "2aee9ca5fb1e73533be59962c1e8dea9513d7caa48fc6fcb2d95c1515a9a84ac",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Add a quality rule to expand points with system workflows and control steps instead of essay commentary or reader advice.",
+    "why": "Train judge_error is 0.0 in rs017d from essay prose and reader advice, and keeping expansion prevents the 2553-word Round 17 length drop."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3440,
+    "seed_2027": 3666
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": false,
+  "gate_violations": [
+    "bl-001-docx-2mb-image: target_or_trap_not_in_top3",
+    "bl-002-pdf-2mb-image: target_or_trap_not_in_top3"
+  ],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.453,
+    "within_file_repeat": 0.014,
+    "top_opener_share": 0.044,
+    "unique_sentences": 38.0,
+    "words_per_mb": 401.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 725,
+      "words_per_mb": 346,
+      "sentences": 31,
+      "unique_sentences": 31,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.032,
+      "text_gzip_ratio": 0.439,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 1.38,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 747,
+      "words_per_mb": 142,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.425,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 1.34,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2435,
+      "words_per_mb": 1161,
+      "sentences": 73,
+      "unique_sentences": 71,
+      "within_file_repeat": 0.055,
+      "top_opener_share": 0.027,
+      "text_gzip_ratio": 0.288,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2517,
+      "words_per_mb": 480,
+      "sentences": 71,
+      "unique_sentences": 70,
+      "within_file_repeat": 0.028,
+      "top_opener_share": 0.028,
+      "text_gzip_ratio": 0.278,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 422,
+      "words_per_mb": 201,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.45,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 408,
+      "words_per_mb": 78,
+      "sentences": 13,
+      "unique_sentences": 13,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.077,
+      "text_gzip_ratio": 0.447,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All four seeds passed the fact gate and the 80% length guard on the first attempt.",
+    "Writers noted that expanding with concrete system workflows and control steps kept word counts at 3440-3666 words while avoiding consecutive capitalised words and commercial terms."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Current telemetry for the inventory valuation service reports a batch feed status of failed, leaving the morning valuation table unpopulated in the data warehouse. Across the product hierarchy sync service, the transformation halt blocked 22,859 records from completing agency code resolution during the scheduled ingestion run. Every rejected record remains held in the staging quarantine queue rather than writing incomplete balances into production reporting tables. Upstream transactional databases and core authentication pipelines continue operating normally with zero packet loss or storage degradation. Only workloads that consume synchronised hierarchy keys from the central data platform experience incomplete period outputs at this hour. Service owners who depend on validated asset balances must hold downstream batch exports until platform engineering certifies the reprocessed feed. Running automated financial aggregations against the current warehouse snapshot would pull stale hierarchy attributes and require a full ledger rollback later today. Teams operating real-time citizen portals or independent"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "For technology leadership, the operational toll demonstrates how a single unvalidated reference table can propagate across dependent services and stall agency-wide reporting schedules. Even when underlying transaction data remains intact in source systems, a failure in the hierarchy synchronisation layer blocks downstream aggregation jobs from certifying period-end balances on time. Platform capacity had to shift from planned engineering delivery to emergency batch recovery, manual lineage reconciliation, and audit verification across every affected division. Separating calendar slippage from budget execution impact clarifies that the exposure lies in close governance and operational resilience, requiring tighter pre-flight validation before critical month-end runs begin. Every hour lost to manual GTA/ENG/2026/007 | Version 1.0 | Approved"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r018t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "judge_correct_train": null
+}
