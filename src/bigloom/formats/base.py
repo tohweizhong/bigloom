@@ -75,7 +75,7 @@ class FormatHandler:
 
     def canary_ir(self, t: Target, ir: ArtifactIR) -> ArtifactIR:
         """Return a copy of the IR with the canary values, for the trap render pass."""
-        rows = [(t.heading, t.text_canary), (f"{t.chart_title}: {t.peak_name}", t.image_canary)]
+        rows = [(t.heading, t.text_canary), (f"{t.caption} {t.chart_title}: {t.peak_name}", t.image_canary)]
         return with_evidence(ir, evidence_section(t.heading, rows), depth=EVIDENCE_DEPTH, title_suffix=self.draft_suffix)
 
     def trap_kind(self) -> str:

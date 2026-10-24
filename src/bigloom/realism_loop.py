@@ -92,6 +92,7 @@ def decide(
     cand_judge_correct: list[int] | None = None,
     best_holdout_judge_correct: list[int] | None = None,
     cand_holdout_judge_correct: list[int] | None = None,
+    gate_passed: bool = True,
 ) -> Decision:
     """Apply the promotion rule.
 
@@ -118,6 +119,8 @@ def decide(
         gain_terms.append((abs(hbj - JUDGE_TARGET) - abs(hcj - JUDGE_TARGET)) / JUDGE_BAND)
     gain = round(sum(gain_terms), 3)
     reasons: list[str] = []
+    if not gate_passed:
+        reasons.append("build or fact gate failed")
     if not improved:
         reasons.append("no train dimension improved by more than its band")
     if worsened:

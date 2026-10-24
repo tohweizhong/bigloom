@@ -270,3 +270,41 @@ def test_passages_split_pdf_by_page_and_pptx_by_slide() -> None:
     assert len(passages_of(pdf)) == 2
     deck = inspect_file_bytes(_make_pptx_bytes(["First slide text", "Second slide text"]), ".pptx")
     assert len(passages_of(deck)) == 2
+
+
+def test_pptx_passages_count_each_slide_line_once_and_drop_hidden_flag() -> None:
+    from bigloom.qualify import passages_of
+
+    deck = inspect_file_bytes(_make_pptx_bytes(["Unique slide phrase"]), ".pptx")
+    slide = passages_of(deck)[0]
+    assert slide.count("Unique slide phrase") == 1
+    assert "false" not in slide.splitlines()
+
+
+def test_canary_ir_includes_chart_caption_for_trap_retrieval() -> None:
+    from worldloom.models import ArtifactIR
+
+    from bigloom.formats.base import FormatHandler, Target
+
+    t = Target(
+        file_id="bl-002-pdf-5mb",
+        fmt="pdf",
+        size_bytes=1024,
+        ir_id="ART-0001",
+        artifact_type="incident_rca",
+        label="revised gross surplus forecast",
+        chart_title="Revised shared services recovery forecast by business unit",
+        chart_categories=("Product & Engineering", "Services, Governance & Cybersecurity"),
+        chart_peak=1,
+        text_question="Q1?",
+        image_question="Q2?",
+        text_golden="SGD 1,234,567",
+        text_canary="SGD 2,345,678",
+        image_golden="24.50%",
+        image_canary="19.43%",
+    )
+    ir = ArtifactIR(id="ART-0001", intent_id="INT-1", title="Incident RCA", sections=[])
+    out = FormatHandler().canary_ir(t, ir)
+    labels = [r.label for r in out.sections[0].table.rows]
+    assert any(t.caption in label for label in labels)
+

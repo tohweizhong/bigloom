@@ -153,12 +153,18 @@ def load_corpus_snapshots(corpus_dir: Path) -> dict[str, NativeSnapshot]:
     return snapshots
 
 
+_SLIDE_SUMMARY_RE = re.compile(r"^slide:\d+/text$")
+
+
 def _reader_units(snap: NativeSnapshot) -> list[NativeUnit]:
-    """Return the units a reader sees: no workbook type markers, sheet states, or formulas."""
+    """Return the units a reader sees: no workbook type markers, sheet states, slide flags, or formulas."""
     return [
         u
         for u in snap.units
-        if u.text and not u.locator.endswith(("/type", "/state")) and not u.text.startswith("=")
+        if u.text
+        and not u.locator.endswith(("/type", "/state", "/hidden"))
+        and not _SLIDE_SUMMARY_RE.match(u.locator)
+        and not u.text.startswith("=")
     ]
 
 
