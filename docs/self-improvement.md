@@ -71,10 +71,11 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
 `realism_loop.HOLDOUT`.
 
 1. **Room check.** For each key in `realism_loop.BANDS`, compute the champion's train distance to
-   `real_reference()` with `realism_loop.distances`. A metric has room when its distance, less the
-   known floor for that metric in the newest rescore receipt, is larger than its band. A floor is a
-   part of the value that the writer policy cannot change. If no metric has room, do not start a
-   round. Go to Level 2 (section 7).
+   `real_reference()` with `realism_loop.distances`. Also compute the train distance of
+   `judge_error` to `0.5` against `realism_loop.JUDGE_BAND` (`0.10`). A metric has room when its
+   distance, less the known floor for that metric in the newest rescore receipt, is larger than its
+   band. A floor is a part of the value that the writer policy cannot change. If no metric has room,
+   do not start a round. Go to Level 2 (section 7).
 
    Two limits apply to the room check. First, record the evidence for each floor, file by file. A
    floor without evidence is zero. Second, when the champion is on the clean side of the real
@@ -84,7 +85,7 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    the output path `policies/writer/round-<NNN>.md`, and the list of metrics with room. Give it no
    number that you did not take from a train receipt. Check its output:
    - `diff <champion> policies/writer/round-<NNN>.md` shows one rule changed and nothing else.
-   - `target_metric` is a key in `BANDS` and has room.
+   - `target_metric` is a key in `BANDS` or `judge_error`, and has room.
    - `why` cites a train number only.
    If a check fails, reject the proposal and start a new fresh proposer.
 3. **Prepare.** Run `prepare_round(Path("runs/loop/r<NNN>t"), Path("runs/loop/cache"), TRAIN)` and
