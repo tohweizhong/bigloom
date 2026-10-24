@@ -81,6 +81,13 @@ def test_judge_error_is_skipped_without_counts() -> None:
     assert d.promote and "judge_error" not in d.improved + d.worsened
 
 
+def test_decide_rejects_when_gate_fails() -> None:
+    cand = {**BEST, "top_opener_share": 0.09}
+    d = rl.decide(BEST, cand, BEST, {**BEST, "top_opener_share": 0.10}, REAL, gate_passed=False)
+    assert not d.promote and "build or fact gate failed" in d.reasons
+
+
+
 def test_v2_reference_is_the_median_of_the_real_files() -> None:
     import json
     import statistics
