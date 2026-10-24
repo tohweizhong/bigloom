@@ -44,6 +44,14 @@ Update this section at the end of each round and after each loop change.
   champion changes: `18000 + baseline round number` (rs017d: 18017). Real set: `runs/realism/real`.
 - **Champion.** Judged once for each baseline, on train and holdout.
 - **Cost for each round.** 4 writer runs and 6 judge runs. Baseline now: 6 judge runs.
+- **Noise check (monitor, 24 Oct 15:14 SGT).** Before any round, judge the rs017d champion train set
+  twice, with two independent groups of 3 fresh judges on the same pairs (seed 18017). If the two
+  `judge_error` values differ by more than 0.10, the metric is too noisy to promote on: stop and
+  report, and do not start Round 17. Cost: 3 more judge runs, one time.
+- **Tests.** A candidate with the same vector and judge error 0.0 to 0.5 promotes. A candidate
+  whose judge error moves away from 0.5 by more than 0.10 is blocked as "worsened".
+- **Barrier.** Holdout judge verdicts and holdout clues never go to `lessons.md`, `train-*.json`,
+  or any proposer input. Train clues only.
 
 ### Level 2 change: public-sector measure words in WorldLoom template text (23 Oct 21:15 SGT)
 
