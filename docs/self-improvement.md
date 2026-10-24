@@ -134,6 +134,10 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
 9. **Decide.** Call `decide` with the champion and candidate vectors, `real_reference()`, and the
    judge counts for train and holdout, as its signature requires. `judge_error` is one dimension:
    target 0.5, band 0.10. Use the output as the decision. Never write a decision by hand.
+
+   If the decision promotes and `judge_error` is the only train dimension that improved, judge the
+   candidate train set again with a second group of three fresh judges on the same pairs. Promote
+   only if the second group also shows an improvement larger than the band. Record both groups.
 10. **Record and promote.** Write the receipts (section 6). Commit them on `realism-loop` and push.
     If the decision promotes, the candidate becomes the champion. Update "Current state" in
     `loop-log.md`.
