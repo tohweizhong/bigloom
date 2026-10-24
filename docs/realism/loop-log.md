@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 19:41 SGT (Level 2 change `557b742` merged as `ce575de`, champion rescored in `rescore-v2-025.json` with `within_file_repeat` 0.0 on train and holdout) |
+| Updated | 24 Oct 2026 20:50 SGT (Round 28 recorded, 3-round Level 1 plateau reached on `rescore-v2-025` across Rounds 26, 27, and 28; stopped cleanly before 21:00 SGT deadline) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2 cover abstract and mid-sentence text-fact filter merged in `ce575de`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-025.json` (train view `docs/realism/loop/train-025r.json`) |
-| Last round | Round 25, rejected (`within_file_repeat` 0.024 to 0.014 within 0.01 band, `top_opener_share` 0.063 to 0.046, judges `[20, 20, 20]`); followed by Level 2 rescore `rescore-v2-025.json` |
-| Next round number | 26 |
+| Last round | Round 28, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.079, `holdout_gain` +0.947, judges `[20, 20, 20]`) |
+| Next round number | 29 (requires Level 2 change after 3-round plateau on `rescore-v2-025` across Rounds 26, 27, and 28) |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 26 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error`.
+1. Three consecutive Level 1 writer-policy rounds on `rescore-v2-025` (Rounds 26, 27, and 28) passed all gates with zero worsened dimensions and positive `holdout_gain` (`+2.29`, `+2.18`, `+0.947`) while all 6 fresh judges per round scored `[20, 20, 20]` (`judge_error` `0.0`). Next session should address the non-prose PDF frontmatter/backmatter tables (`Document Control`, `Revision History`, `Review Record`, `Approval Form`, `Appendix A Related documents`) and mid-sentence PDF running headers/footers in `pairs.md`.
 
 ### Level 2 change: clear cover abstract and lowercase mid-sentence text facts (24 Oct 19:41 SGT)
 
@@ -579,6 +579,7 @@ samples, and the policy digest.
 | L2 (after 25) | `longform_filter` clears `LongDocument.abstract` and lowercases mid-sentence text-valued facts (`557b742`, merged as `ce575de`, `rescore-v2-025.json`) | Rescore | Both train and holdout pass all gates with `within_file_repeat` 0.0 (down from 0.024 and 0.028); 6 fresh judges (`7f411e81`, `cf4ab5b3`, `eab867f7`, `d0cb1041`, `2d5a5feb`, `5b415dea`) scored `[20, 20, 20]` |
 | 26 | Replace `"say what they mean"` in `QUALITY` with `"and explain their operational effect on programme delivery, schedules, and budgets in full paragraphs so every section reaches at least 95 percent of target_words without rhetorical storytelling, essay commentary, or reader advice"` (`e96394a3…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3116, 3728, 3709, 3349) and both sets passed all build and retrieval gates with zero worsened dimensions and `holdout_gain` +2.29, but train deterministic defect metrics were already at 0.0 and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 | 27 | Replace `"say what they mean"` in `QUALITY` with `"and state the institutional compliance controls, technical standards, and operational requirements that govern the affected systems, schedules, and budgets in full paragraphs so every section reaches at least 95 percent of target_words without chronological narrative, role-addressed commentary, or reader advice"` (`b124d587…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3339, 3589, 2617, 3253) and both sets passed all build and retrieval gates with zero worsened dimensions and `holdout_gain` +2.18, but train deterministic defect metrics were already at 0.0 and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
+| 28 | Replace `"say what they mean"` in `QUALITY` with `"and specify the applicable baseline parameters, verification criteria, and mandatory control requirements for the affected registers, repositories, schedules, and budgets in full paragraphs so every section reaches at least 95 percent of target_words without human actors, narrative troubleshooting drama, abstract management commentary, or reader advice"` (`3be572ca…`) | Rejected | All 4 seeds passed the 80% length guard (3685 on attempt 2, 3224, 3241, 3638) and both sets passed all build and retrieval gates with zero worsened dimensions (`retail_per_k` 0.0 on train) and `holdout_gain` +0.947, but train deterministic defect metrics were already at 0.0 and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 
 ## Appendix B. Files
 
@@ -590,6 +591,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-015.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round15.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-015.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-028.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round28.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-028.json` | Train-only receipts that the proposer reads |
