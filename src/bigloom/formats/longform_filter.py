@@ -98,6 +98,23 @@ _NAMES: dict[str, str] = {}
 """ID to plain words, for the render pass in progress. `filtered_longform` fills it."""
 _REFS: dict[str, str] = {}
 """Document ID to a readable reference ("GTA/FIN/2026/019"), for the render pass in progress."""
+_TEXT_FACTS: list[str] = []
+"""Text-valued facts that start with a capitalised regular word, for the render pass in progress."""
+
+
+def text_fact_phrases(world: World) -> list[str]:
+    """Return text-valued facts that start with a capitalised regular word, longest first."""
+    proper = {str(world.company.name)}
+    for pool in (world.business_units, world.sites, world.systems, world.services, world.people, world.categories):
+        for item in pool or ():
+            if getattr(item, "name", None):
+                proper.add(str(item.name))
+    out: set[str] = set()
+    for fact in world.facts:
+        text = (getattr(fact, "text_value", None) or "").strip().rstrip(".")
+        if text and re.match(r"^[A-Z][a-z]*\b", text) and not any(text.startswith(p) for p in proper if p):
+            out.add(text)
+    return sorted(out, key=len, reverse=True)
 
 
 def document_refs(world: World) -> dict[str, str]:
@@ -114,9 +131,12 @@ def document_refs(world: World) -> dict[str, str]:
 
 
 def _clean(text: str) -> str:
-    """Remove "(ID)" asides, and replace a bare ID with the words a person would write."""
+    """Remove "(ID)" asides, replace a bare ID with plain words, and lowercase mid-sentence text facts."""
     text = _PAREN_ID.sub("", text or "")
-    return _ID.sub(lambda m: _NAMES.get(m.group(0), "the record"), text)
+    text = _ID.sub(lambda m: _NAMES.get(m.group(0), "the record"), text)
+    for phrase in _TEXT_FACTS:
+        text = re.sub(rf"(?<=[a-z,;:])(\s+){re.escape(phrase)}", rf"\1{phrase[0].lower()}{phrase[1:]}", text)
+    return text
 
 
 def id_names(world: World) -> dict[str, str]:
@@ -256,6 +276,7 @@ def filter_document(doc: LongDocument) -> LongDocument:
     metadata = {k: v for k, v in doc.metadata.items() if not _ID.search(str(v))}
     return replace(
         doc,
+        abstract="",
         reference=reference,
         parts=tuple(_part(p) for p in doc.parts),
         appendices=appendices,
@@ -293,6 +314,7 @@ def filtered_longform() -> Iterator[None]:
         if not _NAMES:
             _NAMES.update(id_names(world))
             _REFS.update(document_refs(world))
+            _TEXT_FACTS.extend(text_fact_phrases(world))
         return filter_document(original(world, *args, **kwargs))
 
     longform.document = document  # type: ignore[assignment]
@@ -302,3 +324,4 @@ def filtered_longform() -> Iterator[None]:
         longform.document = original  # type: ignore[assignment]
         _NAMES.clear()
         _REFS.clear()
+        _TEXT_FACTS.clear()
