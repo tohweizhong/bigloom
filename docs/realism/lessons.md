@@ -68,6 +68,10 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
   code mapping override applied..."); smooth, argued essay prose ("It set the price", "a reader
   returning later"). The real side: guideline controls with parameter placeholders, step guides,
   product pages, a security profile, control tables, extraction noise.
+- **r020 train (24 Oct 17:05 SGT, train passages, 3 fresh judges): 20, 20, and 20 of 20 correct.**
+  Reader-directed advice clues disappeared under `round-020.md`. Instead, the judges named:
+  - Capitalised text-fact strings spliced into the middle of a sentence (`"... in which Manual agency code mapping override applied..."`, `"... states that The ownership ticket addresses..."`, `"... specifies that One ticket automates..."`). Placing text-value facts at the start of a sentence or after a colon prevents mid-sentence capital letters.
+  - The recurring 22,859-record agency code mapping incident and document control/review/approval tables across pairs.
 
 ## Writer behaviour
 
@@ -102,6 +106,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 | 17 | Replace `"Lead with the position, group related facts, say what they mean"` with `"Use a flat record tone that states facts and actions without essay commentary or reader advice"` (`f78fe8f8…`) | Rejected. Removing `"say what they mean"` cut writer output length: `seed_2026` wrote 2510 words on attempt 1 (retry 3532), and `seed_2027` wrote 2631 and 2553 words (below the 2815-word 80% length guard). Train `bl-002-pdf-5mb-image` failed the retrieval gate (`target_or_trap_not_in_top3`), and `retail_per_k` rose from 0.0 to 0.705 (`bl-001-docx-2mb_final.docx`: 4.23). |
 | 18 | Add `"Expand each point with concrete system workflows, control checks, and operational steps instead of essay commentary or reader advice"` (`2aee9ca5…`) | Rejected. Both train seeds passed the length guard (`seed_2026`: 3440, `seed_2027`: 3666), but train `bl-001-docx-2mb-image` and `bl-002-pdf-2mb-image` failed the retrieval gate (`target_or_trap_not_in_top3`), `retail_per_k` rose from 0.0 to 0.453 (from the word `store`/`stores` in DOCX prose), and `top_opener_share` moved from 0.059 to 0.044. |
 | 19 | Replace `"say what they mean"` with `"and state their effect on divisions and registers without commentary or reader advice"` (`e192e4b1…`) | Rejected. Both train seeds passed the length guard (`seed_2026`: 3715, `seed_2027`: 3551), and the train vector had `commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.013, and `top_opener_share` 0.075, but train `bl-002-pdf-5mb-image` failed the retrieval gate (`target_or_trap_not_in_top3`). |
+| 20 | Re-test Round 19 rule (`e192e4b1…`) after Level 2 retrieval fix | Rejected. Train passed all gates (`seed_2026`: 3669, `seed_2027`: 3483) and improved `within_file_repeat` from 0.024 to 0.013 with `commercial_per_k` 0.0 and `retail_per_k` 0.0, while train judges scored 20, 20, and 20 of 20 (`judge_error` 0.0, citing mid-sentence capitalised text facts). |
 
 ### Lessons from Loop v2 rounds (train only)
 
