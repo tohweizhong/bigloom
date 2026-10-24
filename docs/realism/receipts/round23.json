@@ -1,0 +1,272 @@
+{
+  "round": 23,
+  "date_sgt": "2026-10-24 18:48",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-023.md",
+  "candidate_policy_sha256": "7ff4067486e19aed46d3e8e92c07990ffbaea741c2d3ac1d54a5f25f6c07bec2",
+  "proposer_change": {
+    "target_metric": "within_file_repeat",
+    "change": "Replace \"say what they mean\" in QUALITY with \"and explain their operational effect on programme delivery and budgets without essay commentary or reader advice\"",
+    "why": "Train within_file_repeat improved from 0.024 to 0.013 in train-022.json under this exact change, and its champion distance of 0.024 minus the 0.0 floor exceeds the 0.02 band."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 2,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words_attempts": {
+    "seed_2026": [
+      2070,
+      2580
+    ],
+    "seed_2027": [
+      3120
+    ],
+    "seed_3101": [
+      3639
+    ],
+    "seed_3102": [
+      2553
+    ]
+  },
+  "agent_words": {
+    "seed_2026": 2580,
+    "seed_2027": 3120,
+    "seed_3101": 3639,
+    "seed_3102": 2553
+  },
+  "length_guard_passed": false,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.063,
+    "unique_sentences": 47.333,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.058,
+    "unique_sentences": 46.167,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.043
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.018,
+    "top_opener_share": 0.07,
+    "unique_sentences": 30.5,
+    "words_per_mb": 323.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.077
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.31,
+    "within_file_repeat": 0.021,
+    "top_opener_share": 0.068,
+    "unique_sentences": 42.5,
+    "words_per_mb": 422.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "per_file": {
+    "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+    "files": [
+      {
+        "file": "bl-001-docx-2mb_final.docx",
+        "mb": 2.1,
+        "words": 490,
+        "words_per_mb": 234,
+        "sentences": 18,
+        "unique_sentences": 18,
+        "within_file_repeat": 0.0,
+        "top_opener_share": 0.111,
+        "text_gzip_ratio": 0.458,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": null,
+        "dates_after_doc_date": 0
+      },
+      {
+        "file": "bl-001-docx-5mb_final.docx",
+        "mb": 5.24,
+        "words": 691,
+        "words_per_mb": 132,
+        "sentences": 26,
+        "unique_sentences": 26,
+        "within_file_repeat": 0.0,
+        "top_opener_share": 0.077,
+        "text_gzip_ratio": 0.422,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": null,
+        "dates_after_doc_date": 0
+      },
+      {
+        "file": "bl-002-pdf-2mb_final.pdf",
+        "mb": 2.1,
+        "words": 1870,
+        "words_per_mb": 892,
+        "sentences": 52,
+        "unique_sentences": 50,
+        "within_file_repeat": 0.077,
+        "top_opener_share": 0.058,
+        "text_gzip_ratio": 0.272,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": "03 April 2026",
+        "dates_after_doc_date": 0
+      },
+      {
+        "file": "bl-002-pdf-5mb_final.pdf",
+        "mb": 5.24,
+        "words": 2252,
+        "words_per_mb": 430,
+        "sentences": 62,
+        "unique_sentences": 61,
+        "within_file_repeat": 0.032,
+        "top_opener_share": 0.032,
+        "text_gzip_ratio": 0.267,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": "03 April 2026",
+        "dates_after_doc_date": 0
+      },
+      {
+        "file": "bl-003-pptx-2mb_final.pptx",
+        "mb": 2.1,
+        "words": 361,
+        "words_per_mb": 172,
+        "sentences": 13,
+        "unique_sentences": 13,
+        "within_file_repeat": 0.0,
+        "top_opener_share": 0.077,
+        "text_gzip_ratio": 0.47,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": null,
+        "dates_after_doc_date": 0
+      },
+      {
+        "file": "bl-003-pptx-5mb_final.pptx",
+        "mb": 5.24,
+        "words": 410,
+        "words_per_mb": 78,
+        "sentences": 15,
+        "unique_sentences": 15,
+        "within_file_repeat": 0.0,
+        "top_opener_share": 0.067,
+        "text_gzip_ratio": 0.445,
+        "wl_id_per_k": 0.0,
+        "any_id_per_k": 0.0,
+        "retail_per_k": 0.0,
+        "commercial_per_k": 0.0,
+        "doc_date": null,
+        "dates_after_doc_date": 0
+      }
+    ],
+    "cross_document_reuse": 0.077,
+    "size_twins": [],
+    "top_shared": [
+      [
+        2,
+        "Bars: Product & Engineering, Services, Governance & Cybersecurity, Government Digital Transformation"
+      ],
+      [
+        2,
+        "Source: Service Impact Assessment # Approval Table #: Prepared and reviewed Approval is recorded aga"
+      ],
+      [
+        2,
+        "# Revised revenue forecast Table #: Revised revenue forecast Figure: Revised surplus rate forecast b"
+      ],
+      [
+        2,
+        "Source: Service Impact Assessment Appendix A Related documents Table A.#: Documents in the same pack"
+      ],
+      [
+        2,
+        "GOVERNMENT TECHNOLOGY AGENCY (SYNTHETIC) Service impact assessment Service Impact Assessment Head of"
+      ]
+    ]
+  },
+  "writer_notes": [
+    "seed_2026 attempt 1 wrote 2070 words and fresh retry wrote 2580 words (both below 2787.2 80% length guard threshold).",
+    "Hardest rules: section_floor sentence count on ART-0010/The ask and reaching 300-word targets on two-fact incident RCA sections while naming commercial measures at most once per paragraph."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Morning batch monitoring confirmed that the feed status for the inventory valuation service is failed following the scheduled overnight run. Across the product hierarchy sync service, the ingestion halt has isolated 22,859 records that cannot be matched between legacy agency identifiers and cloud platform accounts. Because the cross-walk table between legacy departmental codes and cloud platform structures is still maintained manually, any unmapped entry blocks the entire downstream batch feed rather than quarantining individual rows. Operational teams across the agency must treat all asset valuation balances from the overnight cycle as incomplete until the reference register is corrected and the synchronisation job re-runs. Service owners who rely on automated morning extracts should hold downstream reconciliation jobs rather than loading partial tables into departmental reporting pipelines."
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "When the nightly batch pipeline encountered unmapped agency identifiers, the feed status for the inventory valuation service dropped to failed before downstream ledger postings could complete. Across the product hierarchy sync service, the broken reference lookup stranded 22,859 records that depended on valid cross-walk entries between legacy departmental records and cloud platform accounts. Because finance teams could not reconcile those unindexed asset balances before the scheduled reporting cutoff, the monthly close status for the group moved to delayed. This operational disruption manifested strictly as a calendar slippage against the period-end reporting timetable rather than a direct financial write-down against agency funding. Operational teams had to freeze automated ledger handoffs while platform engineers isolated the rejected records and verified that no corrupted valuation entries had crossed into the primary accounting tables."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r023t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "judge_correct_train": null,
+  "judge_correct_holdout": null,
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [
+      "cross_document_reuse"
+    ],
+    "holdout_gain": 2.223,
+    "reasons": [
+      "build or fact gate failed",
+      "no train dimension improved by more than its band",
+      "train dimensions worsened beyond their band: cross_document_reuse"
+    ]
+  }
+}
