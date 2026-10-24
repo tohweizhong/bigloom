@@ -111,7 +111,8 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    each seed with the champion's `agent_words` for the same seed. If a seed has less than 80% of the
    champion count, start one new fresh writer for that seed, then repeat step 5 for it. Apply the
    same rule to train and to holdout seeds. If the seed is still short, record a writer failure and
-   reject the round.
+   reject the round. Even when the length guard rejects the round, run `build_round` on the train set
+   if step 5 passed, so the receipt has the train `vector` and the two train `samples`.
 
    The reference is the champion `agent_words` under the same requests. After a Level 2 change
    that changes the requests, the champion rescore sets a new reference. In that rescore, a short
