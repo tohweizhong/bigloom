@@ -24,8 +24,9 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Build grader v3 with `judge_error` as a scored dimension (rule below), merge, then judge the
-   rs017d champion on train and holdout (6 judge runs).
+1. Champion judged (24 Oct 15:16 SGT, seed 18017): train group A 20, 20, 20; train group B (noise
+   check) 20, 20, 20; holdout 20, 20, 20. `judge_error` is 0.0 on train and holdout. The noise check
+   passes (difference 0.00), but only at the floor. Grader v3 code: suite running, then merge.
 2. Then run Round 17 and later rounds under `self-improvement.md`, without waiting for the user.
 
 ### Level 2 change: judge error rate as a scored metric, grader v3 (rule recorded 24 Oct 15:14 SGT, before code or measure)

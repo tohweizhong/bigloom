@@ -51,5 +51,51 @@
       "retail": []
     }
   },
-  "remaining_commercial_note": "No commercial phrase remains in any deck or other file, train or holdout. So no agent body holds one either."
+  "remaining_commercial_note": "No commercial phrase remains in any deck or other file, train or holdout. So no agent body holds one either.",
+  "judge_seed": 18017,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs": 20,
+    "train_group_a": {
+      "ids": [
+        "6c73e47d",
+        "af6ba9ac",
+        "9573a1b8"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "train_group_b_noise_check": {
+      "ids": [
+        "a71927f5",
+        "60b75340",
+        "74e39676"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "e6a5b7c8",
+        "c871480e",
+        "996694f1"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "noise_check": "Group A and group B differ by 0.00, within the 0.10 band. Both groups are at the floor (0.0), so the check shows agreement at the floor only.",
+    "key_handling": "Key rebuilt in memory with seed 18017 after all nine replied. pairs.md identical on rebuild."
+  }
 }

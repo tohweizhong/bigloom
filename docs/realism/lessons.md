@@ -62,6 +62,13 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
   - The real side: control tables with parameters, step guides, product pages, a security profile,
     and threat tables, with extraction noise.
 
+- **rs017d champion (24 Oct 15:16 SGT, train passages, 6 fresh judges in two groups): 20 of 20 for
+  every judge.** The judges named: one invented document pack with the same reference numbers,
+  names, and figures in many pairs; field values copied word for word into the prose ("Manual agency
+  code mapping override applied..."); smooth, argued essay prose ("It set the price", "a reader
+  returning later"). The real side: guideline controls with parameter placeholders, step guides,
+  product pages, a security profile, control tables, extraction noise.
+
 ## Writer behaviour
 
 - One writer run for each seed is noisy. Under the same policy, two writers wrote 0 and 32 commercial
