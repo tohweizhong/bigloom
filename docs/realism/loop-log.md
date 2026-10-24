@@ -14,20 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 15:14 SGT (judge metric rule recorded) |
-| Loop version | v2 (merged into `realism-loop` at `65955eb`) |
+| Updated | 24 Oct 2026 15:21 SGT (grader v3 merged; starting Round 17) |
+| Loop version | v3 (`judge_error` scored in `decide`, merged into `realism-loop` from `e647dab`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
-| Last round | Round 15, rejected |
-| Next round number | 16 |
-| Real files for the judges | `/usr/local/google/home/weizhongt/.gemini/jetski/brain/962bad5e-098a-42ae-a058-de8668e68825/scratch/realism/real` MISSING. The folder does not exist on 23 Oct 10:52 SGT. The judges cannot run until the user gives the location of the 11 real files. |
+| Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
+| Last round | Round 15, rejected (rescores `rs016` and `rs017`–`rs017d` ran between Round 15 and Round 17) |
+| Next round number | 17 |
+| Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Champion judged (24 Oct 15:16 SGT, seed 18017): train group A 20, 20, 20; train group B (noise
-   check) 20, 20, 20; holdout 20, 20, 20. `judge_error` is 0.0 on train and holdout. The noise check
-   passes (difference 0.00), but only at the floor. Grader v3 code: suite running, then merge.
-2. Then run Round 17 and later rounds under `self-improvement.md`, without waiting for the user.
+1. Run Round 17 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error` (the only metric with room on `rs017d`).
 
 ### Level 2 change: judge error rate as a scored metric, grader v3 (rule recorded 24 Oct 15:14 SGT, before code or measure)
 
