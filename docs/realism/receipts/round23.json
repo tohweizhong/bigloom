@@ -75,7 +75,7 @@
     "unique_sentences": 30.5,
     "words_per_mb": 323.0,
     "dates_after_doc_date": 0.0,
-    "cross_document_reuse": 0.077
+    "cross_document_reuse": 0.0
   },
   "holdout_vector": {
     "wl_id_per_k": 0.0,
@@ -259,14 +259,11 @@
   "decision": {
     "promote": false,
     "improved": [],
-    "worsened": [
-      "cross_document_reuse"
-    ],
+    "worsened": [],
     "holdout_gain": 2.223,
     "reasons": [
       "build or fact gate failed",
-      "no train dimension improved by more than its band",
-      "train dimensions worsened beyond their band: cross_document_reuse"
+      "no train dimension improved by more than its band"
     ]
   }
 }

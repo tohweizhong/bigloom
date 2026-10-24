@@ -53,7 +53,7 @@
     "unique_sentences": 30.5,
     "words_per_mb": 323.0,
     "dates_after_doc_date": 0.0,
-    "cross_document_reuse": 0.077
+    "cross_document_reuse": 0.0
   },
   "per_file": {
     "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
