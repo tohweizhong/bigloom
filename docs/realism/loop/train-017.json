@@ -1,0 +1,200 @@
+{
+  "round": 17,
+  "date_sgt": "2026-10-24 15:45",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-017.md",
+  "candidate_policy_sha256": "f78fe8f8e488e0d26a5533a735b4f592ab3a03a2cddec547df61de3338c26dac",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace the interpretive quality guidance with a rule to use a flat record tone without essay commentary or reader advice.",
+    "why": "Train judge_error is 0.0 with 20 of 20 correct verdicts in rs017d because judges spot argued essay prose and reader advice."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 2,
+    "seed_2027": 2
+  },
+  "agent_words_attempts": {
+    "seed_2026": [
+      2510,
+      3532
+    ],
+    "seed_2027": [
+      2631,
+      2553
+    ]
+  },
+  "agent_words": {
+    "seed_2026": 3532,
+    "seed_2027": 2553
+  },
+  "length_guard_passed": false,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": false,
+  "gate_violations": [
+    "bl-002-pdf-5mb-image: target_or_trap_not_in_top3"
+  ],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.059,
+    "unique_sentences": 47.0,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.705,
+    "within_file_repeat": 0.021,
+    "top_opener_share": 0.066,
+    "unique_sentences": 33.667,
+    "words_per_mb": 381.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 710,
+      "words_per_mb": 339,
+      "sentences": 28,
+      "unique_sentences": 28,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.036,
+      "text_gzip_ratio": 0.427,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 4.23,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 625,
+      "words_per_mb": 119,
+      "sentences": 20,
+      "unique_sentences": 20,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.05,
+      "text_gzip_ratio": 0.403,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2465,
+      "words_per_mb": 1175,
+      "sentences": 78,
+      "unique_sentences": 76,
+      "within_file_repeat": 0.051,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.278,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2096,
+      "words_per_mb": 400,
+      "sentences": 52,
+      "unique_sentences": 50,
+      "within_file_repeat": 0.077,
+      "top_opener_share": 0.058,
+      "text_gzip_ratio": 0.252,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 378,
+      "words_per_mb": 180,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.469,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 393,
+      "words_per_mb": 75,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.143,
+      "text_gzip_ratio": 0.419,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "seed_2026 attempt 1 wrote 2510 words (<2787.2 threshold); fresh retry wrote 3532 words.",
+    "seed_2027 attempt 1 wrote 2631 words and fresh retry wrote 2553 words (both <2814.4 threshold).",
+    "Writers noted that balancing target_words with the flat record tone and ban on multi-word capitalised phrases and repeated commercial terms was hard."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Batch ingestion across the data platform stopped during the morning run when the feed status for the inventory valuation service was recorded as failed. Across the product hierarchy sync service, the interrupted synchronization run left 22,859 records unaligned between legacy agency identifiers and cloud platform records. Those blocked catalogue items represent the entire active disparity between the two estates for the current cycle, while previously synchronized programme records remain intact in the target tables. Downstream jobs that read directly from the valuation output table are currently holding on stale period snapshots until the affected catalogue entries clear validation. Service owners who depend on current-period asset valuations must pause automated downstream extracts for the next hour rather than ingesting incomplete tables. Workloads that consume only static programme metadata or historical ledger periods do not read from the halted feed and can continue operating on their normal schedules. Platform operations will publish"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "For technology leadership, the operational toll demonstrates that data platform incidents are measured by the agency in blocked catalogue items and slipped reporting milestones rather than compute uptime metrics. Even when infrastructure nodes remain healthy, a reference table mismatch across thousands of items halts the agency reporting timetable just as severely as a primary database outage. Protecting the monthly close calendar requires automated pre-flight validation on legacy and cloud agency code tables before the valuation window opens. Until automated checks replace manual table edits, finance GTA/ENG/2026/007 | Version 1.0 | Approved Government Technology Agency | Incident RCA | Confidential (Technology) 3 How we got there operations remain exposed to late schedule slips whenever reference updates occur near period close. Engineering priorities must therefore shift from reactive feed restarts to preventative data integrity gates that stop invalid agency code mappings before batch processing begins. Operational resilience metrics for the platform should"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r017t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "judge_correct_train": null
+}

@@ -97,4 +97,11 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 
 ## Loop v2 rounds
 
-No loop v2 round has run yet.
+| Round | Change | Result (train) |
+|---|---|---|
+| 17 | Replace `"Lead with the position, group related facts, say what they mean"` with `"Use a flat record tone that states facts and actions without essay commentary or reader advice"` (`f78fe8f8…`) | Rejected. Removing `"say what they mean"` cut writer output length: `seed_2026` wrote 2510 words on attempt 1 (retry 3532), and `seed_2027` wrote 2631 and 2553 words (below the 2815-word 80% length guard). Train `bl-002-pdf-5mb-image` failed the retrieval gate (`target_or_trap_not_in_top3`), and `retail_per_k` rose from 0.0 to 0.705 (`bl-001-docx-2mb_final.docx`: 4.23). |
+
+### Lessons from Loop v2 rounds (train only)
+
+- **Do not delete `"Lead with the position, group related facts, say what they mean"` without replacement expansion.** When Round 17 replaced that clause with a ban on essay commentary, writers cut their section length to ~2550 words (`seed_2027`: 2631 and 2553 words vs 2815 threshold) and failed the 80% length guard and the `bl-002-pdf-5mb-image` retrieval gate. Keep the instruction to group related facts and explain their operational effect so sections reach `target_words` and preserve retrieval terms.
+- **Retail words (`inventory`, `merchandise`, `SKU`, `warehouse`) count in `retail_per_k`.** In Round 17, `bl-001-docx-2mb_final.docx` used retail terms (`retail_per_k` 4.23, train mean 0.705 vs 0.0). `VOCABULARY` lists `(profit, margin, revenue, sales, customer, store, retail)` but does not list `inventory`, `warehouse`, or `merchandise`.
