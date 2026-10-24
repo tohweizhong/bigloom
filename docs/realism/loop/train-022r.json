@@ -1,0 +1,166 @@
+{
+  "kind": "train view of the champion baseline",
+  "name": "rs022",
+  "date_sgt": "2026-10-24 18:28",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "grader": "v3 (judge_error scored)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.063,
+    "unique_sentences": 47.333,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 722,
+      "words_per_mb": 344,
+      "sentences": 34,
+      "unique_sentences": 34,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.441,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 716,
+      "words_per_mb": 137,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.056,
+      "text_gzip_ratio": 0.448,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2396,
+      "words_per_mb": 1143,
+      "sentences": 94,
+      "unique_sentences": 91,
+      "within_file_repeat": 0.064,
+      "top_opener_share": 0.032,
+      "text_gzip_ratio": 0.289,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2480,
+      "words_per_mb": 473,
+      "sentences": 97,
+      "unique_sentences": 93,
+      "within_file_repeat": 0.082,
+      "top_opener_share": 0.031,
+      "text_gzip_ratio": 0.273,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 353,
+      "words_per_mb": 168,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.133,
+      "text_gzip_ratio": 0.484,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 328,
+      "words_per_mb": 63,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.067,
+      "text_gzip_ratio": 0.488,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "train_judge_correct": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "agent_words": {
+    "seed_2026": 3484,
+    "seed_2027": 3518
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The inventory valuation service has stopped producing usable output: its feed status is failed. Every report, reconciliation or posting that reads from that feed should be treated as unavailable until the status changes. The size of the problem sits upstream, in the product hierarchy sync service, where the confirmed count of affected records is 22,859 records. That number is not an estimate and it is not a sample. There is no budget or forecast for a failure of this kind, so the only baseline is normal operation, in which the count is nil and the feed completes without intervention. For anyone deciding what to do in the next hour, the scale changes the options. A population of this size will not be corrected record by record before the close deadline, so the realistic choices are a controlled workaround or a delay to the dependent run. Waiting for the feed to"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Read together, these three facts show how far a reference data defect travels before anyone sees it. A single stale entry in one table became a failed feed in a second service, and the failed feed became a late close for the whole group. None of that registered as a platform fault: compute, storage and network all behaved normally throughout. The measure that matters to the business is therefore the record count and the slipped close, not uptime. Any future alert for this class of failure has to watch the data, because the infrastructure will look healthy while the close is already slipping. The cost would have been larger had the close fallen in a quarter-end month, when more reporting lines depend on the same valuation output and the slack in the timetable is thinner."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/rs017dt/set/large\"))",
+  "note": "Train numbers only. Rebuilt on 05fdb96 (DOCX picture placement fix)."
+}

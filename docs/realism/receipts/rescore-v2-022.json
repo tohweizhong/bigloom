@@ -1,0 +1,318 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-022: rs017d prose on DOCX picture placement fix",
+  "date_sgt": "2026-10-24 18:28",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop 05fdb96",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No writer runs. Same accepted prose as rescore-v2-017d. docx_add_picture now matches the evidence table from the end of doc.tables (skipping the cover TOC table) and adds a caption row to the evidence table so target and trap DOCX files share the same table passage structure.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.024,
+    "top_opener_share": 0.063,
+    "unique_sentences": 47.333,
+    "words_per_mb": 388.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.347,
+    "within_file_repeat": 0.028,
+    "top_opener_share": 0.058,
+    "unique_sentences": 46.167,
+    "words_per_mb": 402.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.043
+  },
+  "train_files": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 722,
+      "words_per_mb": 344,
+      "sentences": 34,
+      "unique_sentences": 34,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.441,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 716,
+      "words_per_mb": 137,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.056,
+      "text_gzip_ratio": 0.448,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 2396,
+      "words_per_mb": 1143,
+      "sentences": 94,
+      "unique_sentences": 91,
+      "within_file_repeat": 0.064,
+      "top_opener_share": 0.032,
+      "text_gzip_ratio": 0.289,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2480,
+      "words_per_mb": 473,
+      "sentences": 97,
+      "unique_sentences": 93,
+      "within_file_repeat": 0.082,
+      "top_opener_share": 0.031,
+      "text_gzip_ratio": 0.273,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 353,
+      "words_per_mb": 168,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.133,
+      "text_gzip_ratio": 0.484,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 328,
+      "words_per_mb": 63,
+      "sentences": 15,
+      "unique_sentences": 15,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.067,
+      "text_gzip_ratio": 0.488,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "holdout_files": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 1567,
+      "words_per_mb": 747,
+      "sentences": 68,
+      "unique_sentences": 68,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.412,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 684,
+      "words_per_mb": 130,
+      "sentences": 32,
+      "unique_sentences": 32,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.451,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1682,
+      "words_per_mb": 802,
+      "sentences": 60,
+      "unique_sentences": 57,
+      "within_file_repeat": 0.1,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.27,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "08 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 2298,
+      "words_per_mb": 438,
+      "sentences": 89,
+      "unique_sentences": 86,
+      "within_file_repeat": 0.067,
+      "top_opener_share": 0.034,
+      "text_gzip_ratio": 0.275,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 480,
+      "words_per_mb": 229,
+      "sentences": 20,
+      "unique_sentences": 20,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.05,
+      "text_gzip_ratio": 0.436,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 2.08,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 371,
+      "words_per_mb": 71,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.143,
+      "text_gzip_ratio": 0.482,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "The fact value ops.affected_records renders as '22,859 SKUs' (WorldLoom ledger unit). A writer must cite it.",
+      "train_mean_floor": 0.6,
+      "evidence": {
+        "bl-001-docx-2mb_final.docx": "... the confirmed count of affected records is 22,859 SKUs ...",
+        "bl-001-docx-5mb_final.docx": "... The scale is 23,065 SKUs ...",
+        "bl-002-pdf-2mb_final.pdf": "... the stale mapping affected 22,859 SKUs ...",
+        "bl-002-pdf-5mb_final.pdf": "... The scale of the damage is 23,065 SKUs ...",
+        "bl-003-pptx-2mb_final.pptx": "none",
+        "bl-003-pptx-5mb_final.pptx": "none",
+        "source": "The word comes from the rendered fact value of ops.affected_records (unit SKUs). One hit in each DOCX and PDF, none in the decks."
+      }
+    },
+    "within_file_repeat": {
+      "cause": "PDF cover Summary box repeats the opening paragraph (design choice, kept).",
+      "train_mean_floor": 0.024
+    }
+  },
+  "judge_seed": 18017,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs": 20,
+    "train_group_a": {
+      "ids": [
+        "6c73e47d",
+        "af6ba9ac",
+        "9573a1b8"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "train_group_b_noise_check": {
+      "ids": [
+        "a71927f5",
+        "60b75340",
+        "74e39676"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "e6a5b7c8",
+        "c871480e",
+        "996694f1"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "noise_check": "Group A and group B differ by 0.00, within the 0.10 band. Both groups are at the floor (0.0), so the check shows agreement at the floor only.",
+    "key_handling": "Key rebuilt in memory with seed 18017 after all nine replied. pairs.md identical on rebuild."
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The inventory valuation service has stopped producing usable output: its feed status is failed. Every report, reconciliation or posting that reads from that feed should be treated as unavailable until the status changes. The size of the problem sits upstream, in the product hierarchy sync service, where the confirmed count of affected records is 22,859 records. That number is not an estimate and it is not a sample. There is no budget or forecast for a failure of this kind, so the only baseline is normal operation, in which the count is nil and the feed completes without intervention. For anyone deciding what to do in the next hour, the scale changes the options. A population of this size will not be corrected record by record before the close deadline, so the realistic choices are a controlled workaround or a delay to the dependent run. Waiting for the feed to"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Read together, these three facts show how far a reference data defect travels before anyone sees it. A single stale entry in one table became a failed feed in a second service, and the failed feed became a late close for the whole group. None of that registered as a platform fault: compute, storage and network all behaved normally throughout. The measure that matters to the business is therefore the record count and the slipped close, not uptime. Any future alert for this class of failure has to watch the data, because the infrastructure will look healthy while the close is already slipping. The cost would have been larger had the close fallen in a quarter-end month, when more reporting lines depend on the same valuation output and the slack in the timetable is thinner."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/rs017dt/set/large\"))"
+}
