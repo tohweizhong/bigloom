@@ -134,9 +134,9 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    Count correct verdicts with `score(key, verdicts)` for each judge. The champion counts come from
    its baseline receipt. The champion is judged one time for each baseline, on train and holdout.
    Holdout verdicts and holdout clues never go to a proposer input.
-9. **Decide.** Call `decide` with the champion and candidate vectors, `real_reference()`, and the
-   judge counts for train and holdout, as its signature requires. `judge_error` is one dimension:
-   target 0.5, band 0.10. Use the output as the decision. Never write a decision by hand.
+9. **Decide.** Call `decide` with the champion and candidate vectors, `real_reference()`, the judge
+   counts for train and holdout, and `gate_passed`, as its signature requires. `judge_error` is one
+   dimension: target 0.5, band 0.10. Use the output as the decision. Never write a decision by hand.
 
    If the decision promotes and `judge_error` is the only train dimension that improved, judge the
    candidate train set again with a second group of three fresh judges on the same pairs. Promote
