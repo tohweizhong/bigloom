@@ -14,18 +14,25 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 16:31 SGT (Round 19 recorded; 3-round retrieval gate plateau reached) |
-| Loop version | v3 (`judge_error` scored in `decide`, merged into `realism-loop` from `e647dab`) |
+| Updated | 24 Oct 2026 16:45 SGT (Level 2 retrieval fix `efddbb4` merged after Round 19; starting Round 20) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2 retrieval fix merged in `efddbb4`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-017d.json` (train view `docs/realism/loop/train-017d.json`) |
-| Last round | Round 19, rejected (vector improved on `within_file_repeat` 0.024 to 0.013 with `holdout_gain` +3.48 and zero `commercial_per_k`/`retail_per_k`, but `bl-002-pdf-5mb-image` failed `target_or_trap_not_in_top3`) |
+| Last round | Round 19, rejected on pre-fix retrieval gate (`bl-002-pdf-5mb-image: target_or_trap_not_in_top3`) |
 | Next round number | 20 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 19 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error` (the only metric with room on `rs017d`). If Round 19 also fails for the same reason, trigger Level 2 (3-round plateau).
+1. Run Round 20 and later rounds until 24 Oct 2026 21:00 SGT under `self-improvement.md`, targeting `judge_error`.
+
+### Level 2 change: PPTX passage deduplication, trap chart caption, and `gate_passed` guard (24 Oct 16:45 SGT)
+
+- **Approval.** The user's standing instruction at 23 Oct 10:39 SGT and 24 Oct 15:18 SGT, confirmed by the monitor at 24 Oct 16:37 SGT after a 3-round retrieval gate plateau (Rounds 17, 18, and 19 all failed `*-image: target_or_trap_not_in_top3`).
+- **Cause.** First, `inspect_artifact` emits `slide:<n>/hidden` (`"false"`), `slide:<n>/shape:<m>/text`, and `slide:<n>/text` (which concatenates all shapes on the slide). `qualify._reader_units` kept both `shape:<m>/text` and `slide:<n>/text`, so every word on every PPTX slide was counted twice in `passages_of`. Second, `PptxHandler.finish_trap` and all three `finish_target` handlers included `t.caption` (`Figure: <chart_title>. Bars: ...`), whereas `FormatHandler.canary_ir` (used by DOCX and PDF traps) omitted `t.caption`.
+- **Change (`894a26a`, merged as `efddbb4`).** `qualify._reader_units` drops `/hidden` and `slide:<n>/text` summary units. `FormatHandler.canary_ir` includes `t.caption` in the planted canary table row label. `realism_loop.decide` accepts `gate_passed: bool = True` and adds `"build or fact gate failed"` to `reasons` when `not gate_passed`. `realism_metrics.py` is untouched (`b1ff1f40…`), and `rs017d` target files are unchanged.
+- **Tests.** `test_pptx_passages_count_each_slide_line_once_and_drop_hidden_flag`, `test_canary_ir_includes_chart_caption_for_trap_retrieval`, and `test_decide_rejects_when_gate_fails` all failed on the old code and passed on the new code. Full suite: 182 passed in 332.21s.
 
 ### Level 2 change: judge error rate as a scored metric, grader v3 (rule recorded 24 Oct 15:14 SGT, before code or measure)
 
