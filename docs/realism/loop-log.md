@@ -629,6 +629,7 @@ samples, and the policy digest.
 | L2 (after 54) | Keep the short tail of a wrapped sentence in `passages()` in `realism_pairs.py` (`600eab2`, merged as `9654f8d`, `rescore-v2-054.json`) | Rescore | Same finals and grader as `rescore-v2-034.json`, so both vectors are unchanged and all gates pass with zero violations. Real passages went from 186 to 192 and 264 short tail lines are now kept. 6 fresh judges (`f3795a70`, `b49fac61`, `10f96e42`, `0bb1f5b4`, `0918af0f`, `c9dbaf0d`, seeds `18054` and `28054`) scored `[20, 20, 20]` |
 | 55 | Delete the INPUT sentence that tells writers to read `writing-responses.md` (`72c6250f…`) | Rejected | All 4 seeds passed the 80% length guard (`seed_2026` on attempt 2 after 2498, then 3393, 3618, 3000, 3179) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `40.333`), but train judges (`dd688193`, `b7e31914`, `44f675d1`, `seed = 18054`) and holdout judges (`63e89e0b`, `e8b428de`, `32cd7240`, `seed = 28054`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 56 | Add a QUALITY sentence that bans a colon or a `recorded as` / `reads` / `the record states` frame before a text fact reference (`d1311e26…`) | Rejected | All 4 seeds passed the 80% length guard (3511, 2949, 3516, 3258) and both sets passed all build and retrieval gates with zero violations, but train `commercial_per_k` worsened to `1.662` (`bl-003-pptx-2mb` `9.97`) (`unique_sentences` `41.333`), and train judges (`534d490d`, `b8751be4`, `e7fcf1fc`, `seed = 18054`) and holdout judges (`3b97ab9c`, `f9ab7a13`, `5251d06a`, `seed = 28054`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
+| 57 | Delete the HARD RULES sentence that bans acronyms such as CFO or GP (`daef3e08…`) | Rejected | All 4 seeds passed the 80% length guard (3176, 3544, 3317, 3410) and both sets passed all build and retrieval gates with zero violations, but train `top_opener_share` worsened to `0.083` (distance `0.012`) (`unique_sentences` `41.5`). Train `pairs.md` had 19 pairs. Train judges (`3abd290a`, `7275bf56`, `9fb1c86e`, `seed = 18054`) scored 19 of 19 each (passed to `decide()` as `[20, 20, 20]`) and holdout judges (`df4c6b12`, `f39fb313`, `6457f3fa`, `seed = 28054`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -640,6 +641,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-056.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round56.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-056.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-057.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round57.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-057.json` | Train-only receipts that the proposer reads |
