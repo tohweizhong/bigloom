@@ -1,0 +1,191 @@
+{
+  "round": 39,
+  "date_sgt": "2026-10-27 01:35",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-039.md",
+  "candidate_policy_sha256": "3dd93154c9bd5a55dbee6443c8242527b7e01a33eb4868e588b0a954d2956e5b",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Keep the champion's layout and replace \"say what they mean\" in QUALITY with one rule: state each fact once in terse record-like phrasing, with no follow-on sentence that retells cause, ruled-out explanation, sequence, or meaning, and name the incident, system, or variance only in the sentence that cites it, while the rest of each section (at least 95 percent of target_words, no store/stores) gives plain explanation of the agency's own process without rhetorical transitions, aphorisms, maxims, or reader advice.",
+    "why": "train-038.json ([20, 20, 20]) shows that the guidance-first layout became aphoristic essays and that the closing fact paragraph still carried the incident storyline, and train-034r.json (18 of 20 champion passages repeat the stale mapping and ERP story, plus \"Put simply\" and \"Read together\" transitions) shows that the narrative retelling around each fact is the main clue, so this rule changes how each fact is expressed and leaves the layout as it is."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3497,
+    "seed_2027": 3677
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.057,
+    "unique_sentences": 45.5,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 654,
+      "words_per_mb": 312,
+      "sentences": 35,
+      "unique_sentences": 35,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.42,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 702,
+      "words_per_mb": 134,
+      "sentences": 37,
+      "unique_sentences": 37,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.081,
+      "text_gzip_ratio": 0.416,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1652,
+      "words_per_mb": 788,
+      "sentences": 80,
+      "unique_sentences": 80,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.39,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1713,
+      "words_per_mb": 327,
+      "sentences": 88,
+      "unique_sentences": 88,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.023,
+      "text_gzip_ratio": 0.375,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 328,
+      "words_per_mb": 156,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.488,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 284,
+      "words_per_mb": 54,
+      "sentences": 16,
+      "unique_sentences": 16,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.125,
+      "text_gzip_ratio": 0.486,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3497, seed_2027: 3677).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences is 45.5 (48.667 in round 38, 43.167 for the champion) and top_opener_share is 0.057.",
+    "Train judges scored [20, 20, 20]. All 3 said every synthetic passage retells one month-end valuation incident (stale legacy-to-cloud agency code mapping table, ERP outage theory, override, unowned table) in smooth, complete, uniform prose, with repeated report phrases ('No budget or prior-month figure applies', 'The record reads', 'For platform engineering'). Real passages showed extraction damage, varied genres, and specific external anchors."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "In the meantime, the inventory valuation service runs on this basis: manual agency code mapping override applied to complete valuation for the period. The current working cause, which the team will keep under test until the incident closes, is: stale legacy-to-new agency code mapping in the reference data register. No budget or prior-month figure applies to either point, so the position is stated as it stands. The override was applied on the strength of that working cause and is the only measure in place. It replaces affected codes with manually checked values for this period only and does not repair the source rows. Each overridden code was checked by a data platform engineer against the current cloud code list before the run resumed. A second engineer reviewed the list of overridden codes before release. People deciding whether to wait can rely on the period's valuation, which the override has made usable. They cannot yet rely on the mapping table for any later run. The override is provisional, and the data"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Confirmed cause for the inventory valuation service: stale legacy-to-new agency code mapping in the reference data register. Root cause classification for the product hierarchy sync service: control failure: the mapping table has no registered owner and no required reviewer. At triage, the working explanation was recorded as overnight ERP outage. Engineers set that explanation aside on this evidence: ERP logs show no interruption during the valuation window. Legacy and cloud agency codes are both in use and are not interchangeable, so every valuation run depends on a correct translation between the two code sets. A translation row that no longer matches the cloud side raises no error when the job loads it. Detection of a bad row therefore depends on a person who reads the output, not on a check inside the pipeline. The outage theory held for most of the first morning because a failed run and an interrupted source look alike in the job log. Log evidence from the upstream system, not a change in symptoms,"
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
