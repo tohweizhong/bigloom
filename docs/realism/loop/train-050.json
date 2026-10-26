@@ -160,7 +160,7 @@
   ],
   "writer_notes": [
     "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3496, seed_2027: 3013).",
-    "Train commercial_per_k worsened to 0.45 (bl-003-pptx-2mb_final.pptx scored 2.7); the other 5 defect distances are 0.0. Train unique_sentences is 40.667 and top_opener_share is 0.05. Writers reported many short sections.",
+    "Train commercial_per_k rose to 0.45, inside its band so decide() did not count it as worsened (bl-003-pptx-2mb_final.pptx scored 2.7); the other 5 defect distances are 0.0. Train unique_sentences is 40.667 and top_opener_share is 0.05. Writers reported many short sections.",
     "Train judges scored [20, 20, 20]. All 3 named the one storyline in smooth editorial prose, rhetorical aphorisms ('a pattern, not bad luck', 'that absence is the finding', 'the dead end is where the time went'), and direct address to the reader."
   ],
   "samples": [

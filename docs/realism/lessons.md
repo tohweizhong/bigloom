@@ -175,7 +175,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
   1. Replacing `"say what they mean"` with work detail and a ban on interpretive or concluding sentences shortened sections (train `unique_sentences` `39.167`), and writers still added self-explaining lines (`"the order is kept here as it happened"`, `"Breadth is the point a technology reader needs to take away"`).
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
 - **What `r050t` train judges (`077f2b71`, `6f2af9dd`, `77d4b4ae`, `seed = 18034`) found on Round 50 (`[20, 20, 20]`):**
-  1. The `"no time to polish them"` persona did not remove aphorisms (`"a pattern, not bad luck"`, `"that absence is the finding"`) and let commercial words back into `bl-003-pptx-2mb` (`commercial_per_k` `2.7`, train mean `0.45`), the same failure as the Round 40 persona clause.
+  1. The `"no time to polish them"` persona did not remove aphorisms (`"a pattern, not bad luck"`, `"that absence is the finding"`) and let commercial words back into `bl-003-pptx-2mb` (`commercial_per_k` `2.7`, train mean `0.45`, inside band), the same failure as the Round 40 persona clause.
   2. Rounds 26 to 50 (25 rounds) all scored `[20, 20, 20]`.
 - **What `r042t` train judges (`d28acdb3`, `f109a72c`, `8be88a83`, `seed = 18034`) found on Round 42 (`[20, 20, 20]`):**
   1. Treating request fields as instructions removed audience framing. The fix for text facts created new slot phrases (`"The position in force is:"`, `"shows the current status:"`, `"recorded as"`, `"reads as follows"`), and judges named them.
