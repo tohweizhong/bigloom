@@ -86,7 +86,7 @@ def test_pdf_has_cover_and_picture_page(built: tuple[Path, list[ManifestEntry]])
     out, entries = built
     e = _entry(entries, "pdf")
     reader = PdfReader(str(out / e.target_file))
-    assert len(reader.pages) >= 8
+    assert len(reader.pages) >= 4
     assert e.document_title in reader.pages[0].extract_text()
     assert any(page.images for page in reader.pages)
 

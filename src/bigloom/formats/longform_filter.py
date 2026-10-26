@@ -27,9 +27,15 @@ if TYPE_CHECKING:  # pragma: no cover
     from worldloom.world import World
 
 #: WorldLoom appendices that list ledger records. A test fails when WorldLoom renames one.
-REMOVED_APPENDICES: tuple[str, ...] = ("Sources of figures", "Data lineage", "Measures and sources", "Chronology of events")
-#: Hidden IR sections that list ledger records. WorldLoom renders them as hidden workbook sheets.
-REMOVED_IR_SECTIONS: tuple[str, ...] = ("Lineage",)
+REMOVED_APPENDICES: tuple[str, ...] = (
+    "Sources of figures",
+    "Data lineage",
+    "Measures and sources",
+    "Chronology of events",
+    "Related documents",
+)
+#: IR sections that list ledger records or synthetic sign-off rosters.
+REMOVED_IR_SECTIONS: tuple[str, ...] = ("Lineage", "Approval")
 #: The key of WorldLoom's "Related documents" appendix table. Only this table drops copied columns,
 #: so a figure table with two equal columns (budget and actual) keeps both.
 RELATED_TABLE = "related"
@@ -260,8 +266,8 @@ def _distinct_comments(comments: tuple[Any, ...]) -> tuple[Any, ...]:
 def filter_document(doc: LongDocument) -> LongDocument:
     """Return the document without ledger appendices, ID columns, ID captions, or an ID reference.
 
-    It also cleans review comments and revision summaries, and empties the fields that the
-    renderers write into file properties: the fact list, the provenance, and metadata that
+    It also clears synthetic frontmatter and review/revision scaffolding, and empties the fields
+    that the renderers write into file properties: the fact list, the provenance, and metadata that
     holds IDs.
     """
     kept = [p for p in doc.appendices if p.heading not in REMOVED_APPENDICES]
@@ -269,20 +275,18 @@ def filter_document(doc: LongDocument) -> LongDocument:
     reference = doc.reference
     if _ID.search(reference):
         reference = readable_reference(reference, doc.company, doc.period, doc.artifact_id)
-    comments = _distinct_comments(
-        tuple(replace(c, text=_clean(c.text), resolution=_clean(c.resolution)) for c in doc.comments)
-    )
-    history = tuple(replace(r, summary=_clean(r.summary)) for r in doc.history)
+    history = tuple(replace(r, status="", summary="") for r in doc.history)
     metadata = {k: v for k, v in doc.metadata.items() if not _ID.search(str(v))}
     return replace(
         doc,
         abstract="",
+        subtitle="",
         reference=reference,
         parts=tuple(_part(p) for p in doc.parts),
         appendices=appendices,
-        comments=comments,
+        comments=(),
         history=history,
-        revision=replace(doc.revision, summary=_clean(doc.revision.summary)),
+        revision=replace(doc.revision, status="", summary=_clean(doc.revision.summary)),
         related=(),
         provenance={},
         fact_ids=(),
@@ -304,11 +308,18 @@ def _check_headings() -> None:
 
 @contextlib.contextmanager
 def filtered_longform() -> Iterator[None]:
-    """Wrap `worldloom.longform.document` with `filter_document` for one render pass."""
+    """Wrap `worldloom.longform.document` and enterprise PDF/presenter helpers for one render pass."""
+    from reportlab.platypus import PageBreak
     from worldloom import longform
+    from worldloom.render.enterprise import pdf as epdf
+    from worldloom.render.enterprise import presenter as epres
 
     _check_headings()
     original = longform.document
+    orig_dist = epdf._distribution
+    orig_ref = epdf._reference
+    orig_doc_class = epdf._doc_class
+    orig_shorten = epres._shorten
 
     def document(world: Any, *args: Any, **kwargs: Any) -> LongDocument:
         if not _NAMES:
@@ -317,11 +328,40 @@ def filtered_longform() -> Iterator[None]:
             _TEXT_FACTS.extend(text_fact_phrases(world))
         return filter_document(original(world, *args, **kwargs))
 
+    def _clean_doc_class(*args: Any, **kwargs: Any) -> Any:
+        cls = orig_doc_class(*args, **kwargs)
+
+        class _CleanReport(cls):  # type: ignore[valid-type, misc]
+            def multiBuild(self, story: list[Any], *b_args: Any, **b_kwargs: Any) -> Any:
+                for pt in self.pageTemplates:
+                    if pt.id == "body":
+                        pt.onPageEnd = lambda canvas, d: None
+                first_pb = next((i for i, f in enumerate(story) if isinstance(f, PageBreak)), None)
+                first_sec = next((i for i, f in enumerate(story) if getattr(f, "_wl_level", None) == 0), None)
+                if first_pb is not None and first_sec is not None and first_sec > first_pb:
+                    story = story[: first_pb + 1] + story[first_sec:]
+                return super().multiBuild(story, *b_args, **b_kwargs)
+
+        return _CleanReport
+
+    def _clean_shorten(text: str, limit: int) -> str:
+        if limit >= epres._BULLET_CHARS:
+            return (text or "").strip()
+        return orig_shorten(text, limit)
+
     longform.document = document  # type: ignore[assignment]
+    epdf._distribution = lambda d: [d.audience]  # type: ignore[assignment]
+    epdf._reference = lambda d: [("Reference", d.reference), ("Date", d.revision.at.strftime("%d %B %Y"))]  # type: ignore[assignment]
+    epdf._doc_class = _clean_doc_class  # type: ignore[assignment]
+    epres._shorten = _clean_shorten  # type: ignore[assignment]
     try:
         yield
     finally:
         longform.document = original  # type: ignore[assignment]
+        epdf._distribution = orig_dist  # type: ignore[assignment]
+        epdf._reference = orig_ref  # type: ignore[assignment]
+        epdf._doc_class = orig_doc_class  # type: ignore[assignment]
+        epres._shorten = orig_shorten  # type: ignore[assignment]
         _NAMES.clear()
         _REFS.clear()
         _TEXT_FACTS.clear()

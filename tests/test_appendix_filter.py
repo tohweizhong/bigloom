@@ -185,17 +185,51 @@ def test_bare_ids_in_comments_become_plain_words(world, monkeypatch: pytest.Monk
 
 
 def test_review_record_keeps_one_row_for_each_comment_text(long_doc) -> None:  # type: ignore[no-untyped-def]
-    """Loop v2: a reviewer does not write the same comment on every section."""
+    """Loop v2: a reviewer does not write the same comment on every section, and rendered docs omit the table."""
     from dataclasses import replace
 
-    from bigloom.formats.longform_filter import filter_document
+    from bigloom.formats.longform_filter import _distinct_comments, filter_document
 
     assert long_doc.comments, "the fixture document has a review record"
     first = long_doc.comments[0]
     doc = replace(long_doc, comments=tuple(replace(first, part=str(i)) for i in range(1, 5)))
+    distinct = _distinct_comments(doc.comments)
+    assert len(distinct) == 1
+    assert distinct[0].part == "1"
     out = filter_document(doc)
-    assert len(out.comments) == 1
-    assert out.comments[0].part == "1"
+    assert out.comments == ()
+    assert all(r.status == "" and r.summary == "" for r in out.history)
+    assert out.subtitle == ""
+    assert out.revision.status == ""
+
+
+def test_filter_strips_scaffold_tables_and_presenter_fragments(world, tmp_path: Path) -> None:  # type: ignore[no-untyped-def]
+    """Loop v2: filtered longform omits scaffold tables, running headers, and truncated deck bullets."""
+    from worldloom.render import enterprise
+    from worldloom.render.enterprise import pdf as epdf
+    from worldloom.render.enterprise import presenter as epres
+
+    from bigloom.realism_metrics import text_of
+    from bigloom.realism_pairs import passages
+
+    assert "Related documents" in lf.REMOVED_APPENDICES
+    assert "Approval" in lf.REMOVED_IR_SECTIONS
+    memo = lf.scrub_ir(next(ir for ir in world.artifact_irs if "CFO" in ir.title))
+    assert not any(s.heading == "Approval" for s in memo.sections)
+    pdf_path = tmp_path / "memo.pdf"
+    sample = (
+        "Because the overall funding position remains within standing treasury reserves, "
+        "the division absorbed the temporary vendor settlement spike without drawing on the central contingency line."
+    )
+    with lf.filtered_longform():
+        ctx = enterprise.context(world, ("pdf",))
+        pdf_path.write_bytes(epdf.render_document(ctx.doc(memo), ctx, memo))
+        shortened = epres._shorten(sample, epres._BULLET_CHARS)
+    assert shortened == sample
+    extracted = "\n".join(passages(text_of(pdf_path)))
+    for banned in ("Document control", "Revision history", "Review record", "Approval and sign-off form", "Related documents"):
+        assert banned not in extracted
+
 
 
 def test_related_documents_table_has_no_copied_column_or_title_as_reference() -> None:
