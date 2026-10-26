@@ -25,16 +25,15 @@ def docx_add_picture(data: bytes, png: bytes, caption: str, *, near: str | None 
     doc = Document(BytesIO(data))
     pic = doc.add_paragraph()
     pic.add_run().add_picture(BytesIO(png), width=Inches(6.0))
-    cap = doc.add_paragraph(caption)
     table = None
     if near:
         table = next((tb for tb in reversed(doc.tables) for cell in tb._cells if cell.text.strip() == near), None)
     if table is not None:
         row = table.add_row()
         row.cells[0].text = caption
-        table._tbl.addnext(cap._p)
         table._tbl.addnext(pic._p)
     else:
+        cap = doc.add_paragraph(caption)
         paras = [p for p in doc.paragraphs if p._p is not pic._p and p._p is not cap._p]
         anchor = paras[min(len(paras) - 1, max(0, int(len(paras) * at)))]
         anchor._p.addprevious(pic._p)
