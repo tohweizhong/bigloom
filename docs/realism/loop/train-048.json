@@ -1,0 +1,191 @@
+{
+  "round": 48,
+  "date_sgt": "2026-10-27 05:32",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-048.md",
+  "candidate_policy_sha256": "85f66dbdda6e6c4f1b41b77a081d5924b6bc2315919d0cf8117d095a60c70777",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, add one sentence after the opener cap: when a text fact renders as a bare status or label value that is not grammatical in the sentence on its own (a noun phrase with no article, or one word such as a status), put double quotation marks around its reference so it reads as a value quoted from the record.",
+    "why": "In train-047.json all 3 judges ([20, 20, 20]) named text-fact values inserted word for word as ungrammatical slot fills ('it was initially recorded as overnight ERP outage', 'is failed'), and train-046.json and train-034r.json show the same bare values ('reads control failure: ...', 'recorded as overnight ERP outage'), so quoting them as record values makes the fixed WorldLoom wording read like a real officer quoting a status field, with no new frame, opener, or length change."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 2
+  },
+  "agent_words": {
+    "seed_2026": 3557,
+    "seed_2027": 3358
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.045,
+    "unique_sentences": 43.167,
+    "words_per_mb": 298.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.008
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.007
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 654,
+      "words_per_mb": 312,
+      "sentences": 33,
+      "unique_sentences": 33,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.061,
+      "text_gzip_ratio": 0.435,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 645,
+      "words_per_mb": 123,
+      "sentences": 39,
+      "unique_sentences": 39,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.051,
+      "text_gzip_ratio": 0.453,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1669,
+      "words_per_mb": 796,
+      "sentences": 74,
+      "unique_sentences": 74,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.027,
+      "text_gzip_ratio": 0.397,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1555,
+      "words_per_mb": 297,
+      "sentences": 79,
+      "unique_sentences": 79,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.013,
+      "text_gzip_ratio": 0.401,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 402,
+      "words_per_mb": 192,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.461,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 360,
+      "words_per_mb": 69,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.494,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard (seed_2026: 3557 on attempt 1, seed_2027: 3358 on attempt 2 after one number_spelling rejection).",
+    "Train defect distances are 0.0 except cross_document_reuse 0.007 (inside its band). Train unique_sentences is 43.167 and top_opener_share is 0.045.",
+    "Train judges scored [20, 20, 20]. All 3 named the one storyline, quoted record fields ('restate quoted record fields'), meta-commentary and editorial framing ('a reader six months from now', 'Read together', 'Taken in order'), and neat conclusions. Quoting text facts made the record values visible as quotes; it did not hide them."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The service is currently running on a workaround: \"Manual agency code mapping override applied to complete valuation for the period\". The basis for that override is the confirmed cause: \"Stale legacy-to-new agency code mapping in the reference data register\". The override maps the affected codes by hand to their correct current values, so it bypasses the stale entry rather than repairing it. No planned or prior-period figure exists to set against this position. The comparison that matters is between running on the override now and waiting for a permanent correction to the register. This is a holding position, not a fix, and readers deciding whether to wait should treat it that way. The override lets the period be valued, which is what the close needs this week. It does not change the register itself, so the next run that reads the register without the override would meet the same stale mapping and fail in the same way. Teams that need valuation figures for this period can use them now. Teams"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The valuation failure has one established cause: \"Stale legacy-to-new agency code mapping in the reference data register\". That was not the first explanation. Triage initially recorded the cause as \"Overnight ERP outage\", and the morning was spent testing that theory against the upstream system. It was ruled out on direct evidence, because \"ERP logs show no interruption during the valuation window\". Once the outage theory fell away, the classification that followed is the finding this review rests on: \"control failure: the mapping table has no registered owner and no required reviewer\". Put plainly, the stale row was not a random data error. It was the expected output of a table that nobody was accountable for and nobody was obliged to check before a change went live."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
