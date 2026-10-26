@@ -338,7 +338,7 @@ def test_docx_add_picture_places_chart_at_evidence_table_not_cover_toc() -> None
     snap = inspect_file_bytes(out, ".docx")
 
     para_texts = [u.text for u in snap.units if u.locator.startswith("paragraph:")]
-    assert para_texts.index(caption) > para_texts.index("6 Revised revenue forecast")
+    assert caption not in para_texts
     table_texts = [u.text for u in snap.units if u.locator.startswith("table:2/")]
     assert caption in table_texts
 

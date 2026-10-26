@@ -115,3 +115,34 @@ def test_v2_reference_is_the_median_of_the_real_files() -> None:
     assert ref["unique_sentences"] == statistics.median(f["unique_sentences"] for f in files)
     assert ref["unique_sentences"] < 146.7  # the v1 mean, skewed by one long DOCX
     assert set(ref) >= {"commercial_per_k", "top_opener_share", "unique_sentences", "cross_document_reuse"}
+
+
+def test_mask_names_and_passages_strip_symmetric_names_and_extraction_residue() -> None:
+    from bigloom.realism_pairs import mask_names, passages
+
+    synth = (
+        "In the inventory valuation service and the product hierarchy sync service, "
+        "Product & Engineering and Government Digital Transformation reconciled the "
+        "Agency Reference Data Register and the reference data register."
+    )
+    masked_synth = mask_names(synth)
+    assert "[PRODUCT-" in masked_synth and "[ORG-" in masked_synth
+    assert "inventory valuation service" not in masked_synth
+    assert "product hierarchy sync service" not in masked_synth
+    assert "Product & Engineering" not in masked_synth
+
+    real_raw = (
+        "13 | P a g e \ue912 Provide notice at least [ insert: param, pr-4_prm_1 ] days "
+        "in advance on CDCGoWhere and the Singapore Government Design System (SGDS) "
+        "for Whole-of-Government portals. Call the 24/7 ScamShield Helpline at 1799 to verify. "
+        + " ".join(["Public agencies maintain clear operational standards across digital services."] * 15)
+    )
+    extracted = mask_names(passages(real_raw)[0])
+    assert "P a g e" not in extracted
+    assert "\ue912" not in extracted
+    assert "insert: param" not in extracted
+    assert "pr-4_prm_1" not in extracted
+    assert "Helpline at 1799" not in extracted
+    assert "CDCGoWhere" not in extracted
+    assert "SGDS" not in extracted
+    assert "Whole-of-Government" not in extracted
