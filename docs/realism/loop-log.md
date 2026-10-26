@@ -627,6 +627,7 @@ samples, and the policy digest.
 | 53 | Delete the QUALITY sentence `"Write like a real public-sector finance or technology officer."` (`5f3ab94a…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3235, 3113, 3006, 3559) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `40.667`), but train judges (`0f4d28ed`, `a7c2365c`, `93670d03`, `seed = 18034`) and holdout judges (`6e7d69b4`, `1c5ae101`, `b0302ed8`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 54 | Delete the VOCABULARY sentence `After that, refer to it as "the figure", "this result", "the surplus", or "the position".` (`ed5109da…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3538, 3469, 3120, 3613) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `43.667`), but train judges (`35d51ba3`, `aaa244bb`, `26c7f12b`, `seed = 18034`) and holdout judges (`e0ffdad3`, `69861f04`, `1ff08b10`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | L2 (after 54) | Keep the short tail of a wrapped sentence in `passages()` in `realism_pairs.py` (`600eab2`, merged as `9654f8d`, `rescore-v2-054.json`) | Rescore | Same finals and grader as `rescore-v2-034.json`, so both vectors are unchanged and all gates pass with zero violations. Real passages went from 186 to 192 and 264 short tail lines are now kept. 6 fresh judges (`f3795a70`, `b49fac61`, `10f96e42`, `0bb1f5b4`, `0918af0f`, `c9dbaf0d`, seeds `18054` and `28054`) scored `[20, 20, 20]` |
+| 55 | Delete the INPUT sentence that tells writers to read `writing-responses.md` (`72c6250f…`) | Rejected | All 4 seeds passed the 80% length guard (`seed_2026` on attempt 2 after 2498, then 3393, 3618, 3000, 3179) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `40.333`), but train judges (`dd688193`, `b7e31914`, `44f675d1`, `seed = 18054`) and holdout judges (`63e89e0b`, `e8b428de`, `32cd7240`, `seed = 28054`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -638,6 +639,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-054.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round54.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-054.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-055.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round55.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-055.json` | Train-only receipts that the proposer reads |
