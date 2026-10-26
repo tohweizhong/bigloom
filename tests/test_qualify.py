@@ -343,3 +343,31 @@ def test_docx_add_picture_places_chart_at_evidence_table_not_cover_toc() -> None
     assert caption in table_texts
 
 
+def test_pdf_add_picture_merges_onto_short_final_page_to_avoid_thin_pages() -> None:
+    from io import BytesIO
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from bigloom.evidence import fact_chart_png
+    from bigloom.formats.pdf import pdf_add_picture
+    from bigloom.realism import file_findings
+
+    buf = BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4, invariant=True)
+    for page_no in (1, 2):
+        c.setFont("Helvetica", 10)
+        for row in range(10):
+            c.drawString(50, 750 - row * 20, f"Page {page_no} row {row} holds operational governance prose for public digital services.")
+        c.showPage()
+    c.setFont("Helvetica", 10)
+    c.drawString(50, 750, "Short tail page with fewer than forty words at the end of the body.")
+    c.showPage()
+    c.save()
+
+    png = fact_chart_png("Chart title", ("Product & Engineering",), "52.93%", 1)
+    out = pdf_add_picture(buf.getvalue(), png, "Figure: Chart title. Bars: Product & Engineering.")
+    snap = inspect_file_bytes(out, ".pdf")
+    codes = [f.code for f in file_findings(snap)]
+    assert "thin_pages" not in codes
+
+
+

@@ -31,9 +31,18 @@ def pdf_add_picture(data: bytes, png: bytes, caption: str) -> bytes:
     reader = PdfReader(BytesIO(data))
     extra = PdfReader(BytesIO(page_buf.getvalue())).pages[0]
     writer = PdfWriter()
-    for page in reader.pages:
-        writer.add_page(page)
-    writer.add_page(extra)
+    if (
+        len(reader.pages) >= 2
+        and len((reader.pages[-2].extract_text() or "").split()) >= 40
+        and 0 < len((reader.pages[-1].extract_text() or "").split()) < 40
+    ):
+        reader.pages[-1].merge_page(extra)
+        for page in reader.pages:
+            writer.add_page(page)
+    else:
+        for page in reader.pages:
+            writer.add_page(page)
+        writer.add_page(extra)
     if reader.metadata:
         writer.add_metadata({k: str(v) for k, v in reader.metadata.items()})
     out = BytesIO()
