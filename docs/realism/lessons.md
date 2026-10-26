@@ -154,6 +154,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 | 55 | Delete the INPUT sentence that tells writers to read `writing-responses.md` (`72c6250f…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3393 on attempt 2, `seed_2027`: 3618) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `40.333`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | 56 | Add a QUALITY sentence that bans a colon or a `recorded as` / `reads` / `the record states` frame before a text fact reference (`d1311e26…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3511, `seed_2027`: 2949) and passed all build and retrieval gates with all defect distances at `0.0` except `commercial_per_k` `1.662` (`unique_sentences` `41.333`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | 57 | Delete the HARD RULES sentence that bans acronyms such as CFO or GP (`daef3e08…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3176, `seed_2027`: 3544) and passed all build and retrieval gates with all defect distances at `0.0` except `top_opener_share` `0.012` (`unique_sentences` `41.5`), while train judges scored 19, 19, and 19 of 19 (19 pairs) (`judge_error` `0.0`). |
+| 58 | Add a QUALITY sentence that bans sentences that address or name the reader (`f51b49a6…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3514, `seed_2027`: 2857) and passed all build and retrieval gates, but `commercial_per_k` `0.5`, `retail_per_k` `0.335`, and `cross_document_reuse` `0.033` worsened (`unique_sentences` `40.5`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 
 ### Lessons from Loop v2 rounds (train only)
 
@@ -182,6 +183,10 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 - **What `r049t` train judges (`5b3cefd7`, `cdebcc07`, `abd050e5`, `seed = 18034`) found on Round 49 (`[20, 20, 20]`):**
   1. Replacing `"say what they mean"` with work detail and a ban on interpretive or concluding sentences shortened sections (train `unique_sentences` `39.167`), and writers still added self-explaining lines (`"the order is kept here as it happened"`, `"Breadth is the point a technology reader needs to take away"`).
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
+- **What `r058t` train judges (`4fe18ce8`, `04c76f72`, `ecbb155f`, `seed = 18054`) found on Round 58 (`[20, 20, 20]`):**
+  1. The ban removed reader-addressed lines, but judges named other editorial lines (`"Put plainly"`, `"The real finding is structural"`). Banning one phrase family moves the voice to another.
+  2. Commercial and retail words came back in `bl-003-pptx` (`commercial_per_k` `0.5`, `retail_per_k` `0.335`), and `cross_document_reuse` rose to `0.033`.
+  3. Rounds 26 to 58 (33 rounds) and both rescores had zero judge errors.
 - **What `r057t` train judges (`3abd290a`, `7275bf56`, `9fb1c86e`, `seed = 18054`) found on Round 57 (19 of 19 each):**
   1. Removing the acronym ban did not change the verdicts. Judges still named template field values inserted word for word (`"It was initially recorded as overnight ERP outage"`) and reader-directed prose.
   2. Train `pairs.md` had only 19 pairs. `build_pairs()` uses the 2 MB DOCX and PPTX and both PDFs, and those gave 19 synthetic passages. `judge_error()` assumes 20 pairs, so the receipt scales 19 of 19 to 20 of 20 for `decide()`.
