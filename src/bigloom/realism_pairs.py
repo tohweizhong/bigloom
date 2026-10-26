@@ -78,6 +78,11 @@ def passages(text: str) -> list[str]:
         line = re.sub(r"\s{2,}", " ", CLUE.sub(" ", re.sub(r"\s+", " ", raw))).strip()
         if len(line.split()) >= 6:
             cur.append(line)
+        elif cur and line and not cur[-1].endswith((".", "!", "?")):
+            # A short tail of a wrapped sentence ends the paragraph. Keep it.
+            cur.append(line)
+            paras.append(" ".join(cur))
+            cur = []
         elif cur:
             paras.append(" ".join(cur))
             cur = []

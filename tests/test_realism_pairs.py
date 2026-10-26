@@ -31,3 +31,18 @@ def test_passages_drop_clues_and_short_lines() -> None:
     text = (line * 20) + "\nPage 3 of 9\nhttps://example.gov.sg/x\n"
     out = rp.passages(text)
     assert out and all("Page 3" not in p and "https" not in p for p in out)
+
+
+def test_passages_keep_short_tail_of_wrapped_sentence() -> None:
+    line = "This sentence has more than six words in it for the passage builder. "
+    text = (line * 4) + "\nThe owner of the mapping table in the register is\nrecorded as unassigned.\n\n" + (line * 6)
+    out = rp.passages(text)
+    joined = " ".join(out)
+    assert "the register is recorded as unassigned. This sentence" in joined
+    assert "the register is This sentence" not in joined
+
+
+def test_passages_still_drop_short_line_after_full_sentence() -> None:
+    line = "This sentence has more than six words in it for the passage builder. "
+    text = (line * 12) + "\nSection 4\n" + (line * 4)
+    assert "Section 4" not in " ".join(rp.passages(text))
