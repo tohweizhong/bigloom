@@ -1,0 +1,253 @@
+{
+  "round": 38,
+  "date_sgt": "2026-10-27 01:25",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-038.md",
+  "candidate_policy_sha256": "7e70000b2a1218bbe29e0f383c33d84dfbbefc8f551d6bf49563a4254e215546",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace \"say what they mean\" in QUALITY with guidance to open each section with continuous unlabelled public-sector guidance prose of deliberately uneven texture (widely varied paragraph and sentence lengths, mixed procedural and discursive passages, no label-colon line starts, no repeat of the previous section's arrangement, no incident details), then put all required facts once each in a 40-to-55-word closing paragraph that does not retell causes, ruled-out theories, or the event sequence.",
+    "why": "train-037.json (judge_correct_train [20, 20, 20]) shows that named block kinds became labels that judges cited even though unique_sentences rose to 58.333, and train-036.json (unique_sentences 51.5, [20, 20, 20]) and train-034r.json (18 of 20 passages repeat the stale mapping and ERP story) show that a uniform clean style and the retold incident story are the remaining clues, so this rule asks for unevenness without naming any form and strips the story from the fact paragraph."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 2,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 3591,
+    "seed_2027": 3540,
+    "seed_3101": 3649,
+    "seed_3102": 2974
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_receipt": "docs/realism/receipts/rescore-v2-034.json",
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.054,
+    "unique_sentences": 48.667,
+    "words_per_mb": 300.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.417,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.033,
+    "unique_sentences": 54.0,
+    "words_per_mb": 345.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.043
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.417,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.042
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 656,
+      "words_per_mb": 313,
+      "sentences": 37,
+      "unique_sentences": 37,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.054,
+      "text_gzip_ratio": 0.47,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 646,
+      "words_per_mb": 123,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.028,
+      "text_gzip_ratio": 0.469,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1711,
+      "words_per_mb": 816,
+      "sentences": 95,
+      "unique_sentences": 95,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.011,
+      "text_gzip_ratio": 0.425,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1669,
+      "words_per_mb": 318,
+      "sentences": 85,
+      "unique_sentences": 85,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.024,
+      "text_gzip_ratio": 0.42,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 310,
+      "words_per_mb": 148,
+      "sentences": 19,
+      "unique_sentences": 19,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.105,
+      "text_gzip_ratio": 0.513,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 435,
+      "words_per_mb": 83,
+      "sentences": 20,
+      "unique_sentences": 20,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.1,
+      "text_gzip_ratio": 0.485,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All 4 seeds passed validation and the 80% length guard (3591, 3540, 3649 on attempt 2, 2974).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences fell to 48.667 (58.333 in round 37, 43.167 for the champion) and top_opener_share is 0.054. Holdout gain on deterministic distances is -0.557.",
+    "Train judges scored [20, 20, 20]. They cited smooth, aphoristic governance essays about preventive and detective controls, ownership, and impact statements (for example 'Remediation that is promised but not funded is not remediation'), and the same recurring incident storyline (agency code mapping table, valuation failure, ERP logs ruled out, manual override, INC numbers) with exact SGD figures and record counts. Real passages showed extraction damage and specific external anchors (RFC 2350, NIST and MITRE ATLAS IDs, UEN steps, phone numbers, CDF conventions). Holdout judges also scored [20, 20, 20] with the same clues."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Business continuity plans earn their cost in the hours when a service is degraded but not yet lost. A useful plan tells a manager what can continue, on what basis, and for how long that basis holds. It also names the evidence that would end the interim arrangement. Provisional output deserves a provisional label. Teams that publish interim figures must mark them as interim in the data itself, not only in an email, so a later reader cannot mistake them for final values. A flag on the dataset and a note in the catalogue cost little. Decide in advance who can authorise an interim arrangement, and record each authorisation with its time and scope. Waiting is also a decision, and it deserves the same record as any other. Service owners who choose to wait must note what they expect to change, and by when, so the choice can be reviewed later. The holding position is manual agency code mapping override applied to complete valuation for the period. It answers the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Reference data is the quiet dependency in most agency data platforms. Code tables, crosswalks between old and new identifiers, and lookup lists sit under every report and every downstream feed. Yet they rarely receive the engineering discipline that application code gets. A crosswalk edited by hand, with no named owner and no second reviewer, behaves like an unreviewed production change. Anyone with write access can make that change at any hour. Where two identifier schemes remain in use side by side, the crosswalk becomes the single point that translates meaning, and one wrong row Treat each mapping table as code. In practice that means version control for the table and a change request for every edit. It means an automated check that every legacy code resolves to exactly one current code, plus a reviewer who did not make the change. It also means a named owner in the data catalogue, recorded against the table itself and not against whichever team happens to run the pipeline."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "holdout_judge_seed": 28034,
+  "judge_ids": {
+    "train": [
+      "b1db4498",
+      "52b82e46",
+      "567dd0c8"
+    ],
+    "holdout": [
+      "1a64e308",
+      "22b71a73",
+      "4adca152"
+    ]
+  },
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": -0.557,
+    "reasons": [
+      "no train dimension improved by more than its band",
+      "holdout did not gain (normalised gain -0.557)"
+    ]
+  }
+}
