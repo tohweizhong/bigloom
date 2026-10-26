@@ -1,0 +1,191 @@
+{
+  "round": 40,
+  "date_sgt": "2026-10-27 01:47",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-040.md",
+  "candidate_policy_sha256": "036a7956552fff4ee986366088bd8082ea7e2bc4aff14f117707265d2fd09ab3",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace \"say what they mean\" in QUALITY with one rule that keeps each section strictly on the narrow subject its own purpose and moves name, cites each fact only as it bears on that subject without recounting incident background, causes, ruled-out explanations, or event sequence, lets each document's audience, persona, and voice set vocabulary, sentence length, and detail so documents read as different officers, and fills each section to at least 95 percent of target_words with concrete detail on that subject alone (no store/stores).",
+    "why": "train-039.json ([20, 20, 20]) shows all judges said every synthetic passage retells one valuation incident in uniform prose with repeated report phrases, and train-034r.json (18 of 20 passages repeat the stale mapping and ERP story) and train-038.json (guidance-first layout became aphoristic essays) show that the retelling around each fact, not the layout, is the clue, so this rule narrows each section to its own subject and voice without naming any frame, label, or opener."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3606,
+    "seed_2027": 3617
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 1.483,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.833,
+    "words_per_mb": 301.667,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 1.483,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 688,
+      "words_per_mb": 328,
+      "sentences": 31,
+      "unique_sentences": 31,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.032,
+      "text_gzip_ratio": 0.431,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 657,
+      "words_per_mb": 125,
+      "sentences": 32,
+      "unique_sentences": 32,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.031,
+      "text_gzip_ratio": 0.434,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1688,
+      "words_per_mb": 805,
+      "sentences": 80,
+      "unique_sentences": 80,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.391,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1703,
+      "words_per_mb": 325,
+      "sentences": 86,
+      "unique_sentences": 86,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.023,
+      "text_gzip_ratio": 0.381,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 337,
+      "words_per_mb": 161,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.485,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 8.9,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 345,
+      "words_per_mb": 66,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.495,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3606, seed_2027: 3617).",
+    "Train commercial_per_k worsened to 1.483 (0.0 on the champion): bl-003-pptx-2mb_final.pptx scored 8.9 because the persona-voice clause brought commercial words back into the slide deck. The other 5 defect distances are 0.0. Train unique_sentences is 43.833 and top_opener_share is 0.048.",
+    "Train judges scored [20, 20, 20]. All 3 said every synthetic passage repeats one valuation incident (stale legacy-to-cloud agency code mapping, ERP outage hypothesis, manual override, ownership ticket) in fluent, reflective, reader-directed prose with self-referential remarks ('for a reader deciding', 'the review states that gap plainly'). Real passages showed extraction damage and specific external anchors."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Until the reference data is corrected at source, the period runs on a manual basis: manual agency code mapping override applied to complete valuation for the period. The override replaces the faulty lookup for this month only. It was entered by the platform team and checked against the values the valuation needed, and it is the reason the period could be valued at all. The basis for the override is the confirmed fault: stale legacy-to-new agency code mapping in the reference data register. Because the fault is in one mapping between legacy and cloud agency codes, and the two code sets are not interchangeable, a manual mapping that bypasses the stale entry is a direct and sound substitute for the period. It does not depend on any guess about other systems, and it changes nothing in the valuation logic itself. For teams deciding whether to wait, the position is provisional but usable. Values produced under the override are fit for the period close and do not need to be held"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Confirmed cause: stale legacy-to-new agency code mapping in the reference data register. The inventory valuation service resolves every agency code through that mapping before it values a record. One stale entry meant that legacy codes and cloud codes no longer matched for the run, and because the two code sets are both live and not interchangeable, the service stopped rather than guessed. The first working explanation was different. It was initially recorded as overnight ERP outage, which fitted the symptom and the overnight timing. That hypothesis was dropped on evidence: ERP logs show no interruption during the valuation window. With the upstream system cleared, the classification against the product hierarchy sync service became control failure: the mapping table has no registered owner and no required reviewer. The defect is therefore in how the table is governed, not only in one bad"
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
