@@ -1,0 +1,253 @@
+{
+  "round": 60,
+  "date_sgt": "2026-10-27 07:55",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-060.md",
+  "candidate_policy_sha256": "2f82d162d67d48112019eb8d55965ba219229740756abf06a9d7bc9d3f64be20",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In VOCABULARY, delete the sentence: In sentences that cite no fact, use public-sector words: budget, funding, cost recovery, service users, programme, agency. Keep every other line of round-002.md unchanged.",
+    "why": "In train-059.json and train-058.json the judges named repeated stock phrases and polished reflective prose in sentences that cite no fact, and this sentence gives writers a fixed word list for exactly those sentences, so this change removes it; the commercial-word limit stays in place and the change adds no frame, label, opener, or length rule."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 2,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 3497,
+    "seed_2027": 3429,
+    "seed_3101": 2900,
+    "seed_3102": 3576
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_receipt": "docs/realism/receipts/rescore-v2-054.json",
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.053,
+    "unique_sentences": 43.667,
+    "words_per_mb": 288.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.357,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.039,
+    "unique_sentences": 36.167,
+    "words_per_mb": 268.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.046
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.357,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.045
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 643,
+      "words_per_mb": 307,
+      "sentences": 35,
+      "unique_sentences": 35,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.445,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 624,
+      "words_per_mb": 119,
+      "sentences": 31,
+      "unique_sentences": 31,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.065,
+      "text_gzip_ratio": 0.431,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1641,
+      "words_per_mb": 782,
+      "sentences": 85,
+      "unique_sentences": 85,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.024,
+      "text_gzip_ratio": 0.399,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1603,
+      "words_per_mb": 306,
+      "sentences": 77,
+      "unique_sentences": 77,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.026,
+      "text_gzip_ratio": 0.388,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 334,
+      "words_per_mb": 159,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.482,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 314,
+      "words_per_mb": 60,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.501,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All 4 seeds passed validation and the 80% length guard (3497, 3429, 2900, 3576). seed_2027 needed 2 accept runs after one number_spelling rejection. Holdout pairs.md had 18 pairs; holdout counts were scaled from 18 to 20 for decide().",
+    "All 6 train defect distances are 0.0 (top_opener_share 0.053). Train commercial_per_k is 0.0. Train unique_sentences is 43.667. Holdout gain on deterministic distances is -0.657.",
+    "Train judges scored [20, 20, 20] on 20 pairs. All 3 named the one storyline (stale agency code mapping, ERP outage ruled out, unowned table, delayed close) in polished reflective prose that tells the reader what to decide ('For the cluster head', 'the detour is the useful part') and repeated sentence templates. Holdout judges also scored [20, 20, 20] with the same clues."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Valuation is running on a manual footing for now. The current basis is manual agency code mapping override applied to complete valuation for the period. That override is a stopgap. Engineers apply it one code at a time, against legacy and cloud code sets that are not interchangeable. It keeps the period moving, but it depends on engineers applying the right code by hand, and every override is a fresh chance to repeat the original error. The reason a stopgap is needed has been confirmed: stale legacy-to-new agency code mapping in the reference data register. Until that register entry is corrected and checked, the override stays in place. Readers deciding whether to wait should weigh the two facts against each other. The cause is known and contained to one table, which argues for patience. The fix in place, though, is manual and unreviewed, so output produced under it carries more risk than normal and should be spot-checked before anyone builds on it. This is a provisional position written while the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The valuation failure has one established cause: stale legacy-to-new agency code mapping in the reference data register. Nothing in the platform itself broke. That finding replaced an earlier working view. When the incident opened, the cause was recorded as overnight ERP outage, and the response team spent its first hours treating an upstream interruption as the likely explanation. That view did not survive the evidence. A direct read of the upstream records ruled it out: ERP logs show no interruption during the valuation window. With the upstream system cleared, the team turned to the reference data that feeds the inventory valuation service, and the stale entry was found there. Behind the stale entry sits a weaker control, now classified as control failure: the mapping table has no registered owner and no required reviewer. The distinction matters for the record, because the first theory sent effort to the wrong team and cost the morning."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18054,
+  "holdout_judge_seed": 28054,
+  "judge_ids": {
+    "train": [
+      "7f5fdea5",
+      "c5bc1b04",
+      "d9d48a3b"
+    ],
+    "holdout": [
+      "7f47613a",
+      "4f9c4564",
+      "9a3d53dc"
+    ]
+  },
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": -0.657,
+    "reasons": [
+      "no train dimension improved by more than its band",
+      "holdout did not gain (normalised gain -0.657)"
+    ]
+  }
+}

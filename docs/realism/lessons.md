@@ -156,6 +156,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 | 57 | Delete the HARD RULES sentence that bans acronyms such as CFO or GP (`daef3e08…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3176, `seed_2027`: 3544) and passed all build and retrieval gates with all defect distances at `0.0` except `top_opener_share` `0.012` (`unique_sentences` `41.5`), while train judges scored 19, 19, and 19 of 19 (19 pairs) (`judge_error` `0.0`). |
 | 58 | Add a QUALITY sentence that bans sentences that address or name the reader (`f51b49a6…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3514, `seed_2027`: 2857) and passed all build and retrieval gates, but `commercial_per_k` `0.5`, `retail_per_k` `0.335`, and `cross_document_reuse` `0.033` worsened (`unique_sentences` `40.5`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | 59 | Change the HARD RULES length band from `90 to 120 percent` to `85 to 120 percent` (`9b8d74b4…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3379 on attempt 2 after 2698, `seed_2027`: 3371) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `39.333`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
+| 60 | Delete the VOCABULARY sentence that lists public-sector words for sentences that cite no fact (`2f82d162…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3497, `seed_2027`: 3429) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `43.667`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 
 ### Lessons from Loop v2 rounds (train only)
 
@@ -184,6 +185,9 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 - **What `r049t` train judges (`5b3cefd7`, `cdebcc07`, `abd050e5`, `seed = 18034`) found on Round 49 (`[20, 20, 20]`):**
   1. Replacing `"say what they mean"` with work detail and a ban on interpretive or concluding sentences shortened sections (train `unique_sentences` `39.167`), and writers still added self-explaining lines (`"the order is kept here as it happened"`, `"Breadth is the point a technology reader needs to take away"`).
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
+- **What `r060t` train judges (`7f5fdea5`, `c5bc1b04`, `d9d48a3b`, `seed = 18054`) found on Round 60 (`[20, 20, 20]`):**
+  1. Deleting the public-sector word list did not change the verdicts, and commercial words stayed at `0.0`. Judges still named prose that tells the reader what to decide (`"For the cluster head"`, `"the detour is the useful part"`).
+  2. Rounds 26 to 60 (35 rounds) and both rescores had zero judge errors.
 - **What `r059t` train judges (`b57d03ee`, `6eb2c418`, `3d69d3b5`, `seed = 18054`) found on Round 59 (`[20, 20, 20]`):**
   1. The 85 percent length floor did not remove the reflective voice. Judges still named `"a reader six months from now"` and `"The order of events matters here"`.
   2. The lower floor made two writers fall below the 80% length guard on attempt 1 (2698, 2578). Both passed on attempt 2. Train `words_per_mb` fell to `262.667`.
