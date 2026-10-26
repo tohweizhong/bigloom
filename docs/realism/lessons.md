@@ -148,6 +148,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 | 50 | Replace `"Write like a real public-sector finance or technology officer."` with `"Write like a public-sector finance or technology officer who writes these documents every week and has no time to polish them."` (`8329beb1…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3496, `seed_2027`: 3013) and passed all build and retrieval gates with all 6 defect distances at `0.0` except `commercial_per_k` `0.45` (`top_opener_share` `0.05`, `unique_sentences` `40.667`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | 51 | Delete the QUALITY sentence `"Do not repeat a sentence or a stock phrase across sections or documents."` (`2b09d3c4…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 2980, `seed_2027`: 3472) and passed all build and retrieval gates with all 6 defect distances at `0.0` except `top_opener_share` `0.009` (`unique_sentences` `39.667`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | 52 | Delete the QUALITY sentence `"Lead with the position, group related facts, say what they mean."` (`c3ce0abf…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3635, `seed_2027`: 3525) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `44.167`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
+| 53 | Delete the QUALITY sentence `"Write like a real public-sector finance or technology officer."` (`5f3ab94a…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3235, `seed_2027`: 3113) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `40.667`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 
 ### Lessons from Loop v2 rounds (train only)
 
@@ -176,6 +177,10 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 - **What `r049t` train judges (`5b3cefd7`, `cdebcc07`, `abd050e5`, `seed = 18034`) found on Round 49 (`[20, 20, 20]`):**
   1. Replacing `"say what they mean"` with work detail and a ban on interpretive or concluding sentences shortened sections (train `unique_sentences` `39.167`), and writers still added self-explaining lines (`"the order is kept here as it happened"`, `"Breadth is the point a technology reader needs to take away"`).
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
+- **What `r053t` train judges (`0f4d28ed`, `a7c2365c`, `93670d03`, `seed = 18034`) found on Round 53 (`[20, 20, 20]`):**
+  1. Deleting the officer persona sentence did not remove the reflective voice. Judges still named reader advice (`"A reader returning in six months"`) and fixed insertion phrases (`"recorded as follows:"`).
+  2. A new clue: one synthetic passage had an empty record field (`"owner ... is"`), where a text fact rendered with no value.
+  3. Rounds 26 to 53 (28 rounds) all scored `[20, 20, 20]`.
 - **What `r052t` train judges (`83cb6e15`, `f9b98901`, `88952c83`, `seed = 18034`) found on Round 52 (`[20, 20, 20]`):**
   1. Deleting the position-first essay sentence did not remove the reflective voice. Judges still named reader-directed prose and record fields quoted word for word (`"The confirmed cause reads:"`).
   2. Writers produced longer text (3208 to 3635 words) and all 6 train defect distances were `0.0`, but the single storyline and the missing extraction damage remain the main clues.
