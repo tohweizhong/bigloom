@@ -1,0 +1,99 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-034: rs017d prose with symmetric name masking, extraction-residue stripping, and single DOCX table caption",
+  "date_sgt": "2026-10-26 23:59",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop 8fa1687 (merged realism-v2 29dce51)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "No writer runs. Same accepted prose as rescore-v2-031. realism_pairs.py masks symmetric synthetic and real product/organisation names and strips non-prose PDF/web extraction residue (13 | P a g e, [ insert: param, ... ], icon font glyphs, 1799 helpline banners), and docx_add_picture places the caption in the evidence table row without duplicating it as a body paragraph.",
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.038
+  },
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "holdout_judge_seed": 28034,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs": 20,
+    "train": {
+      "ids": [
+        "0d2bb3c2",
+        "7ca15927",
+        "ec6f0678"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "a5cc75af",
+        "09141116",
+        "16a67e50"
+      ],
+      "correct": [
+        20,
+        20,
+        20
+      ],
+      "judge_error": 0.0
+    }
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The service is being kept running on a provisional basis while the incident remains open. The current measure is a manual agency code mapping override applied to complete valuation for the period. It is a hand-applied correction, made by the platform team against the known fault, and it holds only for this period. That fault is now confirmed as stale legacy-to-new agency code mapping in the reference data register. The override replaces the stale entries with corrected codes at the point of valuation, which is why it can be trusted for this run and nothing beyond it. Readers deciding whether to wait should take two points from this. The workaround is grounded in a confirmed cause, not a guess, so outputs produced under it are fit for the period close. It is still a manual step, which means it must be repeated, checked and signed off each time it is used, and it does not correct the underlying table. This holding position will stand until a permanent fix to the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The valuation failure has one established cause: stale legacy-to-new agency code mapping in the reference data register. That finding is confirmed and it replaces the explanation the team worked from during the first morning. At the outset the cause was recorded as overnight ERP outage, and for some hours that hypothesis directed the investigation. It was ruled out on evidence, not on judgement: ERP logs show no interruption during the valuation window. Once the outage theory fell away, the stale code mapping was the only explanation consistent with what the inventory valuation service had produced. Beneath the stale entry sits a weaker control than anyone had assumed. The review classifies the root cause as follows: control failure: the mapping table has no registered owner and no required reviewer. Put simply, the mapping went out of date because no person was accountable for keeping it current. That distinction shapes every action in this review, because a missing owner cannot be fixed by better"
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]"
+}
