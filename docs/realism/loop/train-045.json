@@ -1,0 +1,191 @@
+{
+  "round": 45,
+  "date_sgt": "2026-10-27 03:15",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-045.md",
+  "candidate_policy_sha256": "96dbdd8c05055213edc86c2f5f2a34a80ed67418949cbe1fbd13b7a2779769b9",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, extend the first sentence so the officer writes as one who is still in the middle of the work, from the present position toward the next action, and never steps back to reflect on the episode, draw a general lesson, or comment on its order of events.",
+    "why": "In train-044.json (judge_correct_train [20, 20, 20]), all 3 judges named retrospective lines ('For anyone reading this later', 'the lesson is', 'The sequence matters'). Judges in train-034r.json ('Put simply', 'Readers deciding whether to wait should take two points from this') and train-043.json ('A reader returning to this section') named the same stance, so this edit changes the writer's time viewpoint and does not name a frame or a reader."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 2,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3497,
+    "seed_2027": 3568
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.036,
+    "unique_sentences": 43.0,
+    "words_per_mb": 293.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 629,
+      "words_per_mb": 300,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.028,
+      "text_gzip_ratio": 0.443,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 689,
+      "words_per_mb": 131,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.435,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1669,
+      "words_per_mb": 796,
+      "sentences": 90,
+      "unique_sentences": 90,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.022,
+      "text_gzip_ratio": 0.384,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1701,
+      "words_per_mb": 324,
+      "sentences": 68,
+      "unique_sentences": 68,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.015,
+      "text_gzip_ratio": 0.387,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 288,
+      "words_per_mb": 137,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.492,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 382,
+      "words_per_mb": 73,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.487,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard (seed_2026: 3497 on attempt 2 after one number_spelling rejection, seed_2027: 3568 on attempt 1).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences is 43.0 and top_opener_share is 0.036.",
+    "Train judges scored [20, 20, 20]. All 3 named the one recurring storyline and fixed phrases repeated word for word ('manual agency code mapping override applied to complete valuation for the period', 'ERP logs show no interruption during the valuation window'). Reader-directed asides remained ('A reader six months on', 'For the cluster head', 'For the platform team')."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The period is running on a manual arrangement while the incident remains open: manual agency code mapping override applied to complete valuation for the period. That measure is a holding step, and nobody is treating it as a repair. Its basis is the confirmed cause, stale legacy-to-new agency code mapping in the reference data register. Because the fault sits in reference data rather than in the valuation logic, a corrected mapping applied by hand produces a valid result for this period. The override holds only for the entries and the period it was written for. Any new mapping change made before the register is corrected falls outside it and needs the same manual treatment. For anyone deciding whether to wait, the answer is that the period valuation does not depend on a further fix. It stands on a manual correction tied to a known cause. The provisional part is the register itself, which still holds the stale entry until a permanent correction goes in. Teams can proceed on the current"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The confirmed cause is stale legacy-to-new agency code mapping in the reference data register. Legacy and cloud agency codes are both live and are not interchangeable, so a stale entry does not raise an error at the point of entry. It resolves to the wrong code, and the valuation run stops downstream. The incident was initially recorded as overnight ERP outage, and the first hours of the response followed that theory. It was ruled out on evidence: ERP logs show no interruption during the valuation window. With the upstream system cleared, the search moved to the reference data and found the stale mapping. Under the stale entry sits a control gap, classified as control failure: the mapping table has no registered owner and no required reviewer. The mapping error is the trigger. The missing ownership and review is the condition that let it reach production."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
