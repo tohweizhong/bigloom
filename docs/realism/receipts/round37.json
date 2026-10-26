@@ -1,0 +1,253 @@
+{
+  "round": 37,
+  "date_sgt": "2026-10-27 01:12",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-037.md",
+  "candidate_policy_sha256": "13dac9490e38183024c5909b195a9c1a36b854fff92ddaa50160d788afd854ba",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace \"say what they mean\" in QUALITY with standalone domain guidance that each section builds from at least three different block kinds (unnumbered imperative steps, defined terms with meanings, control-owner-evidence requirement lines, a form or portal or mailbox note, a caution or exception note, and plain explanatory prose), with no two adjacent blocks of the same kind, no repeat of the previous section's order, widely varied block lengths, no incident names, no store or stores, and all required facts in a compact 40-to-55-word closing paragraph, at 95 percent of target_words.",
+    "why": "In train-036.json (judge_correct_train [20, 20, 20], unique_sentences 51.5) judges named the single uniform duty style, in train-035.json they named the uniform standards-require opener and benefit closer, and in train-034r.json the champion's single essay style gave it away, so this change asks for a mix of paragraph kinds within each section, as judges describe real passages, instead of one more uniform style, while it keeps the closing-fact layout that held all six defect distances at 0.0 and both seeds above the length guard (3618 and 3683 words)."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 3400,
+    "seed_2027": 3528,
+    "seed_3101": 3555,
+    "seed_3102": 3138
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_receipt": "docs/realism/receipts/rescore-v2-034.json",
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.034,
+    "unique_sentences": 58.333,
+    "words_per_mb": 292.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.345,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.037,
+    "unique_sentences": 65.833,
+    "words_per_mb": 350.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.046
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.345,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.045
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 637,
+      "words_per_mb": 304,
+      "sentences": 40,
+      "unique_sentences": 40,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.426,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 647,
+      "words_per_mb": 123,
+      "sentences": 46,
+      "unique_sentences": 46,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.022,
+      "text_gzip_ratio": 0.427,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1588,
+      "words_per_mb": 757,
+      "sentences": 106,
+      "unique_sentences": 106,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.009,
+      "text_gzip_ratio": 0.404,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1651,
+      "words_per_mb": 315,
+      "sentences": 109,
+      "unique_sentences": 109,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.018,
+      "text_gzip_ratio": 0.406,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 350,
+      "words_per_mb": 167,
+      "sentences": 21,
+      "unique_sentences": 21,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.095,
+      "text_gzip_ratio": 0.472,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 459,
+      "words_per_mb": 88,
+      "sentences": 28,
+      "unique_sentences": 28,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.036,
+      "text_gzip_ratio": 0.457,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All 4 seeds passed validation and the 80% length guard on attempt 1 (3400, 3528, 3555, 3138).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences rose to 58.333 (51.5 in round 36, 43.167 for the champion) and top_opener_share is 0.034. Holdout gain on deterministic distances is -0.617.",
+    "Train judges scored [20, 20, 20]. They cited the rigid block labels as a template (\"Control / Owner / Evidence\", \"Caution:\", \"Note:\", \"Term: definition\" glossary lines), clean short didactic sentences, and the same recurring incident storyline (stale legacy-to-new agency code mapping, ERP outage false lead, asset valuation, month-end close, INC numbers, record counts). Real passages showed extraction damage and specific external anchors (NIST 800-53, MITRE ATLAS, RFC 2350, UEN steps, phone numbers, .gov.sg rules). Holdout judges also scored [20, 20, 20] with the same clues."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Caution: a temporary workaround carries the judgement of the person who applied it. Record who applied it, and when it must come out. While an incident is open, the platform runs on a declared holding position. That position states what has been changed by hand, why the change is safe for now, and what will replace it. Teams that depend on the platform can then decide whether to wait for the permanent repair or to proceed on interim output. Control: each manual change is approved by a second engineer. Owner: the platform duty manager. Evidence: the approval line in the change record. Control: interim output is marked provisional in every report that uses it. Owner: the report owner. Evidence: the provisional marking in the published report. The holding position for the inventory valuation service is manual agency code mapping override applied to complete valuation for the period. It answers the confirmed cause, which is stale legacy-to-new agency code mapping in the reference data register. The override is a hand repair"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "A root cause statement names the condition that, once removed, stops a failure from coming back. It is not the first symptom an engineer saw, and it is not the component that raised the alarm. Reviewers on the data platform accept a cause only when a test could have shown it false. A hypothesis that survives the first hour of triage earns no special weight for that reason alone. Each candidate is checked against logs, change records, and the state of reference data at the moment of failure. Write the first hypothesis down with the time it was raised. Name the evidence that would disprove it. Pull that evidence from the source system, not from a dashboard. Mark the hypothesis as ruled out or confirmed, and cite the record that decided it. Repeat for each later hypothesis until one survives every"
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "holdout_judge_seed": 28034,
+  "judge_ids": {
+    "train": [
+      "c50650a2",
+      "82ffadf2",
+      "b0e459d8"
+    ],
+    "holdout": [
+      "ffb3be7a",
+      "c7fc85a8",
+      "2ffc4ead"
+    ]
+  },
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": -0.617,
+    "reasons": [
+      "no train dimension improved by more than its band",
+      "holdout did not gain (normalised gain -0.617)"
+    ]
+  }
+}
