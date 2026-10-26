@@ -19,14 +19,15 @@ def test_canary_ir_marks_the_draft_title() -> None:
     assert h.trap_kind() == "pdf"
 
 
-def test_finish_target_inserts_picture_page_in_the_middle() -> None:
+def test_finish_target_places_picture_page_at_the_end() -> None:
     h, t = handler_for("pdf"), target("pdf", size_bytes=250_000)
     out = h.finish_target(t, pdf_bytes(4), seed=9)
     assert 250_000 <= len(out) <= 254_096
     reader = PdfReader(BytesIO(out))
     assert len(reader.pages) == 5
-    assert reader.pages[2].images, "the picture page sits at the middle"
-    assert t.chart_title in reader.pages[2].extract_text()
+    assert reader.pages[-1].images, "the picture page sits at the end so body sentences are not split"
+    assert t.chart_title in reader.pages[-1].extract_text()
+    assert all(t.chart_title not in p.extract_text() for p in reader.pages[:-1])
     all_text = "\n".join(p.extract_text() for p in reader.pages)
     assert t.image_golden not in all_text
     assert "Page 1 text" in reader.pages[0].extract_text()

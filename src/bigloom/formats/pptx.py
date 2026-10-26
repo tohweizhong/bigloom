@@ -15,7 +15,7 @@ from .base import Format, FormatHandler, Target
 
 
 def pptx_add_evidence_slide(data: bytes, title: str, lines: Sequence[str], png: bytes | None) -> bytes:
-    """Add one slide with text lines and an optional picture, at the middle of the deck."""
+    """Add one slide with text lines and an optional picture at the end of the deck."""
     from pptx import Presentation
     from pptx.util import Inches, Pt
 
@@ -34,10 +34,6 @@ def pptx_add_evidence_slide(data: bytes, title: str, lines: Sequence[str], png: 
             run.font.size = Pt(18)
     if png is not None:
         slide.shapes.add_picture(BytesIO(png), Inches(6.5), Inches(1.6), width=Inches(6.2))
-    ids = prs.slides._sldIdLst
-    new = ids[-1]
-    ids.remove(new)
-    ids.insert(len(ids) // 2, new)
     out = BytesIO()
     prs.save(out)
     return out.getvalue()

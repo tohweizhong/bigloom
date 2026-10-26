@@ -15,7 +15,7 @@ PDF_BALLAST_NAME = "bigloom-ballast.bin"
 
 
 def pdf_add_picture(data: bytes, png: bytes, caption: str) -> bytes:
-    """Insert one A4 page with the picture and its caption at the middle of the document."""
+    """Append one A4 page with the picture and its caption at the end of the document."""
     from pypdf import PdfReader, PdfWriter
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.utils import ImageReader
@@ -31,11 +31,9 @@ def pdf_add_picture(data: bytes, png: bytes, caption: str) -> bytes:
     reader = PdfReader(BytesIO(data))
     extra = PdfReader(BytesIO(page_buf.getvalue())).pages[0]
     writer = PdfWriter()
-    mid = len(reader.pages) // 2
-    for i, page in enumerate(reader.pages):
-        if i == mid:
-            writer.add_page(extra)
+    for page in reader.pages:
         writer.add_page(page)
+    writer.add_page(extra)
     if reader.metadata:
         writer.add_metadata({k: str(v) for k, v in reader.metadata.items()})
     out = BytesIO()

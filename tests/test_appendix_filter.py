@@ -222,13 +222,27 @@ def test_filter_strips_scaffold_tables_and_presenter_fragments(world, tmp_path: 
         "the division absorbed the temporary vendor settlement spike without drawing on the central contingency line."
     )
     with lf.filtered_longform():
-        ctx = enterprise.context(world, ("pdf",))
+        ctx = enterprise.context(world, ("pdf", "pptx"))
         pdf_path.write_bytes(epdf.render_document(ctx.doc(memo), ctx, memo))
         shortened = epres._shorten(sample, epres._BULLET_CHARS)
+        from worldloom.render.enterprise import pptx as epptx
+
+        deck_ir = next(ir for ir in world.artifact_irs if ctx.intent(ir).artifact_type == "executive_summary")
+        pptx_path = tmp_path / "deck.pptx"
+        pptx_path.write_bytes(epptx.render_deck(ctx, deck_ir))
     assert shortened == sample
     extracted = "\n".join(passages(text_of(pdf_path)))
     for banned in ("Document control", "Revision history", "Review record", "Approval and sign-off form", "Related documents"):
         assert banned not in extracted
+    from pptx import Presentation
+
+    prs = Presentation(str(pptx_path))
+    for slide in prs.slides:
+        if slide.shapes.title and slide.shapes.title.text:
+            assert len(slide.shapes.title.text.split()) < 6, slide.shapes.title.text
+    deck_extracted = "\n".join(passages(text_of(pptx_path)))
+    assert "Exco update |" not in deck_extracted
+    assert "What is being done about it" not in deck_extracted
 
 
 

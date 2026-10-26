@@ -66,8 +66,8 @@ class Decision:
 
 
 def distances(vector: Mapping[str, float], real: Mapping[str, float]) -> dict[str, float]:
-    """Return the distance from the real reference value for each loop dimension."""
-    return {k: round(abs(float(vector[k]) - float(real[k])), 4) for k in BANDS}
+    """Return the one-sided defect distance above the real reference value for each loop dimension."""
+    return {k: max(0.0, round(float(vector[k]) - float(real[k]), 4)) for k in BANDS}
 
 
 #: Grader v3: the judge error rate is a scored dimension. Its real target is 0.5 (the judges cannot

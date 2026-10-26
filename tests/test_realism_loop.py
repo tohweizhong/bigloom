@@ -16,7 +16,22 @@ BEST = {"wl_id_per_k": 0.0, "commercial_per_k": 8.0, "retail_per_k": 0.2, "withi
 def test_distance_is_absolute_gap_to_real() -> None:
     d = rl.distances(BEST, REAL)
     assert d["top_opener_share"] == round(0.12 - 0.074, 4)
+    assert d["retail_per_k"] == 0.0
     assert "unique_sentences" not in d  # loop v2 reports the count but does not score it
+
+
+def test_clean_side_below_real_has_zero_distance_and_never_worsens() -> None:
+    """Metrics on or below the real reference have distance 0.0 and never count as worsened."""
+    champ = {**REAL, "top_opener_share": 0.055}
+    cand = {**REAL, "top_opener_share": 0.044}
+    assert rl.distances(champ, REAL)["top_opener_share"] == 0.0
+    assert rl.distances(cand, REAL)["top_opener_share"] == 0.0
+    d = rl.decide(
+        champ, cand, champ, cand, REAL,
+        best_judge_correct=[20, 20, 20], cand_judge_correct=[10, 10, 10],
+        best_holdout_judge_correct=[20, 20, 20], cand_holdout_judge_correct=[10, 10, 10],
+    )
+    assert d.promote and d.worsened == ()
 
 
 def test_promote_when_train_improves_and_holdout_gains() -> None:

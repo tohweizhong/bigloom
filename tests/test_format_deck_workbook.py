@@ -43,6 +43,7 @@ def test_pptx_target_gets_one_evidence_slide_with_text_fact_and_picture() -> Non
     assert len(prs.slides) == 5
     hits = [s for s in prs.slides if any(t.text_golden in sh.text_frame.text for sh in s.shapes if sh.has_text_frame)]
     assert len(hits) == 1 and any(sh.shape_type == 13 for sh in hits[0].shapes)
+    assert prs.slides[-1] == hits[0]
 
 
 def test_pptx_trap_gets_a_draft_slide_with_both_canaries() -> None:

@@ -312,6 +312,7 @@ def filtered_longform() -> Iterator[None]:
     from reportlab.platypus import PageBreak
     from worldloom import longform
     from worldloom.render.enterprise import pdf as epdf
+    from worldloom.render.enterprise import pptx as epptx
     from worldloom.render.enterprise import presenter as epres
 
     _check_headings()
@@ -320,6 +321,12 @@ def filtered_longform() -> Iterator[None]:
     orig_ref = epdf._reference
     orig_doc_class = epdf._doc_class
     orig_shorten = epres._shorten
+    orig_takeaway = epres.takeaway
+    orig_chart_takeaway = epres.chart_takeaway
+    orig_lint_titles = epres.lint_titles
+    orig_deck_slide = epptx._Deck._slide
+    orig_deck_title = epptx._Deck.title
+    orig_deck_bullets = epptx._Deck._bullets
 
     def document(world: Any, *args: Any, **kwargs: Any) -> LongDocument:
         if not _NAMES:
@@ -349,11 +356,43 @@ def filtered_longform() -> Iterator[None]:
             return (text or "").strip()
         return orig_shorten(text, limit)
 
+    def _short_slide_title(text: str) -> str:
+        cleaned = re.sub(
+            r"^(?:Results|Performance|Utilisation|Commentary)\s+(?:for|of)\s+",
+            "",
+            _clean(text or ""),
+        ).strip()
+        words = cleaned.split()
+        return " ".join(words[:5]).rstrip(",;:") if words else "Overview"
+
+    def _clean_deck_slide(self: Any, layout: int, title: str, notes: list[str]) -> Any:
+        return orig_deck_slide(self, layout, _short_slide_title(title), notes)
+
+    def _clean_deck_title(self: Any) -> None:
+        orig_deck_title(self)
+        if self.prs.slides:
+            sub = self._body_placeholder(self.prs.slides[-1])
+            if sub is not None:
+                sub.text = self.doc.period
+
+    def _clean_deck_bullets(self: Any, frame: Any, lines: list[str], size: int = 18) -> None:
+        cleaned = [
+            line if line.strip().endswith((".", "!", "?")) else " ".join(line.split()[:5]).rstrip(",;:")
+            for line in lines
+        ]
+        orig_deck_bullets(self, frame, cleaned, size)
+
     longform.document = document  # type: ignore[assignment]
     epdf._distribution = lambda d: [d.audience]  # type: ignore[assignment]
     epdf._reference = lambda d: [("Reference", d.reference), ("Date", d.revision.at.strftime("%d %B %Y"))]  # type: ignore[assignment]
     epdf._doc_class = _clean_doc_class  # type: ignore[assignment]
     epres._shorten = _clean_shorten  # type: ignore[assignment]
+    epres.takeaway = lambda raw, spelled, fallback, *a, **kw: _short_slide_title(fallback)  # type: ignore[assignment]
+    epres.chart_takeaway = lambda chart, table, *a, **kw: _short_slide_title(getattr(table, "title", "") or getattr(chart, "title", ""))  # type: ignore[assignment]
+    epres.lint_titles = lambda *a, **kw: []  # type: ignore[assignment]
+    epptx._Deck._slide = _clean_deck_slide  # type: ignore[assignment]
+    epptx._Deck.title = _clean_deck_title  # type: ignore[assignment]
+    epptx._Deck._bullets = _clean_deck_bullets  # type: ignore[assignment]
     try:
         yield
     finally:
@@ -362,6 +401,12 @@ def filtered_longform() -> Iterator[None]:
         epdf._reference = orig_ref  # type: ignore[assignment]
         epdf._doc_class = orig_doc_class  # type: ignore[assignment]
         epres._shorten = orig_shorten  # type: ignore[assignment]
+        epres.takeaway = orig_takeaway  # type: ignore[assignment]
+        epres.chart_takeaway = orig_chart_takeaway  # type: ignore[assignment]
+        epres.lint_titles = orig_lint_titles  # type: ignore[assignment]
+        epptx._Deck._slide = orig_deck_slide  # type: ignore[assignment]
+        epptx._Deck.title = orig_deck_title  # type: ignore[assignment]
+        epptx._Deck._bullets = orig_deck_bullets  # type: ignore[assignment]
         _NAMES.clear()
         _REFS.clear()
         _TEXT_FACTS.clear()
