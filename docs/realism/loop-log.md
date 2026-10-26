@@ -618,6 +618,7 @@ samples, and the policy digest.
 | 44 | Replace `"say what they mean"` in `QUALITY` with `"treat audience, persona, and purpose as instructions, not text: they decide which facts to stress and how much detail to give, but the prose never names, addresses, or describes the reader, the audience, or their decision"` (`44307c3d…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3560, 3465, 3390, 3241) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `37.5`), but train judges (`5a627e93`, `ce3e8d35`, `c0edff2d`, `seed = 18034`) and holdout judges (`bda3b2b5`, `fc7794d1`, `3da83325`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 45 | Extend the first `QUALITY` sentence so the officer writes `"as one who is still in the middle of the work, not one who looks back on it"`, from the present position toward the next action, and never reflects on the episode, draws a general lesson, or comments on its order of events (`96dbdd8c…`) | Rejected | All 4 seeds passed the 80% length guard (3497 on attempt 2, 3568, 3749 on attempt 2, 3500) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `43.0`), but train judges (`5333923f`, `548ad1c5`, `8dd60be6`, `seed = 18034`) and holdout judges (`85907e32`, `3bbb3c36`, `d96675c2`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 46 | In `HARD RULES`, replace `"Follow each request's moves, floor, voice, audience, persona, purpose, and terminology."` with `"Follow each request's moves, floor, and terminology."` (`252a3f9c…`) | Rejected | All 4 seeds passed the 80% length guard (3511 on attempt 2, 3482, 3389 on attempt 2, 3475) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `43.833`), but train judges (`a5ec07a3`, `06518405`, `6318eda5`, `seed = 18034`) and holdout judges (`b6a8f545`, `e89cc099`, `5637da23`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
+| 47 | In `QUALITY`, delete the sentence `"Vary sentence openings."` and keep the 25 percent three-word opener cap (`74945a63…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3654, 3370, 3322, 2819) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `43.333`), but train judges (`993905ea`, `de300d2e`, `c2d4ddf4`, `seed = 18034`) and holdout judges (`9d961aa2`, `e543bce3`, `242125ad`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -629,6 +630,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-046.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round46.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-046.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-047.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round47.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-047.json` | Train-only receipts that the proposer reads |
