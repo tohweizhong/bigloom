@@ -1,0 +1,252 @@
+{
+  "round": 41,
+  "date_sgt": "2026-10-27 01:58",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-041.md",
+  "candidate_policy_sha256": "912f9376e12a41cf6d234df102d139bee9d272fb42ffe0ff31d7c3ce00e2735c",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, replace \"say what they mean\" with one rule that tells writers to explain the effect of grouped facts on programme delivery, schedules, and budgets so every section reaches at least 95 percent of target_words, and to write only about the agency's work, systems, and facts, never commenting on the document, its sections, its wording, its reader, or its own method, scope, or sources.",
+    "why": "train-040.json ([20, 20, 20]) and train-039.json ([20, 20, 20]) show that judges named self-referential and reader-directed remarks ('for a reader deciding', 'the review states that gap plainly') and repeated report phrases ('The record reads'), and train-034r.json shows the same clue ('Six months from now...', 'For the cluster head, the message is...'), so this rule removes prose about the document, its reader, and its method, and it names no frame, label, opener, or persona clause that could bring back the commercial words seen in Round 40."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 3767,
+    "seed_2027": 3020,
+    "seed_3101": 2885,
+    "seed_3102": 3629
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_receipt": "docs/realism/receipts/rescore-v2-034.json",
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 45.167,
+    "words_per_mb": 291.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.362,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.05,
+    "unique_sentences": 44.833,
+    "words_per_mb": 318.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.037
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.362,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 687,
+      "words_per_mb": 328,
+      "sentences": 40,
+      "unique_sentences": 40,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.439,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 586,
+      "words_per_mb": 112,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.422,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1758,
+      "words_per_mb": 838,
+      "sentences": 96,
+      "unique_sentences": 96,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.021,
+      "text_gzip_ratio": 0.394,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1412,
+      "words_per_mb": 269,
+      "sentences": 72,
+      "unique_sentences": 72,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.028,
+      "text_gzip_ratio": 0.387,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 265,
+      "words_per_mb": 126,
+      "sentences": 16,
+      "unique_sentences": 16,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.125,
+      "text_gzip_ratio": 0.499,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 409,
+      "words_per_mb": 78,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.484,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All 4 seeds passed validation and the 80% length guard on attempt 1 (3767, 3020, 2885, 3629).",
+    "All 6 deterministic defect distances on train are 0.0 again (commercial_per_k back to 0.0 from 1.483 in round 40). Train unique_sentences is 45.167 and top_opener_share is 0.048. seed_2027 wrote 3020 words, 206 words above its length guard. Holdout gain on deterministic distances is +0.227.",
+    "Train judges scored [20, 20, 20]. All 3 said every synthetic passage retells one valuation incident (stale agency code mapping, ERP outage hypothesis, unowned table, two remediation tickets) in smooth essay prose. Audience-framing lines remained ('For the reader deciding...', 'For platform engineers, the point is...', 'for readers deciding'), and one judge named slot-filled fact phrases that do not fit the grammar ('The period closed only because manual agency code mapping override applied...'). Holdout judges also scored [20, 20, 20] with the same clues."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The current position is a manual one. The interim measure in place is this: manual agency code mapping override applied to complete valuation for the period. It was chosen because waiting for a permanent fix would hold the period open for longer than finance can accept. The basis for the override is the confirmed diagnosis. The failure traces to stale legacy-to-new agency code mapping in the reference data register. Engineers therefore know which entries to correct, and the override replaces those entries only for this run. It does not alter the register itself, and the same stale rows will be read again on the next scheduled batch. For readers deciding whether to wait, the answer is that the period does not need to wait. The override gives a usable result now, based on a cause that has been confirmed rather than guessed. The risk sits in the next cycle. A hand correction carries no lasting protection, so the register still needs a proper repair before the following month end. Until"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The inventory valuation service failed because the agency code mapping it reads was out of date. The confirmed cause is stale legacy-to-new agency code mapping in the reference data register. Legacy and cloud agency codes are both still in use and are not interchangeable. A stale row in that table therefore sends a valuation lookup to a code that the cloud platform does not recognise. Our first working explanation was different. The incident record initially gave the cause as overnight ERP outage, and the team worked on that basis during the first hours. That hypothesis was ruled out on evidence: ERP logs show no interruption during the valuation window. With the upstream system cleared, the investigation moved to the reference data, where the stale mapping was found. Review has since classified the root cause as control failure: the mapping table has no registered owner and no required reviewer. That classification matters more than the stale row itself, because a table with nobody accountable for it will drift again. Correcting the"
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "holdout_judge_seed": 28034,
+  "judge_ids": {
+    "train": [
+      "f8256a94",
+      "8add03dd",
+      "d546a882"
+    ],
+    "holdout": [
+      "a4196f55",
+      "54120d52",
+      "7dc7bfa9"
+    ]
+  },
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": 0.227,
+    "reasons": [
+      "no train dimension improved by more than its band"
+    ]
+  }
+}
