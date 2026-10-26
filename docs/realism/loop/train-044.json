@@ -1,0 +1,191 @@
+{
+  "round": 44,
+  "date_sgt": "2026-10-27 03:04",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-044.md",
+  "candidate_policy_sha256": "44307c3d3ab1d60c6a97801f8f319478a3591bb553ed24768defb872ebfc256e",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, replace \"say what they mean\" with a clause that treats audience, persona, and purpose as instructions, not text: they decide which facts to stress and how much detail to give, but the prose never names, addresses, or describes the reader, the audience, or their decision.",
+    "why": "Train judges named reader-addressing phrases in train-043.json ('For engineering readers', 'For the platform reader', 'A reader returning to this section') and audience framing in train-041.json ('For the reader deciding...', 'For platform engineers, the point is...') as synthetic clues."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3560,
+    "seed_2027": 3465
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.04,
+    "unique_sentences": 37.5,
+    "words_per_mb": 292.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 634,
+      "words_per_mb": 302,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.436,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 656,
+      "words_per_mb": 125,
+      "sentences": 25,
+      "unique_sentences": 25,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.04,
+      "text_gzip_ratio": 0.446,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1651,
+      "words_per_mb": 787,
+      "sentences": 71,
+      "unique_sentences": 71,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.014,
+      "text_gzip_ratio": 0.401,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1635,
+      "words_per_mb": 312,
+      "sentences": 69,
+      "unique_sentences": 69,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.394,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 308,
+      "words_per_mb": 147,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.498,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 424,
+      "words_per_mb": 81,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.485,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3560, seed_2027: 3465).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences is 37.5 and top_opener_share is 0.04. The first seed_2027 writer was stopped during a disk-full outage. Its partial responses.json was removed before narrate accept ran, and a fresh writer produced the accepted file on attempt 1.",
+    "Train judges scored [20, 20, 20]. All 3 named the one recurring storyline (stale agency code mapping, failed valuation, manual override, unassigned owner, two tickets) in fluent reflective prose, fixed fact phrases repeated word for word ('ERP logs show no interruption during the valuation window', '22,859 records'), and advisory or reflective lines ('For anyone reading this later', 'the lesson is', 'The sequence matters')."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The service is running on a temporary basis, not a repaired one: manual agency code mapping override applied to complete valuation for the period. That override was needed because the confirmed cause is stale legacy-to-new agency code mapping in the reference data register, and correcting the register properly requires decisions about code ownership that cannot be taken inside the incident. Compared with normal operation, the difference is that a person, not the reference data, now decides how each affected legacy code translates. The override covers this period only and has been checked against the records it touched, but it has not been through the review that a permanent mapping change would need. Anyone deciding whether to wait can rely on the current output for this period, because the override has completed the valuation. Nobody should assume the next run will behave the same way. Until the register itself is corrected, each new run will need the same manual step, and the incident should stay open on that basis. Waiting for"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The valuation failure was caused by stale legacy-to-new agency code mapping in the reference data register. Legacy agency codes and cloud agency codes are both live and do not translate one to one, so a mapping row that has fallen out of date sends the inventory valuation service to the wrong reference entry without raising an error. At first the cause was recorded as overnight ERP outage, a reasonable guess because the valuation run sits inside the overnight batch window. That explanation was set aside on evidence rather than opinion: ERP logs show no interruption during the valuation window. Once the outage theory was gone, the only input that had changed between a good run and a bad one was the mapping data itself. The formal classification records the deeper problem as control failure: the mapping table has no registered owner and no required reviewer, which is why the stale row was never caught before it reached production."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
