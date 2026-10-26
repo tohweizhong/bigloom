@@ -1,0 +1,180 @@
+{
+  "round": 30,
+  "date_sgt": "2026-10-26 20:56",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-030.md",
+  "candidate_policy_sha256": "9da55de891053e35f4c969d3ecf9c00d6187fa592d91e9e689c9dc2472fd0168",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace \"say what they mean\" in QUALITY with \"and state concise 15-to-20-word operational rules and control requirements for the affected registers, repositories, schedules, and budgets so every section reaches at least 95 percent of target_words without narrative commentary or reader advice\".",
+    "why": "In train-028r.json and train-029.json all deterministic train defect metrics are 0.0 while train_judge_error remains 0.0 (judge_correct_train [20, 20, 20]) because Round 29 reduced unique_sentences from 43.0 to 25.833 with 32-to-38-word narrative sentences instead of the short 12-to-20-word operational rules found in real passages."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3740,
+    "seed_2027": 3370
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 43.0,
+    "words_per_mb": 297.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.28,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.04,
+    "unique_sentences": 43.333,
+    "words_per_mb": 320.667,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.038
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 725,
+      "words_per_mb": 346,
+      "sentences": 38,
+      "unique_sentences": 38,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.026,
+      "text_gzip_ratio": 0.416,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 680,
+      "words_per_mb": 130,
+      "sentences": 31,
+      "unique_sentences": 31,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.032,
+      "text_gzip_ratio": 0.412,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1722,
+      "words_per_mb": 821,
+      "sentences": 90,
+      "unique_sentences": 90,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.011,
+      "text_gzip_ratio": 0.377,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1445,
+      "words_per_mb": 276,
+      "sentences": 61,
+      "unique_sentences": 61,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.016,
+      "text_gzip_ratio": 0.365,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 497,
+      "words_per_mb": 237,
+      "sentences": 18,
+      "unique_sentences": 18,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.111,
+      "text_gzip_ratio": 0.408,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 597,
+      "words_per_mb": 114,
+      "sentences": 22,
+      "unique_sentences": 22,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.045,
+      "text_gzip_ratio": 0.418,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 1.68,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (3740, 3370).",
+    "Hardest rules: reaching 95 percent of target_words in single-move or two-fact incident sections without consecutive capitalised words or commercial terms."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Morning batch execution for the inventory valuation service halted when its ingestion feed status registered as failed. Upstream on the product hierarchy sync service, lookup validation rejected 22,859 records. Every rejected hierarchy item lacked a valid cloud agency identifier in the shared reference table. Ingestion gates blocked the entire valuation batch because strict completeness rules forbid partial posting to the financial ledger. Unresolved hierarchy records remain held in the staging queue while platform engineers verify the scope of affected agency tables. No other ingestion pipeline in the data estate reported schema rejections during the morning processing window. Downstream service owners who depend on period-end valuation outputs must hold automated job triggers until platform engineering confirms feed recovery. Dependent programme schedules must not consume cached valuation snapshots from the prior cycle while the staging backlog remains unverified. Batch operators must keep manual retry scripts disabled so duplicate hierarchy requests do not"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Shortly after the morning batch failure on the inventory valuation service, monitoring alerts triggered and INC0080099 opened at priority P2 against inventory-valuation. Responders initially pursued an infrastructure investigation until diagnostic checks confirmed that ERP logs show no interruption during the valuation window. That finding redirected the investigation from database availability to reference data integrity across the agency code lookup tables. Once engineers corrected the stale mapping entries and re-ran the batch job for the inventory valuation service, asset valuation completed. Early focus on a presumed database outage consumed diagnostic time before analysts inspected the reference data repository. Incident response playbooks must require simultaneous verification of upstream database logs and reference table change histories. Diagnostic runbooks for valuation pipelines must log every recent reference table commit alongside core infrastructure health metrics. Rapid elimination of false infrastructure hypotheses shortens recovery times when batch jobs fail during period-end operations. Complete audit logs across"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r030t/set/large\"))",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18017,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ]
+}
