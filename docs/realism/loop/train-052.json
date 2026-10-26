@@ -1,0 +1,191 @@
+{
+  "round": 52,
+  "date_sgt": "2026-10-27 06:19",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-052.md",
+  "candidate_policy_sha256": "c3ce0abf4bbc1a9a649ea290d6a6955042052661835e5741bb8153d65499639b",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, delete the sentence \"Lead with the position, group related facts, say what they mean.\" and keep every other line of round-002.md unchanged.",
+    "why": "In train-051.json all 3 judges ([20, 20, 20]) named smooth editorial prose, reader-directed lines ('For a technology reader'), and aphorisms ('a workaround, not a repair'), and Rounds 26 to 49 only replaced the last clause of this sentence, so this change tests whether the essay-shape instruction (position first, grouped facts, stated meaning) drives the argued, concluding voice; it adds no frame, label, opener, or length rule."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3635,
+    "seed_2027": 3525
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.051,
+    "unique_sentences": 44.167,
+    "words_per_mb": 299.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 677,
+      "words_per_mb": 323,
+      "sentences": 33,
+      "unique_sentences": 33,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.061,
+      "text_gzip_ratio": 0.45,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 658,
+      "words_per_mb": 126,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.033,
+      "text_gzip_ratio": 0.447,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1681,
+      "words_per_mb": 802,
+      "sentences": 81,
+      "unique_sentences": 81,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.405,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1693,
+      "words_per_mb": 323,
+      "sentences": 87,
+      "unique_sentences": 87,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.011,
+      "text_gzip_ratio": 0.393,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 338,
+      "words_per_mb": 161,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.479,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 333,
+      "words_per_mb": 64,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.478,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3635, seed_2027: 3525).",
+    "All 6 train defect distances are 0.0 (top_opener_share 0.051). Train commercial_per_k is 0.0. Train unique_sentences is 44.167.",
+    "Train judges scored [20, 20, 20]. All 3 named the one storyline (stale agency code mapping, valuation failure, unassigned owner) in polished, reflective prose aimed at readers, record fields quoted word for word, and the repeated finance template 'revenue X against budget Y'."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "What runs now is a stopgap, and its basis is stated plainly. The period was carried by this step: manual agency code mapping override applied to complete valuation for the period. That override was chosen because the defect is now understood well enough to route around it. The confirmed cause reads: stale legacy-to-new agency code mapping in the reference data register. Compared with the normal path, the override replaces an automatic lookup with a manual one, entered by engineers for this period only. It produces a usable valuation, but it carries no guarantee for the next run, and it depends on the people who applied it. Readers weighing whether to wait should not hold out for a permanent repair, because none is ready. Use the overridden valuation for operational work now, on the understanding that the register entry behind it is still stale and that the agency codes are still kept in step by hand. Expect the next period to need the same manual override unless the register is corrected"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Confirmed cause: stale legacy-to-new agency code mapping in the reference data register. That single stale entry handed the inventory valuation service codes it could not reconcile, and the valuation broke on them. It was not the first explanation. The cause was initially recorded as overnight ERP outage, which fitted the timing and was the obvious suspect for an overnight batch. That hypothesis was ruled out on evidence, not opinion: ERP logs show no interruption during the valuation window. The review then went one level deeper and classified the root cause in these terms: control failure: the mapping table has no registered owner and no required reviewer. This classification carries more weight than the stale entry itself. A stale row is a symptom; a table that nobody owns and nobody reviews is the condition that let the row go stale."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
