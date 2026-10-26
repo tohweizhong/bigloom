@@ -14,10 +14,10 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 26 Oct 2026 21:35 SGT (Round 31 finished and rejected; 3-round plateau on `rescore-v2-028.json` reached across Rounds 29, 30, and 31) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2 scaffold/header/presenter filter merged in `081df3c`) |
+| Updated | 26 Oct 2026 22:12 SGT (Level 2 one-sided distances, end picture page, and short slide titles merged in `7223e7c`; champion rescored as `rescore-v2-031.json`) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2 one-sided distances, end picture page, and short slide titles merged in `7223e7c`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
-| Champion baseline receipt | `docs/realism/receipts/rescore-v2-028.json` (train view `docs/realism/loop/train-028r.json`) |
+| Champion baseline receipt | `docs/realism/receipts/rescore-v2-031.json` (train view `docs/realism/loop/train-031r.json`) |
 | Last round | Round 31, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.044, `cross_document_reuse` 0.0, `holdout_gain` -2.263, judges `[20, 20, 20]`) |
 | Next round number | 32 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
@@ -25,7 +25,15 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Diagnose the 3-round plateau across Rounds 29, 30, and 31 (`judge_error` `0.0` on all three rounds) under Section 7 of `docs/self-improvement.md`.
+1. Run Round 32 against `rescore-v2-031.json` (`train-031r.json`).
+
+### Level 2 change: one-sided defect distances, end picture page, and short slide titles (26 Oct 22:11 SGT)
+
+- **Approval.** Approved by the monitor at 26 Oct 21:39 SGT after the 3-round plateau across Rounds 29, 30, and 31.
+- **Cause.** First, `realism_loop.distances()` used two-sided `abs(vector[k] - real[k])` for all six `BANDS` dimensions, so any candidate with `top_opener_share` below the `0.055` champion (on the clean side below the `0.071` real median) was rejected as `worsened: ('top_opener_share',)` with a negative `holdout_gain`. Second, `pdf_add_picture` inserted the chart page at `len(reader.pages) // 2`, splitting wrapped sentences across the mid-document page break with `Figure: ...` in `P11`. Third, `worldloom.render.enterprise.presenter` generated 6-to-12-word takeaway slide titles that repeated the opening clause of the first bullet (`P04`, `P08`), and `pptx_add_evidence_slide` inserted the evidence slide at the middle of the deck.
+- **Change (`7223e7c`).** `realism_loop.distances()` computes one-sided `max(0.0, round(float(vector[k]) - float(real[k]), 4))`. `pdf_add_picture` appends the chart page at the end of the PDF. `pptx_add_evidence_slide` appends the evidence slide at the end of the deck, and `filtered_longform()` wraps `presenter.takeaway`, `presenter.chart_takeaway`, `presenter.lint_titles`, and `pptx._Deck` slide/title/bullet helpers so slide titles and non-sentence lines are under six words.
+- **Tests.** Five unit tests across `test_realism_loop.py`, `test_format_pdf.py`, `test_format_deck_workbook.py`, and `test_appendix_filter.py` failed on the old code (`5 failed`) and passed on the new code (`82 passed in 83.88s`).
+- **Rescore (`docs/realism/receipts/rescore-v2-031.json`, `docs/realism/loop/train-031r.json`).** No writer runs. Both gates pass with zero violations (`train_vector`: `top_opener_share` `0.051`, `unique_sentences` `43.5`, all defect metrics `0.0`; `holdout_vector`: `top_opener_share` `0.047`, `retail_per_k` `0.37`, `cross_document_reuse` `0.054`). Six fresh judges (`9a6ebfae`, `c0330eda`, `9c21b064`, `630359d8`, `8e2a6dbf`, `2e0b2783`) scored `[20, 20, 20]` (`judge_error` `0.0`).
 
 ### Level 2 change: strip scaffold tables, running headers, and deck bullet truncation (26 Oct 20:08 SGT)
 

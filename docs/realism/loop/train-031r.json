@@ -1,0 +1,144 @@
+{
+  "kind": "train view of the champion baseline",
+  "name": "rescore-v2-031",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "grader": "v3 (judge_error scored, one-sided defect distances, end picture page, short slide titles)",
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.051,
+    "unique_sentences": 43.5,
+    "words_per_mb": 297.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 672,
+      "words_per_mb": 320,
+      "sentences": 32,
+      "unique_sentences": 32,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.445,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 666,
+      "words_per_mb": 127,
+      "sentences": 34,
+      "unique_sentences": 34,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.452,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1624,
+      "words_per_mb": 774,
+      "sentences": 80,
+      "unique_sentences": 80,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.025,
+      "text_gzip_ratio": 0.403,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1695,
+      "words_per_mb": 323,
+      "sentences": 82,
+      "unique_sentences": 82,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.012,
+      "text_gzip_ratio": 0.392,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 376,
+      "words_per_mb": 179,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.492,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 320,
+      "words_per_mb": 61,
+      "sentences": 16,
+      "unique_sentences": 16,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.498,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "judge_seed": 18017,
+  "train_judge_correct": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "agent_words": {
+    "seed_2026": 3484,
+    "seed_2027": 3518
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The inventory valuation service has stopped producing usable output: its feed status is failed. Every report, reconciliation or posting that reads from that feed should be treated as unavailable until the status changes. The size of the problem sits upstream, in the product hierarchy sync service, where the confirmed count of affected records is 22,859 records. That number is not an estimate and it is not a sample. There is no budget or forecast for a failure of this kind, so the only baseline is normal operation, in which the count is nil and the feed completes without intervention. For anyone deciding what to do in the next hour, the scale changes the options. A population of this size will not be corrected record by record before the close deadline, so the realistic choices are a controlled workaround or a delay to the dependent run. Waiting for the feed to"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The incident entered the record when INC0080099 opened at priority P2 against inventory-valuation. At that point the working assumption was that an upstream system had dropped out overnight, and the first responders organised their checks around that idea. It was a reasonable starting point and it was wrong. The upstream logs settled the matter: ERP logs show no interruption during the valuation window. That finding cost the team its leading theory but saved it from chasing a fault that had not happened. Attention moved to the reference data feeding the valuation, where the code mapping was examined entry by entry. The sequence closes with the service reporting asset valuation completed, so the immediate business need was met before the review began. Between the ruling-out and the completed run, the team moved from a hypothesis about infrastructure to a finding about data, and that change of direction is the most important"
+    }
+  ],
+  "note": "Train numbers only. Judge clues are in docs/realism/lessons.md."
+}
