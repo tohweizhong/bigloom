@@ -625,6 +625,7 @@ samples, and the policy digest.
 | 51 | Delete the QUALITY sentence `"Do not repeat a sentence or a stock phrase across sections or documents."` (`2b09d3c4…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (2980, 3472, 2925, 3023) and both sets passed all build and retrieval gates with zero violations, and train defect distances were `0.0` except `top_opener_share` `0.009` (`unique_sentences` `39.667`), but train judges (`a055fec1`, `5ee314c2`, `ea60a1f9`, `seed = 18034`) and holdout judges (`08911e0d`, `cce3f889`, `df17c15f`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 52 | Delete the QUALITY sentence `"Lead with the position, group related facts, say what they mean."` (`c3ce0abf…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3635, 3525, 3208, 3551) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `44.167`), but train judges (`83cb6e15`, `f9b98901`, `88952c83`, `seed = 18034`) and holdout judges (`96ea3095`, `95d93cd2`, `6448225a`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 53 | Delete the QUALITY sentence `"Write like a real public-sector finance or technology officer."` (`5f3ab94a…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3235, 3113, 3006, 3559) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `40.667`), but train judges (`0f4d28ed`, `a7c2365c`, `93670d03`, `seed = 18034`) and holdout judges (`6e7d69b4`, `1c5ae101`, `b0302ed8`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
+| 54 | Delete the VOCABULARY sentence `After that, refer to it as "the figure", "this result", "the surplus", or "the position".` (`ed5109da…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3538, 3469, 3120, 3613) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `43.667`), but train judges (`35d51ba3`, `aaa244bb`, `26c7f12b`, `seed = 18034`) and holdout judges (`e0ffdad3`, `69861f04`, `1ff08b10`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -636,6 +637,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-053.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round53.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-053.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-054.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round54.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-054.json` | Train-only receipts that the proposer reads |
