@@ -1,0 +1,191 @@
+{
+  "round": 43,
+  "date_sgt": "2026-10-27 02:30",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-043.md",
+  "candidate_policy_sha256": "2b109f94c693c834be5abab693df64f4bb0be96a515354437d403e18520f550d",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, replace \"say what they mean\" with a clause that forbids aphorisms, balanced contrasts written for effect, moral lessons, and short sentences that only judge or sum up the previous point, and tells the writer to add the next concrete detail from the request in their place.",
+    "why": "Train judges named balanced, moralising lines in train-042.json (\"A row fix buys one clean period. A control fix protects every period after it.\", \"That classification matters\", \"The test is simple\") and essay transitions in train-034r.json (\"Put simply\", \"Read together, these two facts mean\") as synthetic clues."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1
+  },
+  "agent_words": {
+    "seed_2026": 3457,
+    "seed_2027": 3555
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": []
+  },
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.053,
+    "unique_sentences": 35.333,
+    "words_per_mb": 304.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 658,
+      "words_per_mb": 314,
+      "sentences": 30,
+      "unique_sentences": 30,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.067,
+      "text_gzip_ratio": 0.424,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 667,
+      "words_per_mb": 127,
+      "sentences": 23,
+      "unique_sentences": 23,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.087,
+      "text_gzip_ratio": 0.43,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1642,
+      "words_per_mb": 783,
+      "sentences": 69,
+      "unique_sentences": 69,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.378,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1687,
+      "words_per_mb": 322,
+      "sentences": 56,
+      "unique_sentences": 56,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.018,
+      "text_gzip_ratio": 0.392,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 395,
+      "words_per_mb": 188,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.476,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 472,
+      "words_per_mb": 90,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.452,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "Both train seeds passed validation and the 80% length guard on attempt 1 (seed_2026: 3457, seed_2027: 3555).",
+    "All 6 deterministic defect distances on train are 0.0. Train unique_sentences fell to 35.333 (lowest in the loop) and top_opener_share is 0.053. This is Round 43 v2: v1 was discarded before judging because it carried the rejected Round 42 clause (PROPOSER.md Rule 1).",
+    "Train judges scored [20, 20, 20]. All 3 said every synthetic passage repeats one storyline (stale agency code mapping, failed valuation feed, ERP outage theory, manual override, unowned table) in fluent, reflective prose. Reader-addressing phrases returned once the request-field clause was absent ('For engineering readers', 'For the platform reader', 'A reader returning to this section')."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "In the meantime, valuation for the period runs on a manual basis: manual agency code mapping override applied to complete valuation for the period. The override exists because the confirmed cause sits in reference data, recorded as stale legacy-to-new agency code mapping in the reference data register, and a correction to the register itself needs more time than the period allows. Compared with the normal automated run, this route is slower and depends on the accuracy of each manual entry. Its output stays provisional until the register is corrected and the overridden mapping is checked against it. The override keeps the period moving and leaves the stale mapping in the register, so a run after this period can fail the same way unless the mapping is corrected first. Teams that can wait for the corrected register need to wait for it. Teams on a close deadline can use the overridden figures, marked as provisional, and plan for a reconciliation once the register is fixed. Nobody needs to rebuild their own"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The inventory valuation service failed because its agency code mapping was out of date, and the confirmed cause is recorded as stale legacy-to-new agency code mapping in the reference data register. Legacy and cloud agency codes are both in use and are not interchangeable, so the valuation depends on that mapping being current for every record it reads. An earlier explanation was recorded first and later withdrawn. On the morning of the failure, the incident team logged the cause as overnight ERP outage, and the first checks followed that line. Direct evidence ruled it out a little over two hours later: ERP logs show no interruption during the valuation window. With the upstream source cleared, the team turned to the reference data and confirmed the stale entry early that afternoon. Two days on, the review classified the underlying problem as a control gap, recorded as control failure: the mapping table has no registered owner and no required reviewer."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
+}
