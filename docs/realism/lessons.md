@@ -179,7 +179,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
 - **What `r053t` train judges (`0f4d28ed`, `a7c2365c`, `93670d03`, `seed = 18034`) found on Round 53 (`[20, 20, 20]`):**
   1. Deleting the officer persona sentence did not remove the reflective voice. Judges still named reader advice (`"A reader returning in six months"`) and fixed insertion phrases (`"recorded as follows:"`).
-  2. A new clue: one synthetic passage had an empty record field (`"owner ... is"`), where a text fact rendered with no value.
+  2. A new clue: one synthetic passage seemed to have an empty record field (`"owner ... is For platform engineers"`). The final PDF is correct (`"is recorded as unassigned."`). `passages()` in `realism_pairs.py` drops every line with fewer than six words, so it cut the wrapped line `"recorded as unassigned."`. The rule applies to real and synthetic text in the same way. It is a harness effect, not a writer fault.
   3. Rounds 26 to 53 (28 rounds) all scored `[20, 20, 20]`.
 - **What `r052t` train judges (`83cb6e15`, `f9b98901`, `88952c83`, `seed = 18034`) found on Round 52 (`[20, 20, 20]`):**
   1. Deleting the position-first essay sentence did not remove the reflective voice. Judges still named reader-directed prose and record fields quoted word for word (`"The confirmed cause reads:"`).
