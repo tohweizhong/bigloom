@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 26 Oct 2026 20:57 SGT (Round 30 finished and rejected; starting Round 31) |
+| Updated | 26 Oct 2026 21:35 SGT (Round 31 finished and rejected; 3-round plateau on `rescore-v2-028.json` reached across Rounds 29, 30, and 31) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2 scaffold/header/presenter filter merged in `081df3c`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-028.json` (train view `docs/realism/loop/train-028r.json`) |
-| Last round | Round 30, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.28, `within_file_repeat` 0.0, `top_opener_share` 0.04, `cross_document_reuse` 0.038, `holdout_gain` -0.2, judges `[20, 20, 20]`) |
-| Next round number | 31 |
+| Last round | Round 31, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.044, `cross_document_reuse` 0.0, `holdout_gain` -2.263, judges `[20, 20, 20]`) |
+| Next round number | 32 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 31 against `rescore-v2-028.json` (`train-028r.json`).
+1. Diagnose the 3-round plateau across Rounds 29, 30, and 31 (`judge_error` `0.0` on all three rounds) under Section 7 of `docs/self-improvement.md`.
 
 ### Level 2 change: strip scaffold tables, running headers, and deck bullet truncation (26 Oct 20:08 SGT)
 
@@ -591,6 +591,7 @@ samples, and the policy digest.
 | L2 (after 28) | Strip `Related documents`, `Approval`, PDF control/contents pages, running headers/footers, and PPTX bullet truncation in `longform_filter.py` (`9666e84`, merged as `081df3c`, `rescore-v2-028.json`) | Rescore | Both train and holdout pass all gates with zero violations; train `top_opener_share` improved `0.064` to `0.055`; 6 fresh judges (`67d14364`, `de9f6861`, `8714a058`, `3702631d`, `0c15001d`, `901d855b`) scored `[20, 20, 20]` |
 | 29 | Replace `"say what they mean"` in `QUALITY` with `"and state the institutional compliance controls, baseline parameters, and operational requirements that govern the affected registers, repositories, schedules, and budgets in full paragraphs so every section reaches at least 95 percent of target_words without reflective essay transitions, narrative detours, or reader advice"` (`be6c15f7…`) | Rejected | All 4 seeds passed the 80% length guard (2909 on attempt 2, 3101, 3020, 2961) and both sets passed all build and retrieval gates with zero worsened dimensions (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.049 on train), but train judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 | 30 | Replace `"say what they mean"` in `QUALITY` with `"and state concise 15-to-20-word operational rules and control requirements for the affected registers, repositories, schedules, and budgets so every section reaches at least 95 percent of target_words without narrative commentary or reader advice"` (`f63699ba…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3740, 3370, 3744, 3638) and both sets passed all build and retrieval gates, but 15-to-20-word sentences lowered train `top_opener_share` to `0.04` (worsened vs `0.071` real median) and raised `cross_document_reuse` to `0.038`, and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
+| 31 | Replace `"say what they mean"` in `QUALITY` with `"state each required fact once, and fill the rest of each section with general public-sector service standards, verification controls, and governance rules for registers, repositories, schedules, and budgets in sentences of 22 to 28 words so every section reaches at least 95 percent of target_words without repeating the incident storyline, essay commentary, or reader advice"` (`8eccb782…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3351, 3680, 3663, 2819) and both sets passed all build and retrieval gates with `commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, and `cross_document_reuse` 0.0 on train, but 22-to-28-word sentences lowered train `top_opener_share` to `0.044` (worsened beyond the `0.01` band from `0.055`) and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 
 ## Appendix B. Files
 
@@ -602,6 +603,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-030.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round30.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-030.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-031.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round31.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-031.json` | Train-only receipts that the proposer reads |
