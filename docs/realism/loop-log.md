@@ -14,18 +14,26 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 24 Oct 2026 20:50 SGT (Round 28 recorded, 3-round Level 1 plateau reached on `rescore-v2-025` across Rounds 26, 27, and 28; stopped cleanly before 21:00 SGT deadline) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2 cover abstract and mid-sentence text-fact filter merged in `ce575de`) |
+| Updated | 26 Oct 2026 20:09 SGT (Level 2 scaffold filter merged in `081df3c` and rescored in `rescore-v2-028.json`; starting Round 29) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2 scaffold/header/presenter filter merged in `081df3c`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
-| Champion baseline receipt | `docs/realism/receipts/rescore-v2-025.json` (train view `docs/realism/loop/train-025r.json`) |
+| Champion baseline receipt | `docs/realism/receipts/rescore-v2-028.json` (train view `docs/realism/loop/train-028r.json`) |
 | Last round | Round 28, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.079, `holdout_gain` +0.947, judges `[20, 20, 20]`) |
-| Next round number | 29 (requires Level 2 change after 3-round plateau on `rescore-v2-025` across Rounds 26, 27, and 28) |
+| Next round number | 29 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Three consecutive Level 1 writer-policy rounds on `rescore-v2-025` (Rounds 26, 27, and 28) passed all gates with zero worsened dimensions and positive `holdout_gain` (`+2.29`, `+2.18`, `+0.947`) while all 6 fresh judges per round scored `[20, 20, 20]` (`judge_error` `0.0`). Next session should address the non-prose PDF frontmatter/backmatter tables (`Document Control`, `Revision History`, `Review Record`, `Approval Form`, `Appendix A Related documents`) and mid-sentence PDF running headers/footers in `pairs.md`.
+1. Run Round 29 against `rescore-v2-028.json` (`train-028r.json`). All 20 passages in `pairs.md` are now pure writer prose without renderer scaffolding.
+
+### Level 2 change: strip scaffold tables, running headers, and deck bullet truncation (26 Oct 20:08 SGT)
+
+- **Approval.** Approved by the user at 26 Oct 19:16 SGT and the monitor at 26 Oct 19:40 SGT after the 3-round plateau across Rounds 26, 27, and 28.
+- **Cause.** Ten of the 20 synthetic passages in `pairs.md` contained WorldLoom template scaffolding rather than writer prose: PDF `Document control`, `Revision history`, `Review record`, `Approval and sign-off form`, `Table 7.1: Prepared and reviewed` (`Approval`), `Appendix A Related documents`, mid-sentence PDF running headers/footers (`GTA/ENG/2026/007 | Version 1.0 | Approved`), DOCX cover subtitle/status lines, and PPTX `presenter._shorten` bullet truncations (`"Because the overall funding position..."`).
+- **Change (`9666e84`, merged as `081df3c`).** `longform_filter.py` adds `"Related documents"` to `REMOVED_APPENDICES` and `"Approval"` to `REMOVED_IR_SECTIONS`, clears `subtitle`, `comments`, `revision.status`, and `history` status/summary in `filter_document`, and wraps `worldloom.render.enterprise.pdf` (`_distribution`, `_reference`, `_doc_class`) and `worldloom.render.enterprise.presenter._shorten` inside `filtered_longform()`.
+- **Tests.** `test_review_record_keeps_one_row_for_each_comment_text` and `test_filter_strips_scaffold_tables_and_presenter_fragments` failed on the old code (`2 failed`) and passed on the new code (`18 passed in 75.01s`).
+- **Rescore (`docs/realism/receipts/rescore-v2-028.json`, `docs/realism/loop/train-028r.json`).** No writer runs. Both gates pass with zero violations. Train `top_opener_share` improved from `0.064` to `0.055`, and every pair in `pairs.md` is now pure body prose. Six fresh judges (`67d14364`, `de9f6861`, `8714a058`, `3702631d`, `0c15001d`, `901d855b`) scored `[20, 20, 20]` on the `round-002.md` champion (`judge_error` `0.0`), citing only the reflective essay style of `round-002.md` prose rather than renderer scaffolding.
 
 ### Level 2 change: clear cover abstract and lowercase mid-sentence text facts (24 Oct 19:41 SGT)
 
