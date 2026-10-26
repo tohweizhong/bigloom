@@ -152,6 +152,7 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 | 54 | Delete the VOCABULARY sentence `After that, refer to it as "the figure", "this result", "the surplus", or "the position".` (`ed5109da…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3538, `seed_2027`: 3469) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `43.667`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 | L2 (after 54) | Keep the short tail of a wrapped sentence in `passages()` (`600eab2`, `train-054r.json`) | Rescore. Train passed all gates with all defect distances `0.0`. A wrapped short line such as `"recorded as unassigned."` now stays in the passage, on real and synthetic text alike. Train judges (`f3795a70`, `b49fac61`, `10f96e42`, `seed = 18054`) scored `[20, 20, 20]` on `round-002.md`. They cited the repeated incident story and reader-directed essay prose. |
 | 55 | Delete the INPUT sentence that tells writers to read `writing-responses.md` (`72c6250f…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3393 on attempt 2, `seed_2027`: 3618) and passed all build and retrieval gates with all 6 defect distances at `0.0` (`unique_sentences` `40.333`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
+| 56 | Add a QUALITY sentence that bans a colon or a `recorded as` / `reads` / `the record states` frame before a text fact reference (`d1311e26…`) | Rejected. Both train seeds passed validation and the 80% length guard (`seed_2026`: 3511, `seed_2027`: 2949) and passed all build and retrieval gates with all defect distances at `0.0` except `commercial_per_k` `1.662` (`unique_sentences` `41.333`), while train judges scored 20, 20, and 20 of 20 (`judge_error` `0.0`). |
 
 ### Lessons from Loop v2 rounds (train only)
 
@@ -180,6 +181,10 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 - **What `r049t` train judges (`5b3cefd7`, `cdebcc07`, `abd050e5`, `seed = 18034`) found on Round 49 (`[20, 20, 20]`):**
   1. Replacing `"say what they mean"` with work detail and a ban on interpretive or concluding sentences shortened sections (train `unique_sentences` `39.167`), and writers still added self-explaining lines (`"the order is kept here as it happened"`, `"Breadth is the point a technology reader needs to take away"`).
   2. Rounds 26 to 49 (24 rounds) all scored `[20, 20, 20]`.
+- **What `r056t` train judges (`534d490d`, `b8751be4`, `e7fcf1fc`, `seed = 18054`) found on Round 56 (`[20, 20, 20]`):**
+  1. Banning the `recorded as` and colon frames did not change the verdicts. Judges still named the one incident story and reader lines (`"Six months from now, a reader"`).
+  2. The new sentence let commercial words back into `bl-003-pptx-2mb` (`commercial_per_k` `9.97`, train mean `1.662`). Writers rephrased text facts with their own wording, which brought in commercial terms.
+  3. Rounds 26 to 56 (31 rounds) and both rescores scored `[20, 20, 20]`.
 - **What `r055t` train judges (`dd688193`, `b7e31914`, `44f675d1`, `seed = 18054`) found on Round 55 (`[20, 20, 20]`):**
   1. Removing the WorldLoom `writing-responses.md` guide did not remove the argued voice. Judges still named aphorisms (`"is a pattern, not bad luck"`), self-reference (`"this review"`), and reader lines (`"Three things follow for this reader"`).
   2. Without the guide, `seed_2026` first wrote only 2498 words. The guide helps writers reach the length target.
