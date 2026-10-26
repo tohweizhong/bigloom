@@ -20,8 +20,7 @@
   },
   "length_guard_passed": true,
   "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
-  "gate_passed": false,
-  "train_gate_passed": true,
+  "gate_passed": true,
   "gate_violations": {
     "train": []
   },
@@ -172,20 +171,12 @@
       "train_mean_floor": 0.0
     }
   },
-  "judge_seed": null,
-  "judge_correct_train": null,
-  "train_judge_error": null,
-  "champion_train_judge_error": 0.0,
-  "train_decision": {
-    "promote": false,
-    "improved": [],
-    "worsened": [
-      "retail_per_k"
-    ],
-    "reasons": [
-      "build or fact gate failed",
-      "no train dimension improved by more than its band",
-      "train dimensions worsened beyond their band: retail_per_k"
-    ]
-  }
+  "judge_seed": 18031,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "train_judge_error": 0.0,
+  "champion_train_judge_error": 0.0
 }

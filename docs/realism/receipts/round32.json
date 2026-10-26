@@ -200,8 +200,12 @@
       "train_mean_floor": 0.0
     }
   },
-  "judge_seed": null,
-  "judge_correct_train": null,
+  "judge_seed": 18031,
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
   "judge_correct_holdout": null,
   "decision": {
     "promote": false,
