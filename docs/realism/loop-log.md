@@ -622,6 +622,7 @@ samples, and the policy digest.
 | 48 | Add one `QUALITY` sentence: when a text fact renders as a bare status or label value that is not grammatical in the sentence, put double quotation marks around its reference so it reads as a value quoted from the record (`85f66dbd…`) | Rejected | All 4 seeds passed the 80% length guard (3557, 3358 on attempt 2, 3040, 3051) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `43.167`), but train judges (`da7733f5`, `c9b822c4`, `d36d8359`, `seed = 18034`) and holdout judges (`63bcee52`, `9dd0e709`, `4b6938b4`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 49 | Replace `"say what they mean"` in `QUALITY` with `"and describe the work behind each one at full length, but write no sentence whose only job is to interpret the facts or to close a paragraph on a conclusion"` (`c458f93e…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3610, 3036, 3314, 2936) and both sets passed all build and retrieval gates with zero violations and zero worsened train dimensions (`unique_sentences` `39.167`), but train judges (`5b3cefd7`, `cdebcc07`, `abd050e5`, `seed = 18034`) and holdout judges (`2520e39f`, `f1ecad71`, `67e2bda0`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 50 | Replace `"Write like a real public-sector finance or technology officer."` with `"Write like a public-sector finance or technology officer who writes these documents every week and has no time to polish them."` (`8329beb1…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3496, 3013, 2880, 2981) and both sets passed all build and retrieval gates with zero violations, but train `commercial_per_k` rose to `0.45` (inside its band) (`bl-003-pptx-2mb` `2.7`) (`unique_sentences` `40.667`), but train judges (`077f2b71`, `6f2af9dd`, `77d4b4ae`, `seed = 18034`) and holdout judges (`8aa41537`, `a94cae6d`, `df7761c5`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
+| 51 | Delete the QUALITY sentence `"Do not repeat a sentence or a stock phrase across sections or documents."` (`2b09d3c4…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (2980, 3472, 2925, 3023) and both sets passed all build and retrieval gates with zero violations, and train defect distances were `0.0` except `top_opener_share` `0.009` (`unique_sentences` `39.667`), but train judges (`a055fec1`, `5ee314c2`, `ea60a1f9`, `seed = 18034`) and holdout judges (`08911e0d`, `cce3f889`, `df17c15f`, `seed = 28034`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -633,6 +634,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-050.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round50.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-050.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-051.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round51.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-051.json` | Train-only receipts that the proposer reads |

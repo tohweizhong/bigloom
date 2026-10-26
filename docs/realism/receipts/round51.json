@@ -1,0 +1,252 @@
+{
+  "round": 51,
+  "date_sgt": "2026-10-27 06:09",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "candidate_policy": "policies/writer/round-051.md",
+  "candidate_policy_sha256": "2b09d3c4bd0e3712b9e91e9ddcfdc47c3b6b42176c8d9d967cafa0b544eeaf7b",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, delete the sentence \"Do not repeat a sentence or a stock phrase across sections or documents.\" and keep every other line of round-002.md, including the 20 percent repeat cap, the 25 percent opener cap, and VOCABULARY, unchanged.",
+    "why": "In train-050.json all 3 judges ([20, 20, 20]) named rhetorical aphorisms ('a pattern, not bad luck', 'that absence is the finding', 'the dead end is where the time went'), and train-034r.json and train-049.json show crafted, varied transitions, so this change tests whether the anti-repetition sentence pushes writers to invent fresh crafted phrasing in every section instead of the plain, repetitive wording of real documents; the numeric caps stay in place."
+  },
+  "writer_accept_rounds": {
+    "seed_2026": 1,
+    "seed_2027": 1,
+    "seed_3101": 1,
+    "seed_3102": 1
+  },
+  "agent_words": {
+    "seed_2026": 2980,
+    "seed_2027": 3472,
+    "seed_3101": 2925,
+    "seed_3102": 3023
+  },
+  "length_guard_passed": true,
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": {
+    "train": [],
+    "holdout": []
+  },
+  "champion_receipt": "docs/realism/receipts/rescore-v2-034.json",
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.052,
+    "unique_sentences": 43.167,
+    "words_per_mb": 295.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.37,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 43.167,
+    "words_per_mb": 330.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.039
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.08,
+    "unique_sentences": 39.667,
+    "words_per_mb": 280.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.375,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.065,
+    "unique_sentences": 45.333,
+    "words_per_mb": 301.667,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.037
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.009,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.375,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.036
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 652,
+      "words_per_mb": 311,
+      "sentences": 31,
+      "unique_sentences": 31,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.065,
+      "text_gzip_ratio": 0.428,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 704,
+      "words_per_mb": 134,
+      "sentences": 32,
+      "unique_sentences": 32,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.062,
+      "text_gzip_ratio": 0.426,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1445,
+      "words_per_mb": 689,
+      "sentences": 68,
+      "unique_sentences": 68,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.39,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1570,
+      "words_per_mb": 299,
+      "sentences": 73,
+      "unique_sentences": 73,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.027,
+      "text_gzip_ratio": 0.389,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "03 April 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 344,
+      "words_per_mb": 164,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.118,
+      "text_gzip_ratio": 0.47,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 436,
+      "words_per_mb": 83,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.176,
+      "text_gzip_ratio": 0.478,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All 4 seeds passed validation and the 80% length guard on attempt 1 (2980, 3472, 2925, 3023).",
+    "All 6 train defect distances are 0.0 except top_opener_share 0.009 (top_opener_share 0.08, inside the 25 percent cap). Train commercial_per_k is 0.0 in all 6 files. Train unique_sentences is 39.667. Holdout gain on deterministic distances is +0.183.",
+    "Train judges scored [20, 20, 20]. All 3 named the one storyline (stale agency code mapping, ERP outage theory) in smooth editorial prose, reader-directed lines ('For a technology reader'), and aphorisms ('a workaround, not a repair'). Holdout judges also scored [20, 20, 20] with the same clues."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "The period is being run on a manual basis while the incident stays open. The current workaround is this: manual agency code mapping override applied to complete valuation for the period. It was chosen because the defect is understood, not because the system recovered by itself. The confirmed cause is stale legacy-to-new agency code mapping in the reference data register, so the override corrects exactly the entries that caused the failure and leaves the rest of the mapping as it was. That is a narrow and deliberate holding position, and it is provisional. For readers deciding whether to wait, the override is enough to complete this period but not enough to trust the next one. It depends on a hand edit to a table that is still maintained by hand, so the same stale entry, or a new one, can return on the next refresh. Teams can use the valuation produced under the override for the current period. They should not assume that later runs are safe until the incident"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "The valuation run failed because of a reference data defect, not an infrastructure fault. The confirmed cause is this: stale legacy-to-new agency code mapping in the reference data register. That was not the first explanation. At triage, the working hypothesis was recorded as overnight ERP outage, and the early investigation followed that line. The evidence then excluded it, because ERP logs show no interruption during the valuation window. With the outage ruled out, the trace moved to the agency codes that feed the inventory valuation service, and the stale entry was found in the mapping. The review classifies the underlying fault as a gap in how the table is governed: control failure: the mapping table has no registered owner and no required reviewer."
+    }
+  ],
+  "samples_method": "passages(text_of(p))[0]",
+  "known_floors": {
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18034,
+  "holdout_judge_seed": 28034,
+  "judge_ids": {
+    "train": [
+      "a055fec1",
+      "5ee314c2",
+      "ea60a1f9"
+    ],
+    "holdout": [
+      "08911e0d",
+      "cce3f889",
+      "df17c15f"
+    ]
+  },
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": 0.183,
+    "reasons": [
+      "no train dimension improved by more than its band"
+    ]
+  }
+}
