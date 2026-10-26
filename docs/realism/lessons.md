@@ -144,15 +144,15 @@ The masked judges told real from synthetic in every pair after Rounds 2 and 11. 
 ### Lessons from Loop v2 rounds (train only)
 
 - **After `train-034r.json` (`8fa1687`), name masks are symmetric and duplicate captions are gone.** On `train-034r.json`, the train judges (`0d2bb3c2`, `7ca15927`, `ec6f0678`) no longer see mask asymmetry or extraction residue. They identified `round-002.md` by its repeated incident story across every paragraph and its essay transitions (`"Read together..."`, `"Put simply..."`). Round 35 must open each section with natural public-sector standards (without `a), b), c)` templates or `store`/`stores`) and place facts in a short closing paragraph.
+- **What `r044t` train judges (`5a627e93`, `ce3e8d35`, `c0edff2d`, `seed = 18034`) found on Round 44 (`[20, 20, 20]`):**
+  1. The request-field clause alone, as a clean single change, still let reflective lines through (`"For anyone reading this later"`, `"the lesson is"`). The writers addressed an unnamed future reader.
+  2. Judges again named the single storyline and fixed fact phrases repeated word for word across documents.
+  3. Clean single-rule tests in Rounds 43 v2 and 44 confirm the earlier result: one prose clause does not move `judge_error` from `0.0`.
 - **Round 43 v1 was discarded (single-rule violation).** The Round 43 proposer prompt suggested keeping the rejected Round 42 request-field clause and adding an anti-aphorism clause. The monitor stopped it before judging. Never suggest that a proposer keep any clause from a rejected candidate. Rounds 41 and 42 also kept the `"explain their effect on programme delivery, schedules, and budgets"` clause from rejected Rounds 24 to 26, so they were not strict single-rule tests either.
 - **What `r043t` train judges (`2c330a55`, `8603b257`, `13c74625`, `seed = 18034`) found on Round 43 v2 (`[20, 20, 20]`):**
   1. The anti-aphorism clause alone kept all 6 defect distances at `0.0`, but train `unique_sentences` fell to `35.333`.
   2. Without the request-field clause, reader-addressing phrases returned (`"For engineering readers"`, `"A reader returning to this section"`). The champion's `"Lead with the position"` and the request purposes invite this framing.
   3. All 3 judges again named the single storyline.
-- **What `r044t` train judges (`5a627e93`, `ce3e8d35`, `c0edff2d`, `seed = 18034`) found on Round 44 (`[20, 20, 20]`):**
-  1. The request-field clause alone, as a clean single change, still let reflective lines through (`"For anyone reading this later"`, `"the lesson is"`). The writers addressed an unnamed future reader.
-  2. Judges again named the single storyline and fixed fact phrases repeated word for word across documents.
-  3. Clean single-rule tests in Rounds 43 v2 and 44 confirm the earlier result: one prose clause does not move `judge_error` from `0.0`.
 - **What `r042t` train judges (`d28acdb3`, `f109a72c`, `8be88a83`, `seed = 18034`) found on Round 42 (`[20, 20, 20]`):**
   1. Treating request fields as instructions removed audience framing. The fix for text facts created new slot phrases (`"The position in force is:"`, `"shows the current status:"`, `"recorded as"`, `"reads as follows"`), and judges named them.
   2. Text facts repeat word for word across documents (`"ERP logs show no interruption during the valuation window"`). The WorldLoom value is the same in every document, so prose cannot vary it.
