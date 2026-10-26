@@ -25,7 +25,9 @@ You change the writer policy for the BigLoom realism loop. You make ONE change i
   be one of the metrics with room that your task lists: a key of `BANDS` in
   `src/bigloom/realism_loop.py`, or `judge_error` (grader v3: the share of masked judge verdicts
   that are wrong, target 0.5, band 0.10). For `judge_error`, use the train judge clues in
-  `docs/realism/lessons.md`.
+  `docs/realism/lessons.md`. When the champion is on the clean side of the real value (for example
+  `top_opener_share` below `0.071`), the gap is not room. Never tell writers to repeat openers or
+  count sentences to match a metric median.
 - Keep every hard rule in the policy. Never weaken a WorldLoom rule (digits only inside
   `{{fact:ID}}`, facts only from the request, no invented entities).
 - You may change: style guidance, length guidance, paragraph guidance, opener guidance,

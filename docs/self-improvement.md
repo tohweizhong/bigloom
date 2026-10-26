@@ -87,6 +87,7 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    - `diff <champion> policies/writer/round-<NNN>.md` shows one rule changed and nothing else. Do
      not keep a rejected round's change and add a second change on top of the champion.
    - `target_metric` is a key in `BANDS` or `judge_error`, and has room.
+   - The rule does not tell writers to repeat openers or count sentences to match a metric median.
    - `why` cites a train number only.
    If a check fails, reject the proposal and start a new fresh proposer.
 3. **Prepare.** Run `prepare_round(Path("runs/loop/r<NNN>t"), Path("runs/loop/cache"), TRAIN)` and
