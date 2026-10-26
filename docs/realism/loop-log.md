@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 26 Oct 2026 22:12 SGT (Level 2 one-sided distances, end picture page, and short slide titles merged in `7223e7c`; champion rescored as `rescore-v2-031.json`) |
+| Updated | 26 Oct 2026 22:36 SGT (Round 32 rejected at build gate and on train `retail_per_k`) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2 one-sided distances, end picture page, and short slide titles merged in `7223e7c`) |
 | Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-031.json` (train view `docs/realism/loop/train-031r.json`) |
-| Last round | Round 31, rejected (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.044, `cross_document_reuse` 0.0, `holdout_gain` -2.263, judges `[20, 20, 20]`) |
-| Next round number | 32 |
+| Last round | Round 32, rejected (`gate_passed: false` on holdout `thin_pages`, train `retail_per_k` 0.943 worsened from 0.0, `top_opener_share` 0.032, `holdout_gain` -1.373, judges not called) |
+| Next round number | 33 |
 | Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 32 against `rescore-v2-031.json` (`train-031r.json`).
+1. Run Round 33 against `rescore-v2-031.json` (`train-031r.json`).
 
 ### Level 2 change: one-sided defect distances, end picture page, and short slide titles (26 Oct 22:11 SGT)
 
@@ -600,6 +600,8 @@ samples, and the policy digest.
 | 29 | Replace `"say what they mean"` in `QUALITY` with `"and state the institutional compliance controls, baseline parameters, and operational requirements that govern the affected registers, repositories, schedules, and budgets in full paragraphs so every section reaches at least 95 percent of target_words without reflective essay transitions, narrative detours, or reader advice"` (`be6c15f7…`) | Rejected | All 4 seeds passed the 80% length guard (2909 on attempt 2, 3101, 3020, 2961) and both sets passed all build and retrieval gates with zero worsened dimensions (`commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, `top_opener_share` 0.049 on train), but train judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 | 30 | Replace `"say what they mean"` in `QUALITY` with `"and state concise 15-to-20-word operational rules and control requirements for the affected registers, repositories, schedules, and budgets so every section reaches at least 95 percent of target_words without narrative commentary or reader advice"` (`f63699ba…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3740, 3370, 3744, 3638) and both sets passed all build and retrieval gates, but 15-to-20-word sentences lowered train `top_opener_share` to `0.04` (worsened vs `0.071` real median) and raised `cross_document_reuse` to `0.038`, and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
 | 31 | Replace `"say what they mean"` in `QUALITY` with `"state each required fact once, and fill the rest of each section with general public-sector service standards, verification controls, and governance rules for registers, repositories, schedules, and budgets in sentences of 22 to 28 words so every section reaches at least 95 percent of target_words without repeating the incident storyline, essay commentary, or reader advice"` (`8eccb782…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3351, 3680, 3663, 2819) and both sets passed all build and retrieval gates with `commercial_per_k` 0.0, `retail_per_k` 0.0, `within_file_repeat` 0.0, and `cross_document_reuse` 0.0 on train, but 22-to-28-word sentences lowered train `top_opener_share` to `0.044` (worsened beyond the `0.01` band from `0.055`) and judges scored `[20, 20, 20]` (`judge_error` 0.0) |
+| L2 (after 31) | One-sided defect distances in `realism_loop.distances()`, end picture page in `pdf_add_picture`, and short slide titles / end evidence slide in `longform_filter.py` and `pptx.py` (`7223e7c`, `rescore-v2-031.json`) | Rescore | Both train and holdout pass all gates with zero violations; train `top_opener_share` is `0.051` (distance `0.0` since `0.051 <= 0.071`) and `unique_sentences` is `43.5`; 6 fresh judges (`9a6ebfae`, `c0330eda`, `9c21b064`, `630359d8`, `8e2a6dbf`, `2e0b2783`) scored `[20, 20, 20]` |
+| 32 | Replace `"say what they mean"` in `QUALITY` with `"confine all required facts and section-specific system, incident, or variance details to a compact 45-to-60-word opening paragraph, and fill the rest of each section with separate 65-to-90-word paragraphs of standalone public-sector digital service standards, usability practices, security controls, and reliability rules in direct 14-to-20-word sentences without naming the incident, variance, or affected services so every section reaches at least 95 percent of target_words without narrative commentary or reader advice"` (`f9fb0856…`) | Rejected | All 4 seeds passed the 80% length guard on attempt 1 (3606, 3531, 3565, 3490), and train `top_opener_share` (`0.032`) had zero distance under one-sided `distances()`, but writers used `"data stores"` and `"store"` in standalone security paragraphs (`retail_per_k` worsened from `0.0` to `0.943` on train) and holdout `3101` `bl-002-pdf-2mb_final.pdf` failed `thin_pages` (page 6 had 21 words before the appended picture page 7) |
 
 ## Appendix B. Files
 
@@ -611,6 +613,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-031.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round31.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-031.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-032.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round32.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-032.json` | Train-only receipts that the proposer reads |
