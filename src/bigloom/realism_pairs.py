@@ -24,19 +24,26 @@ LO, HI = 110, 170
 PRODUCTS: tuple[str, ...] = (
     "SearchSG", "Corppass", "CorpPass", "WOGAA", "Singpass", "SingPass", "GovText", "Myinfo", "MyInfo",
     "MyCareersFuture", "PayNow", "Paynow", "SGTS", "Singapore Government Tech Stack", "GITSIR", "ScamShield", "SingCERT",
-    "Enterprise Data Hub", "CDCGoWhere", "Singapore Government Design System", "SGDS",
+    "Enterprise Data Hub", "EDH", "CDCGoWhere", "Singapore Government Design System", "SGDS",
     "Singapore Government Developer Portal", "SGDP",
     "Government Incident Reporting and Operation Centre", "Government Incident Reporting & Operation Centre", "GIROC",
     "SHIP-HATS", "MAESTRO",
+    "Hansard Analysis Tool", "Hansard Analysis", "IM8 Q&A Tool", "IM8 Q&A",
+    "BrowserStack", "LambdaTest", "Google PageSpeed Insights",
+    "Apple App Store", "Google Play Store", "Huawei AppGallery",
+    "Flesch Reading Ease", "Flesch-Kincaid", "Chrome", "Firefox", "Safari", "Edge",
+    "Secure Email 3", "SE3", "Gartner",
     "inventory valuation service", "product hierarchy sync service", "inventory-valuation",
     "Agency Reference Data Register", "reference data register",
 )
 #: Test design: organisation and division names. Masked as [ORG-n].
 ORGS: tuple[str, ...] = (
     r"Government Technology Agency(?: of Singapore)?(?: \(GovTech Singapore\))?(?: \(Synthetic\))?",
-    "GovTech Singapore", "GovTech", "Smart Nation(?: and Digital Government Office)?", "Ministry of [A-Z][a-z]+",
+    "GovTech Singapore", "GovTech", "Smart Nation(?: and Digital Government Office)?",
+    "Smart Nation Digital Government", "SNDG Office", "SNDG", "Ministry of [A-Z][a-z]+",
     "Product & Engineering", "Government Digital Transformation", "Services, Governance & Cybersecurity",
     "Whole-of-Government", "Whole of Government",
+    "Choo Fai Cheong", "Dennis Xu", "Kevin Schmidt", "Georgi Gerganov",
 )
 #: Clues that say nothing about realism: watermarks, web-print residue, links, page numbers, template tags, icon glyphs.
 CLUE = re.compile(
@@ -72,7 +79,31 @@ _DROP_LINE = re.compile(
     r"^Visit the\s+.*website to learn more\b|^Have questions\?\s*Email us\b|"
     r"\|\s*Government Technology Agency\b|"
     r"^Table \d+(?:\.\d+)?\s*:|^Source:\s|^Figure:\s.*\bBars:\s|"
-    r"^(?:\d{1,2}\s+)?Revised\s+.*\bforecast\b)",
+    r"^(?:\d{1,2}\s+)?Revised\s+.*\bforecast\b|"
+    r"^[a-f]\)\s|^[ivx]{1,4}\)\s|\bWU-\d+\s*:|"
+    r"^Copyright\s*©|^This document and the system described\b|^Government Technology Agency \(GovTech\) and no part\b|"
+    r"^may be reproduced or transmitted\b|^for any purpose, without the expressed\b|"
+    r"^Figure 1-|^Table 1\s*[–-]|^Dennis Xu,\s*Kevin Schmidt|^Additional Note on Architecture Components|"
+    r"^\s*(?:Foundation LLM|Fine-tuned LLM|Training Data|Secure Proxy|Runtime LLM|Retrieval|LLM Agent|"
+    r"LLM User Interface|Application|Internet Resource|Intranet Resource|Model as a Service|Accelerated|"
+    r"Compute|WAF,\s*Message Queue|over,\s*which can alleviate|\(Query/Response\)\s*prompt|"
+    r"party services to perform|accessible data sources)\b|"
+    r"\bdemarcated with dotted\b|\bBenchmarks,\s*ISO27001\b|\bas shown in Figure 1\b|\bshaded boxes in\b|"
+    r"^Table 3 outlines\b|^Refer to the controls for architecture\b|^applicable architecture components\b|"
+    r"^Government IT Security Incident Response Team$|"
+    r"^(?:ACISO/SIRO|CERTs|CSIRTs|FIRST|GIROC|GITSIR|GovTech|ICT&SS|ISPs|RFC|SE3|SNDG)\s+|"
+    r"^Incident Reporting Hotline:|^The Head of\b|^of cybersecurity engineers from\b|^Regular response hours:|^•\s|"
+    r"^\d+\.\d+\.\s+|"
+    r"^Enabling efficient analyses of textual data|^Build government digital services quickly and securely|"
+    r"^Faster development and launch of digital|^Access to pre-built and secure|^Reduced focus on infrastructure|"
+    r"^Over 40 agencies using|^Reduced development time for projects|"
+    r"\blinks in this order\b|\bcurrent year in YYYY\b|^Digital services owned by statutory boards\b|"
+    r"^the agency.s name instead of\b|^Distribute apps only through|"
+    r"\bguidelines for official government endorsement\b|^publishing mobile applications\.$|"
+    r"\bDiscover its features on the\b|\bA better, smarter, faster way for building\b|"
+    r"\busing methods like topic modelling and Large Language Models\b|"
+    r"^\d+\.\s+(?:Registration of|Implementation of)\b|^Refer to Setup Guide\b|"
+    r"^Provide the following details for failed transactions:)",
     re.IGNORECASE,
 )
 
@@ -92,6 +123,22 @@ def _clean_line(raw: str) -> str:
     line = re.sub(r"\[\s*\]|\[\s*$|^\]\s*", " ", line)
     line = re.sub(r"\s{2,}", " ", line).strip()
     line = re.sub(r"\s+([,.;:!?])", r"\1", line)
+    line = re.sub(r"\breference architecture1\b", "reference architecture", line, flags=re.IGNORECASE)
+    line = re.sub(r"([a-z])\.([A-Z])", r"\1. \2", line)
+    line = re.sub(r"\b(Use|Register|web-based|use)\.(gov|edu)\.sg\b", r"\1 .\2.sg", line)
+    line = re.sub(r"\band\.(gov|edu)\.sg\b", r"and .\1.sg", line)
+    line = re.sub(r"\.edu\.sg\.\s+domain\b", ".edu.sg domain", line)
+    line = re.sub(r"\bcolour\(e\.g\.", "colour (e.g.", line)
+    line = re.sub(r"\beffective meet\b", "effectively meet", line)
+    line = re.sub(r"\bdevelops and maintain\b", "develops and maintains", line)
+    line = re.sub(r"\bwhen they are updates\b", "when there are updates", line)
+    line = re.sub(r"\s*\(refer to Paragraph \d+\.\d+\.\)", "", line)
+    line = re.sub(r"\s+Use the$", "", line)
+    line = re.sub(r"\s+The footer must contain$", ".", line)
+    line = re.sub(r"\s+It$", "", line)
+    line = re.sub(r";\s+(?=[A-Z])", ". ", line)
+    if re.match(r"^Controls to (?:ensure|enhance|establish)\b", line) and not line.endswith("."):
+        line += "."
     line = re.sub(r"\bat least\s+every\s+day\(s\)", "regularly", line, flags=re.IGNORECASE)
     line = re.sub(r"\bevery\s+day\(s\)", "periodically", line, flags=re.IGNORECASE)
     line = re.sub(r"\bat least\s+day\(s\)", "in advance", line, flags=re.IGNORECASE)
@@ -176,7 +223,33 @@ def passages(text: str) -> list[str]:
             buf = []
     if len(buf) >= 75:
         out.append(" ".join(buf[:HI]))
-    return out
+    cleaned_out: list[str] = []
+    for p in out:
+        p = re.sub(r"\boptimise the search functionality$", "optimise the search functionality based on user behaviour and needs.", p)
+        p = re.sub(r"^based on user behaviour and needs\.\s*", "", p)
+        p = re.sub(r"^Applications, aiming to provide", "GovTech developed the Cybersecurity Playbook for Large Language Model (LLM) Applications, aiming to provide", p)
+        p = re.sub(r"\blabelled in black shaded$", "labelled in black shaded boxes within brackets.", p)
+        p = re.sub(r"\bcybersecurity controls Figure 1\.", "cybersecurity controls applicable to traditional IT components.", p)
+        p = re.sub(r"\bpurposes\.\s*Refer to the controls.*$", "", p)
+        p = re.sub(r"\bSmart Systems \(ICT&SS\)", "GITSIR is the Cyber Security Incident Response (CSIRT) team for Infocomm Technology & Smart Systems (ICT&SS)", p)
+        p = re.sub(r"^implementing arm of the\b", "GovTech is the implementing arm of the", p)
+        p = re.sub(r"\band its parent organisation Government's", "and its parent organisation GovTech are stated under the GovTech Act 2016. GITSIR provides 24/7 standby cybersecurity incident response support to deal with the Government's", p)
+        p = re.sub(r"\bManagement \(IM\) Standing Operating Procedure", "GITSIR develops and maintains the Whole of Government (WoG) Cybersecurity Incident Management (IM) Standing Operating Procedure", p)
+        p = re.sub(r"\bcontainment, eradication, recovery and investigation,", "GITSIR provides the appropriate coordination, technical assistance and advice on containment, eradication, recovery and investigation,", p)
+        p = re.sub(r"\bprepare and guide agencies in addressing", "GITSIR provides resources such as directives, advisories, instructions and playbooks to prepare and guide agencies in addressing", p)
+        p = re.sub(r"in the following aspects of incident management:$", "in incident management, triage, remediation, and investigation.", p)
+        p = re.sub(r"\breaped the benefits of utilising (\[PRODUCT-\d+\]|SGTS),$", r"reaped the benefits of utilising \1, implementing over 200 systems on cloud.", p)
+        p = re.sub(r"Ensure that the acknowledgment includes key details about the Allowing", "Ensure that the acknowledgment includes key details about the submission. Allowing", p)
+        p = re.sub(r"The footer must contain Singapore.\.\s*", "", p)
+        p = re.sub(r"\bservices and ensures that end users", "Provides consistency across government digital services and ensures that end users", p)
+        p = re.sub(r"\bofficial app stores and retain IP rights\.", "Distribute government mobile applications through official app stores and retain IP rights.", p)
+        p = re.sub(r"Ensure compliance with platform Minimise", "Ensure compliance with platform guidelines for official government endorsement. Minimise", p)
+        p = re.sub(r"remove unauthorised versions of Government mobile Ensure that the agency name is used as the Having", "remove unauthorised versions of Government mobile applications. Ensure that the agency name is used as the application store developer account name when publishing mobile applications. Having", p)
+        p = re.sub(r"Controls to ensure services are informed by real\.", "Controls to ensure services are informed by real user needs and behaviors.", p)
+        p = re.sub(r"\bRemediate or risk accept findings within\b\.?", "Remediate or risk accept findings promptly.", p)
+        p = re.sub(r"\s*Government Technology Agency of Singapore \(GovTech Singapore\)\s*About us$", "", p)
+        cleaned_out.append(re.sub(r"\s{2,}", " ", p).strip())
+    return cleaned_out
 
 
 def _pool(files: Sequence[Path]) -> list[tuple[str, int, str]]:

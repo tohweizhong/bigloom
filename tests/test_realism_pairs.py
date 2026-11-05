@@ -228,6 +228,49 @@ def test_pool_excludes_spp_manual_and_dpo_guide(tmp_path) -> None:  # type: igno
     assert names == {"Understand Users.docx"}
 
 
+def test_level_2d_real_pool_has_no_extraction_splices_or_unmasked_tools() -> None:
+    from pathlib import Path
+
+    real_dir = Path("/usr/local/google/home/weizhongt/coding/bigloom/runs/realism/real")
+    if not real_dir.is_dir():
+        return
+    pooled = rp._pool(sorted(p for p in real_dir.iterdir() if p.is_file()))
+    assert len(pooled) >= 25
+    masked_all = "\n".join(rp.mask_names(p[2]) for p in pooled)
+    for bad in (
+        "WU-9:",
+        "service.Ensure",
+        "Use.gov.sg",
+        "Register.gov.sg",
+        "and.edu.sg",
+        "web-based.gov.sg",
+        "Model-as-a- Service",
+        "Use the Not required for",
+        "architecture1",
+        "+65 6211",
+        "Choo Fai Cheong",
+        "Hansard Analysis",
+        "IM8 Q&A",
+        "BrowserStack",
+        "LambdaTest",
+        "Google PageSpeed Insights",
+        "Flesch Reading Ease",
+        "Flesch-Kincaid",
+        "Enabling efficient analyses of textual data",
+        "Build government digital services quickly and securely",
+        "key details about the Allowing",
+        "colour(e.g.",
+        "effective meet",
+        "develops and maintain ",
+        "when they are updates",
+        "2.2. Locations where",
+        "5.1. Types of Incidents",
+        "current year in YYYY",
+    ):
+        assert bad not in masked_all, f"leaked {bad!r}"
+
+
+
 
 
 
