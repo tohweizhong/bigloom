@@ -46,3 +46,128 @@ def test_passages_still_drop_short_line_after_full_sentence() -> None:
     line = "This sentence has more than six words in it for the passage builder. "
     text = (line * 12) + "\nSection 4\n" + (line * 4)
     assert "Section 4" not in " ".join(rp.passages(text))
+
+
+def test_passages_strip_url_page_ratios_on_wrapped_lines() -> None:
+    line = "This sentence has more than six words in it for the passage builder. "
+    text = (
+        (line * 4)
+        + "\nUsers can submit a request through the digital portal when\n"
+        "https://www.tech.gov.sg/products/example/  6/8\n"
+        "11/15/25, 10:28 PM                                           Document\n"
+        "they need access to the service.\n\n"
+        + (line * 6)
+    )
+    joined = " ".join(rp.passages(text))
+    assert "6/8" not in joined
+    assert "Document" not in joined
+    assert "when they need access to the service." in joined
+
+
+def test_passages_strip_oscal_parameter_tokens_and_parameter_table_rows() -> None:
+    line = "This sentence has more than six words in it for the passage builder. "
+    text = (
+        (line * 4)
+        + "\nAgencies must review their digital service at least every [ insert: param, pr-\n"
+        "1_prm_1 ] day(s) and notify users at least [ insert: param, pr-4_prm_1 ] day(s) in advance.\n"
+        "Ensure web-based services are compatible with the latest major versions of at least [\n"
+        "insert: param, pr-6_prm_1 ] widely used web browsers, based on usage statistics.\n"
+        "Remediate or risk accept findings within [ insert: param, uu-2_prm_1\n"
+        "] day(s).\n"
+        "pr- time period (days) The time period in days within which a digital service review must be\n"
+        "1_prm_1 (int) conducted.\n"
+        "uu- time period The time period in days to\n"
+        "2_prm_1 (days) (int) remediate or risk accept\n"
+        "findings.\n"
+        "pr-4_prm_1 time period (days) (int) The time period in days to provide notice of schedule downtime.\n\n"
+        + (line * 6)
+    )
+    joined = " ".join(rp.passages(text))
+    assert "1_prm_1" not in joined
+    assert "insert: param" not in joined
+    assert "] days" not in joined
+    assert "day(s)" not in joined
+    assert "time period (days)" not in joined
+    assert "(int)" not in joined
+
+
+def test_passages_strip_sidebar_bleed_and_garbled_control_tables() -> None:
+    line = "This sentence has more than six words in it for the passage builder. "
+    text = (
+        (line * 4)
+        + "\nControls to establish credibility and build user trust Control in digital services.\n"
+        "Reliability Understand and document Public Users' needs and context when creating a new digital service,\n"
+        "Trust and Legitimacy redesigning existing services or introducing major features.\n"
+        "WCAG : Register .gov.sg domain names through the service portal for all public websites.\n"
+        "Perceivable Agencies must display the official masthead on every page of the portal.\n"
+        "Table 2 – Identified threats on LLM applications by lifecycle.\n"
+        "Dev1 Foundation / An attacker manipulates LLM Integrity Poison Training Data\n"
+        "Table 3 – Recommended controls to mitigate corresponding threats.\n"
+        "ED-C1 Harden Engineering Devices (Endpoints) Dev1 to Dev 3: IM8\n"
+        "Perform engineering activities only through Fine-tuned\n"
+        "Government Standard Image Build (GSIB2) or LLM poisoning\n"
+        "3 Abstract Architecture ............................................................ 3\n"
+        "Home Products and services For government agencies GovText\n"
+        "Visit the portal to get started.                                          Chat with us\n"
+        "Step 5: Click on 'Next' to proceed to the confirmation screen. 5\n\n"
+        + (line * 6)
+    )
+    joined = " ".join(rp.passages(text))
+    assert "WCAG :" not in joined
+    assert "Control in digital" not in joined
+    assert "Reliability Understand" not in joined
+    assert "Trust and Legitimacy redesigning" not in joined
+    assert "Perceivable Agencies" not in joined
+    assert "Poison Training Data" not in joined
+    assert "LLM poisoning" not in joined
+    assert "...." not in joined
+    assert "Home Products and services" not in joined
+    assert "Chat with us" not in joined
+    assert "screen. 5" not in joined
+
+
+def test_passages_strip_real_corpus_extraction_artifacts() -> None:
+    from pathlib import Path
+    from bigloom.realism_metrics import text_of
+
+    real_dir = Path("/usr/local/google/home/weizhongt/coding/bigloom/runs/realism/real")
+    if not real_dir.is_dir():
+        return
+    for path in sorted(real_dir.iterdir()):
+        if not path.is_file() or "SPP" in path.name or "DPO Registration" in path.name:
+            continue
+        joined = " ".join(rp.passages(text_of(path)))
+        for bad in (
+            "WCAG :",
+            "Perceivable ",
+            "Trust and Legitimacy redesigning",
+            "Payments Use .gov.sg",
+            "insert: param",
+            "_prm_",
+            "day(s)",
+            "second(s)",
+            "at least days in advance",
+            "within days from detection",
+            "....",
+            "Threat ID",
+            "Fine-tuned behaviour by altering",
+            "OFFICIAL-OPEN",
+            "Chat with us",
+            "Home Products and services",
+            "reach out to us at 17",
+            "within .",
+            "Step 2: Select “For Business Users”",
+            "available to users .",
+            "Have questions? Email us",
+        ):
+            assert bad not in joined, f"{path.name} leaked {bad!r}"
+    u_passages = rp.passages(text_of(real_dir / "Understand Users.pdf"))
+    assert len(u_passages) >= 2
+    assert "Conduct usability testing at key milestones" in " ".join(u_passages)
+    pr_joined = " ".join(rp.passages(text_of(real_dir / "Performance and Reliability.pdf")))
+    assert "available to users 24/7." in pr_joined
+
+
+
+
+

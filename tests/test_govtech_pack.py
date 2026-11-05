@@ -220,3 +220,32 @@ def test_agent_prose_keeps_its_commercial_words(govtech_world: World) -> None:
     renamed = _public_charts(ir, govtech_world, frozenset())
     assert "gross profit" in next(s.body for s in kept.sections if s.heading == sec.heading)
     assert "gross surplus" in next(s.body for s in renamed.sections if s.heading == sec.heading)
+
+
+def test_prepare_candidates_cover_distinct_storylines(tmp_path: Path) -> None:
+    """Loop v2: the candidate target documents cover distinct storylines rather than retelling the mapping-table incident."""
+    import json as _json
+
+    from worldloom.world import World as _World
+
+    from bigloom.narration import prepare
+
+    p = prepare(tmp_path / "seed-2026", seed=2026, formats=("docx", "pdf", "pptx"), world_pack=str(PACK))
+    world = _World.load(p.corpus_dir)
+    types = {i.id: i.artifact_type for i in world.artifact_intents}
+    intent_of = {ir.id: ir.intent_id for ir in world.artifact_irs}
+    chosen = _json.loads((p.requests_path.parent / "plan.json").read_text(encoding="utf-8"))["artifact_ids"]
+    kinds = [types[intent_of[a]] for a in chosen]
+    assert kinds[0] == "service_impact_assessment", kinds
+    assert "incident_rca" not in kinds, kinds
+    requests = _json.loads(p.requests_path.read_text(encoding="utf-8"))["requests"]
+    by_artifact: dict[str, set[str]] = {}
+    for req in requests:
+        by_artifact.setdefault(req["artifact_id"], set()).update(
+            str(f.get("kind", "")) for f in req.get("facts", [])
+        )
+    incident_artifacts = [aid for aid, fkinds in by_artifact.items() if any(k.startswith("ops.") for k in fkinds)]
+    assert len(incident_artifacts) == 1, (kinds, by_artifact)
+    assert any(any(k.startswith("dss.") for k in fkinds) for fkinds in by_artifact.values()), by_artifact
+    assert any(any(k.startswith("cyber.") for k in fkinds) for fkinds in by_artifact.values()), by_artifact
+

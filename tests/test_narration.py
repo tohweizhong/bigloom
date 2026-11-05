@@ -97,3 +97,8 @@ def test_public_sector_requests_name_a_surplus(tmp_path: Path) -> None:
     assert with_profit, "the govtech world has gross profit facts"
     for r in with_profit:
         assert "gross surplus" in r["terminology"]["gross_profit"]
+    for r in requests:
+        assert "public_sector_register" in r["terminology"]
+        assert "IM8" in r["terminology"]["public_sector_register"]
+        assert "WCAG" in r["terminology"]["public_sector_register"]
+

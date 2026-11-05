@@ -401,17 +401,6 @@
           "scope": "unit",
           "purpose": "{{var:unit.name}}'s month in one argued paragraph, so its cluster head can find their own line quickly.",
           "repeat": "unit"
-        },
-        {
-          "heading": "Operations",
-          "kinds": [
-            "ops.feed_status",
-            "ops.remediation",
-            "close."
-          ],
-          "scope": "any",
-          "purpose": "What happened in operations that the committee should know, and what is already being done about it.",
-          "required": false
         }
       ],
       "filing": {
@@ -1107,6 +1096,634 @@
         ],
         "rationale": "The Finance Committee receives a short monthly paper on margin."
       }
+    },
+    {
+      "key": "digital_service_standards_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 12,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Service usability and accessibility compliance",
+          "kinds": [
+            "dss.services_assessed",
+            "dss.accessibility_pass_rate",
+            "dss.uptime_rate",
+            "dss.latency_finding"
+          ],
+          "scope": "any",
+          "purpose": "Report the monthly Digital Service Standards usability, WCAG accessibility, and transactional uptime results across agency public portals, naming the scope of services inspected, the pass rate achieved, and the performance latency finding identified during load testing."
+        },
+        {
+          "heading": "Design system and analytics adoption",
+          "kinds": [
+            "dss.adoption_status",
+            "dss.analytics_coverage",
+            "dss.component_coverage",
+            "dss.feedback_score"
+          ],
+          "scope": "any",
+          "purpose": "Set out the adoption of standard design components, real-time analytics instrumentation, shared authentication widgets, and citizen satisfaction telemetry across public portals."
+        },
+        {
+          "heading": "Remediation schedule and audit roadmap",
+          "kinds": [
+            "dss.remediation_plan",
+            "dss.contrast_fix_status",
+            "dss.load_test_followup",
+            "dss.next_audit_scope"
+          ],
+          "scope": "any",
+          "purpose": "Record the accessibility remediation schedule agreed with service owners, the colour-contrast and keyboard-navigation fix verification, the load-testing follow-up, and the scope of the next quarterly assessment."
+        }
+      ]
+    },
+    {
+      "key": "cybersecurity_compliance_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 14,
+        "minutes": 0
+      },
+      "word": true,
+      "sections": [
+        {
+          "heading": "Cloud security and IM8 posture",
+          "kinds": [
+            "cyber.workloads_reviewed",
+            "cyber.compliance_rate",
+            "cyber.finding_summary",
+            "cyber.access_review_status"
+          ],
+          "scope": "any",
+          "purpose": "Set out the monthly IM8 security compliance review across hosted cloud workloads, stating the number of workloads inspected, the compliance rate recorded, the container library findings, and the privileged access recertification status."
+        },
+        {
+          "heading": "Vulnerability and configuration verification",
+          "kinds": [
+            "cyber.patch_verification",
+            "cyber.log_audit_status",
+            "cyber.tls_posture",
+            "cyber.secret_rotation_status"
+          ],
+          "scope": "any",
+          "purpose": "Detail the signed container digest checks, centralised log forwarding verification, transport encryption inspection, and automated credential rotation posture across agency clusters."
+        },
+        {
+          "heading": "Remediation and assurance clearance",
+          "kinds": [
+            "cyber.remediation_target",
+            "cyber.scanner_enforcement",
+            "cyber.exception_register",
+            "cyber.assurance_clearance"
+          ],
+          "scope": "any",
+          "purpose": "Record the corrective actions committed by system owners, the deployment pipeline scanner rules, the time-bound waiver register status, and the assurance clearance sign-off."
+        }
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "name": "DigitalServiceAssurance",
+      "domain": "retail",
+      "period": "month",
+      "detail": "Monthly assurance review of public digital services against the Digital Service Standards, WCAG accessibility rules, and portal availability targets.",
+      "fact_kinds": [
+        {
+          "kind": "dss.services_assessed",
+          "value_type": "measure",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 38,
+          "unit": "services",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.accessibility_pass_rate",
+          "value_type": "percent",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 94.5,
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.uptime_rate",
+          "value_type": "percent",
+          "authority": "system_of_record",
+          "period_scope": "period-keyed",
+          "amount": 99.92,
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.latency_finding",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Peak-hour authentication response time exceeded the target threshold on two agency form endpoints during scheduled load testing",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.adoption_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Standard design system components are active across all tier-one citizen portals",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.analytics_coverage",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Real-time usability telemetry and transaction completion funnels are instrumented on every public service workflow",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.component_coverage",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Shared identity verification banners and standard form validation patterns are deployed across all agency transactional forms",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.feedback_score",
+          "value_type": "percent",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 88.4,
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.remediation_plan",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Service teams scheduled keyboard-navigation and focus-order updates for the remaining two legacy portals ahead of the next audit",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.contrast_fix_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Updated secondary button colour tokens passed automated contrast ratio verification across both desktop and mobile viewports",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.load_test_followup",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Connection pool limits on the two form submission gateways were tuned and re-verified under simulated peak concurrency",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "dss.next_audit_scope",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "The next cycle adds automated mobile screen-reader checks across newly onboarded licensing portals",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "kind": "dss_audit_completed",
+          "when": "start",
+          "anchor": "prior_period_end",
+          "business_day": 5,
+          "hour": 10,
+          "minute": 0,
+          "summary": "The digital service assurance team completed the monthly Digital Service Standards and WCAG accessibility inspection across citizen portals.",
+          "actors": [
+            "platform_lead"
+          ],
+          "fact_keys": [
+            "dss.services_assessed",
+            "dss.accessibility_pass_rate",
+            "dss.uptime_rate",
+            "dss.latency_finding",
+            "dss.adoption_status",
+            "dss.analytics_coverage",
+            "dss.component_coverage",
+            "dss.feedback_score",
+            "dss.remediation_plan",
+            "dss.contrast_fix_status",
+            "dss.load_test_followup",
+            "dss.next_audit_scope"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "artifact_type": "digital_service_standards_review",
+          "author_role": "platform_lead",
+          "audience": "technology",
+          "required_facts": [
+            "dss.services_assessed",
+            "dss.accessibility_pass_rate",
+            "dss.uptime_rate",
+            "dss.latency_finding",
+            "dss.adoption_status",
+            "dss.analytics_coverage",
+            "dss.component_coverage",
+            "dss.feedback_score",
+            "dss.remediation_plan",
+            "dss.contrast_fix_status",
+            "dss.load_test_followup",
+            "dss.next_audit_scope"
+          ],
+          "size": "long",
+          "structured": false,
+          "unstructured": true,
+          "triggered_by_events": [
+            "dss_audit_completed"
+          ],
+          "rationale": "Monthly assurance review of public digital services against Digital Service Standards, WCAG accessibility requirements, and portal reliability targets.",
+          "domain": "engineering"
+        }
+      ],
+      "role_slots": [
+        {
+          "slot": "assurance_lead",
+          "required": true,
+          "purpose": "run the monthly Digital Service Standards and accessibility review across public portals"
+        }
+      ]
+    },
+    {
+      "name": "CybersecurityComplianceReview",
+      "domain": "retail",
+      "period": "month",
+      "detail": "Monthly cybersecurity and IM8 compliance review across cloud workloads, privileged access controls, and patch remediation windows.",
+      "fact_kinds": [
+        {
+          "kind": "cyber.workloads_reviewed",
+          "value_type": "measure",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 64,
+          "unit": "workloads",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.compliance_rate",
+          "value_type": "percent",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 96.8,
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.finding_summary",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Two staging container images carried unpatched base-layer libraries past the standard remediation window",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.access_review_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Quarterly privileged role-based access control recertification completed with all dormant administrative accounts revoked",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.patch_verification",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Signed container image digests and dependency manifests verified against the central vulnerability baseline",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.log_audit_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Centralised audit log forwarding and retention rules verified across all production and staging namespaces",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.tls_posture",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Ingress load balancers and internal service meshes passed automated transport encryption and cipher suite checks",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.secret_rotation_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Managed database credentials and service account keys completed scheduled ninety-day rotation without service interruption",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.remediation_target",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Container base images rebuilt and redeployed across staging clusters with automated pipeline scanning enforced",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.scanner_enforcement",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Release gates now block container image promotion whenever a critical or high base-image vulnerability is detected",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.exception_register",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "No open security waivers remain past their approved expiry date in the agency risk register",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "cyber.assurance_clearance",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Cleared by cybersecurity governance following verification of patched container digests and access logs",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "kind": "cyber_review_completed",
+          "when": "start",
+          "anchor": "prior_period_end",
+          "business_day": 6,
+          "hour": 14,
+          "minute": 0,
+          "summary": "Cybersecurity governance completed the monthly IM8 workload compliance and privileged access review.",
+          "actors": [
+            "audit"
+          ],
+          "fact_keys": [
+            "cyber.workloads_reviewed",
+            "cyber.compliance_rate",
+            "cyber.finding_summary",
+            "cyber.access_review_status",
+            "cyber.patch_verification",
+            "cyber.log_audit_status",
+            "cyber.tls_posture",
+            "cyber.secret_rotation_status",
+            "cyber.remediation_target",
+            "cyber.scanner_enforcement",
+            "cyber.exception_register",
+            "cyber.assurance_clearance"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "artifact_type": "cybersecurity_compliance_review",
+          "author_role": "audit",
+          "audience": "finance",
+          "required_facts": [
+            "cyber.workloads_reviewed",
+            "cyber.compliance_rate",
+            "cyber.finding_summary",
+            "cyber.access_review_status",
+            "cyber.patch_verification",
+            "cyber.log_audit_status",
+            "cyber.tls_posture",
+            "cyber.secret_rotation_status",
+            "cyber.remediation_target",
+            "cyber.scanner_enforcement",
+            "cyber.exception_register",
+            "cyber.assurance_clearance"
+          ],
+          "size": "long",
+          "structured": false,
+          "unstructured": true,
+          "triggered_by_events": [
+            "cyber_review_completed"
+          ],
+          "rationale": "Monthly cybersecurity and IM8 compliance review covering cloud workloads, privileged access recertification, and vulnerability remediation.",
+          "domain": "risk"
+        }
+      ],
+      "role_slots": [
+        {
+          "slot": "security_reviewer",
+          "required": true,
+          "purpose": "conduct the monthly IM8 compliance and privileged access review"
+        }
+      ]
+    }
+  ],
+  "lobs": [
+    {
+      "name": "digital_assurance",
+      "title": "Digital Service Assurance",
+      "purpose": "Assess public digital services against Digital Service Standards, WCAG accessibility rules, and availability targets.",
+      "engine": "retail",
+      "roles": [
+        {
+          "key": "ceo",
+          "title": "Chief Executive",
+          "function": "Executive",
+          "reports_to": null
+        },
+        {
+          "key": "cio",
+          "title": "Chief Information Officer",
+          "function": "Technology",
+          "reports_to": "ceo"
+        },
+        {
+          "key": "platform_lead",
+          "title": "Platform and Standards Lead",
+          "function": "Technology",
+          "reports_to": "cio"
+        }
+      ],
+      "responsibilities": [
+        {
+          "role_key": "platform_lead",
+          "fact_kinds": [
+            "dss.services_assessed",
+            "dss.accessibility_pass_rate",
+            "dss.uptime_rate"
+          ],
+          "artifact_types": [
+            "digital_service_standards_review"
+          ]
+        }
+      ],
+      "artifact_filings": [
+        "digital_service_standards_review"
+      ],
+      "episode_contributions": [
+        "DigitalServiceAssurance"
+      ],
+      "slot_bindings": [
+        {
+          "process": "DigitalServiceAssurance",
+          "slot": "assurance_lead",
+          "role_key": "platform_lead"
+        }
+      ]
+    },
+    {
+      "name": "cyber_governance",
+      "title": "Cybersecurity and IM8 Governance",
+      "purpose": "Review cloud workload compliance, privileged access controls, and vulnerability remediation across agency systems.",
+      "engine": "retail",
+      "roles": [
+        {
+          "key": "ceo",
+          "title": "Chief Executive",
+          "function": "Executive",
+          "reports_to": null
+        },
+        {
+          "key": "audit",
+          "title": "Internal Audit and Assurance Lead",
+          "function": "Audit",
+          "reports_to": "ceo"
+        }
+      ],
+      "responsibilities": [
+        {
+          "role_key": "audit",
+          "fact_kinds": [
+            "cyber.workloads_reviewed",
+            "cyber.compliance_rate",
+            "cyber.assurance_clearance"
+          ],
+          "artifact_types": [
+            "cybersecurity_compliance_review"
+          ]
+        }
+      ],
+      "artifact_filings": [
+        "cybersecurity_compliance_review"
+      ],
+      "episode_contributions": [
+        "CybersecurityComplianceReview"
+      ],
+      "slot_bindings": [
+        {
+          "process": "CybersecurityComplianceReview",
+          "slot": "security_reviewer",
+          "role_key": "audit"
+        }
+      ]
     }
   ],
   "episode_text": {
