@@ -1,0 +1,126 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-061: Level 2A cleaned reference passages and Level 2B distinct GovTech storylines",
+  "date_sgt": "2026-11-05 20:47",
+  "policy": "policies/writer/round-002.md",
+  "policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "code": "realism-loop 60d1475 (merged realism-v2 5a7f90a)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "Level 2A cleaned extraction noise in realism_pairs.py and excluded the DPO screenshot guide. Level 2B added DigitalServiceAssurance and CybersecurityComplianceReview episodes to packs/govtech.json and scoped PUBLIC_SECTOR_EXCLUDED_TYPES to public-sector worlds. Fresh writer runs under policies/writer/round-002.md across train (2026, 2027) and holdout (3101, 3102). Attempt 1 had short sections on 3 of 4 seeds, so one fresh writer per seed ran per Section 5 Step 6. Both attempts are recorded below.",
+  "writer_accept_rounds": {
+    "2026": 2,
+    "2027": 2,
+    "3101": 2,
+    "3102": 2
+  },
+  "agent_words_attempt_1": {
+    "2026": 2749,
+    "2027": 1235,
+    "3101": 1354,
+    "3102": 1880
+  },
+  "agent_words": {
+    "2026": 3019,
+    "2027": 3240,
+    "3101": 2850,
+    "3102": 3049
+  },
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.348,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.047,
+    "unique_sentences": 23.333,
+    "words_per_mb": 243.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.014
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.703,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.058,
+    "unique_sentences": 23.5,
+    "words_per_mb": 253.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.014
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.348,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.013
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.703,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.013
+  },
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "bl-003-pptx-2mb_final.pptx contains the WorldLoom slide template table header Store Performance (SGD thousands) (1 match in 478 words = 2.09 per k; mean across 6 files = 0.348). Writer prose has 0 retail matches.",
+      "train_mean_floor": 0.348
+    },
+    "cross_document_reuse": {
+      "cause": "Template cover headers, section 4 table captions, and chart bar labels shared between the 2 MB and 5 MB target files of the same format (6 template sentences across 6 files = 0.014). Writer prose has 0 reused sentences across documents.",
+      "train_mean_floor": 0.014
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18061,
+  "holdout_judge_seed": 28061,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs_train": 10,
+    "pairs_holdout": 9,
+    "train": {
+      "ids": [
+        "2d743e5f",
+        "7c6799c4",
+        "4e0213dd"
+      ],
+      "correct": [
+        10,
+        10,
+        10
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "6a482eca",
+        "774139a5",
+        "f07663dc"
+      ],
+      "correct": [
+        9,
+        9,
+        9
+      ],
+      "judge_error": 0.0
+    }
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Operational monitoring confirmed that the feed status for the inventory valuation service entered a failed state during the scheduled morning processing window for agency assets across the shared data platform. Simultaneously, synchronization telemetry showed that the product hierarchy sync service accumulated 22,859 records in affected records because hand-maintained mappings between legacy agency codes and cloud platform identifiers fell out of alignment during the routine batch transfer across departmental accounts. That discrepancy prevented the automated ingestion job from matching incoming asset catalogue entries against active cloud cost centres during the morning run. Because the estate spans both older departmental registries and cloud hosting environments under the ongoing migration programme, operations leads must isolate the broken synchronization job immediately so that unmapped catalogue items do not corrupt downstream financial batch schedules or delay service reporting across the wider technology platform. Incident responders have placed an immediate hold on dependent ingestion queues, logged"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "2 Design system and analytics adoption Platform architecture telemetry confirms that standard design system components are active across all tier-one citizen portals, ensuring consistent visual hierarchy, predictable responsive layout behaviour, and accessible navigation patterns across high-traffic government digital portals managed by the group across legacy and cloud agency codes. Furthermore, data platform engineering teams verified that real-time usability telemetry and transaction completion funnels are instrumented on every public service workflow, giving agency product owners granular, privacy-compliant visibility into user drop-off points, session duration, and form submission bottlenecks under strict PDPA data handling rules and IM8 logging standards. Across the wider transactional estate, shared identity verification banners and standard form validation patterns are deployed across all agency transactional forms, which reduced form submission errors, simplified citizen sign-in steps, and contributed directly to a citizen satisfaction feedback score of 88.4% across surveyed digital services for the reporting period. Automated schema checks across"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/rs061t/set/large\"))"
+}

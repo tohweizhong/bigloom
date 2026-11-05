@@ -1,0 +1,183 @@
+{
+  "round": "061r",
+  "kind": "rescore",
+  "date_sgt": "2026-11-05 20:47",
+  "champion_policy": "policies/writer/round-002.md",
+  "champion_policy_sha256": "24fc8bddef20ed226dbdeacb681b6ae3fb6e23d2893ff9357dc6345cac670d69",
+  "writer_accept_rounds": {
+    "2026": 2,
+    "2027": 2
+  },
+  "agent_words_attempt_1": {
+    "2026": 2749,
+    "2027": 1235
+  },
+  "agent_words": {
+    "2026": 3019,
+    "2027": 3240
+  },
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": [],
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.348,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.047,
+    "unique_sentences": 23.333,
+    "words_per_mb": 243.167,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.014
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.348,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.013
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 593,
+      "words_per_mb": 283,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.445,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 682,
+      "words_per_mb": 130,
+      "sentences": 23,
+      "unique_sentences": 23,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.043,
+      "text_gzip_ratio": 0.419,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1124,
+      "words_per_mb": 536,
+      "sentences": 27,
+      "unique_sentences": 27,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.037,
+      "text_gzip_ratio": 0.394,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1084,
+      "words_per_mb": 207,
+      "sentences": 38,
+      "unique_sentences": 38,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.026,
+      "text_gzip_ratio": 0.395,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 478,
+      "words_per_mb": 228,
+      "sentences": 21,
+      "unique_sentences": 21,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.048,
+      "text_gzip_ratio": 0.471,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 2.09,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 391,
+      "words_per_mb": 75,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.416,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "bl-003-pptx-2mb_final.pptx contains the WorldLoom slide template table header Store Performance (SGD thousands) (1 match in 478 words = 2.09 per k; mean across 6 files = 0.348). Writer prose has 0 retail matches.",
+      "train_mean_floor": 0.348
+    },
+    "cross_document_reuse": {
+      "cause": "Template cover headers, section 4 table captions, and chart bar labels shared between the 2 MB and 5 MB target files of the same format (6 template sentences across 6 files = 0.014). Writer prose has 0 reused sentences across documents.",
+      "train_mean_floor": 0.014
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18061,
+  "judge_pairs_train": 10,
+  "judge_correct_train": [
+    10,
+    10,
+    10
+  ],
+  "judge_error_train": 0.0,
+  "judge_clues_train": [
+    "Synthetic passages still include incident/mapping override storylines (service_impact_assessment on seed 2026) and monthly financial close narratives with specific metric templates (38 services, 94.50% accessibility pass rate, 99.92% uptime, 22,859 affected records).",
+    "Real passages are normative guidelines, standards checklists, or product/CSIRT descriptions (DSS rules, LLM security playbook, SGTS/GovText pages, power system modeling manual) rather than retrospective monthly operational/financial reports.",
+    "Some synthetic passages include PDF/DOCX section headers or chart bar lists (Figure/Bars) concatenated into the passage text."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Operational monitoring confirmed that the feed status for the inventory valuation service entered a failed state during the scheduled morning processing window for agency assets across the shared data platform. Simultaneously, synchronization telemetry showed that the product hierarchy sync service accumulated 22,859 records in affected records because hand-maintained mappings between legacy agency codes and cloud platform identifiers fell out of alignment during the routine batch transfer across departmental accounts. That discrepancy prevented the automated ingestion job from matching incoming asset catalogue entries against active cloud cost centres during the morning run. Because the estate spans both older departmental registries and cloud hosting environments under the ongoing migration programme, operations leads must isolate the broken synchronization job immediately so that unmapped catalogue items do not corrupt downstream financial batch schedules or delay service reporting across the wider technology platform. Incident responders have placed an immediate hold on dependent ingestion queues, logged"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "2 Design system and analytics adoption Platform architecture telemetry confirms that standard design system components are active across all tier-one citizen portals, ensuring consistent visual hierarchy, predictable responsive layout behaviour, and accessible navigation patterns across high-traffic government digital portals managed by the group across legacy and cloud agency codes. Furthermore, data platform engineering teams verified that real-time usability telemetry and transaction completion funnels are instrumented on every public service workflow, giving agency product owners granular, privacy-compliant visibility into user drop-off points, session duration, and form submission bottlenecks under strict PDPA data handling rules and IM8 logging standards. Across the wider transactional estate, shared identity verification banners and standard form validation patterns are deployed across all agency transactional forms, which reduced form submission errors, simplified citizen sign-in steps, and contributed directly to a citizen satisfaction feedback score of 88.4% across surveyed digital services for the reporting period. Automated schema checks across"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/rs061t/set/large\"))"
+}

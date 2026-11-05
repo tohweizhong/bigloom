@@ -14,18 +14,26 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 26 Oct 2026 22:50 SGT (Round 32 train judges `[20, 20, 20]` recorded; `pdf_add_picture` short-tail merge fix `f8f58a9` merged) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2 fixes `7223e7c` and `f8f58a9` merged) |
-| Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF; was `a60c857a…` with two CRLF line ends) |
-| Champion baseline receipt | `docs/realism/receipts/rescore-v2-031.json` (train view `docs/realism/loop/train-031r.json`) |
-| Last round | Round 32, rejected (`gate_passed: false` on holdout `thin_pages`, train `retail_per_k` 0.943 worsened from 0.0, `top_opener_share` 0.032, `holdout_gain` -1.373, train judges `[20, 20, 20]`) |
-| Next round number | 33 |
-| Real files for the judges | `runs/realism/real/` (11 real files restored and verified against `docs/realism/reference-v2.json`) |
+| Updated | 05 Nov 2026 20:54 SGT (Level 2A + Level 2B merged in `60d1475`; champion rescored in `rescore-v2-061.json`) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B `5a7f90a` / `60d1475` merged) |
+| Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF) |
+| Champion baseline receipt | `docs/realism/receipts/rescore-v2-061.json` (train view `docs/realism/loop/train-061r.json`) |
+| Last round | Round 60, rejected (`judge_error` `0.0` on train `[20, 20, 20]` and holdout `[18, 18, 18]` scaled to `[20, 20, 20]`) |
+| Next round number | 61 |
+| Real files for the judges | `runs/realism/real/` (11 real files, `DPO Registration Instruction Guide_Mar2024.pdf` excluded in `realism_pairs._pool`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 33 against `rescore-v2-031.json` (`train-031r.json`).
+1. Run Round 61 against `rescore-v2-061.json` (`train-061r.json`).
+
+### Level 2A + Level 2B change: clean real-passage extraction noise and add distinct GovTech storylines (05 Nov 20:54 SGT)
+
+- **Approval.** Approved by the user and monitor after the 35-round judge plateau across Rounds 26 to 60.
+- **Cause.** First, `realism_pairs.passages()` left multi-column control tables, OSCAL parameter tags (`[ insert: param, ... ]`, `day(s)`), TOC dot leaders, and web-print navigation lines in real passages, and included the screenshot-only DPO guide. Second, all synthetic corpora drew from a single incident storyline (`incident_rca` / `service_impact_assessment`) and monthly finance close, repeating the same storyline across every synthetic passage.
+- **Change (`5a7f90a`, merged as `60d1475`).** `realism_pairs.py` drops multi-column table rows, TOC dot leaders, and web-print chrome in `_clean_line()` and `passages()`, normalises OSCAL parameter placeholders into prose words, and excludes `DPO Registration Instruction Guide` in `_pool()`. `packs/govtech.json` adds two 3-section episodes (`DigitalServiceAssurance` for `digital_service_standards_review` with 12 `dss.*` facts, and `CybersecurityComplianceReview` for `cybersecurity_compliance_review` with 12 `cyber.*` facts), `corpus.py` installs pack episodes before `world.generate()`, and `build.py` and `narration.py` scope `PUBLIC_SECTOR_EXCLUDED_TYPES = ("incident_rca", "audit_observations_response")` to public-sector worlds while ranking `PREFERRED_TYPES` by index.
+- **Tests.** Added unit tests in `test_realism_pairs.py`, `test_govtech_pack.py`, and `test_narration.py`. Full test suite passed (`30 passed` in targeted tests, `164 passed` in remaining suite, `25 passed` in `test_build_worldloom.py` + `test_govtech_pack.py`).
+- **Rescore (`docs/realism/receipts/rescore-v2-061.json`, `docs/realism/loop/train-061r.json`).** Rebuilt the raw corpus cache (`runs/loop/cache`) and ran fresh writers under `policies/writer/round-002.md` (`attempt 1`: `2749, 1235, 1354, 1880`; `attempt 2`: `3019, 3240, 2850, 3049`). Both train and holdout passed all gates with zero violations (`train_vector`: `wl_id_per_k` `0.0`, `commercial_per_k` `0.0`, `retail_per_k` `0.348` floor from PPTX template table header, `within_file_repeat` `0.0`, `top_opener_share` `0.047`, `cross_document_reuse` `0.014` floor from template captions). Six fresh judges (`2d743e5f`, `7c6799c4`, `4e0213dd` on train `10` pairs `[10, 10, 10]`; `6a482eca`, `774139a5`, `f07663dc` on holdout `9` pairs `[9, 9, 9]`) scored `judge_error: 0.0`.
 
 ### Level 2 change: one-sided defect distances, end picture page, and short slide titles (26 Oct 22:11 SGT)
 
@@ -633,6 +641,7 @@ samples, and the policy digest.
 | 58 | Add a QUALITY sentence that bans sentences that address or name the reader (`f51b49a6…`) | Rejected | All 4 seeds passed the 80% length guard (3514, 2857, 3541, 3617) and both sets passed all build and retrieval gates with zero violations, but train `commercial_per_k` (`0.5`), `retail_per_k` (`0.335`), and `cross_document_reuse` (`0.033`) worsened (`unique_sentences` `40.5`), and train judges (`4fe18ce8`, `04c76f72`, `ecbb155f`, `seed = 18054`) and holdout judges (`c68330f5`, `9a32d421`, `7502814e`, `seed = 28054`) scored `[20, 20, 20]` (`judge_error` `0.0`) |
 | 59 | Change the HARD RULES length band from `90 to 120 percent` to `85 to 120 percent` (`9b8d74b4…`) | Rejected | All 4 seeds passed the 80% length guard after 2 accept runs (`seed_2026` 2698 then 3379, `seed_3101` 2578 then 3341, `seed_2027` 3371, `seed_3102` 3053) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `39.333`), but train judges (`b57d03ee`, `6eb2c418`, `3d69d3b5`, `seed = 18054`) scored `[20, 20, 20]` and holdout judges (`8bb2f07b`, `fd4befe4`, `a4b090e0`, `seed = 28054`) scored 19 of 19 each on 19 pairs (passed to `decide()` as `[20, 20, 20]`) (`judge_error` `0.0`) |
 | 60 | Delete the VOCABULARY sentence that lists public-sector words for sentences that cite no fact (`2f82d162…`) | Rejected | All 4 seeds passed the 80% length guard (3497, 3429, 2900, 3576; `seed_2027` after 2 accept runs) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `43.667`), but train judges (`7f5fdea5`, `c5bc1b04`, `d9d48a3b`, `seed = 18054`) scored `[20, 20, 20]` and holdout judges (`7f47613a`, `4f9c4564`, `9a3d53dc`, `seed = 28054`) scored 18 of 18 each on 18 pairs (passed to `decide()` as `[20, 20, 20]`) (`judge_error` `0.0`) |
+| L2 (after 60) | Clean real-passage extraction noise and exclude DPO screenshot guide in `realism_pairs.py` (Level 2A), and add `DigitalServiceAssurance` and `CybersecurityComplianceReview` episodes in `packs/govtech.json`, `corpus.py`, `build.py`, and `narration.py` (Level 2B) (`5a7f90a`, merged as `60d1475`, `rescore-v2-061.json`) | Rescore | Rebuilt raw corpus cache and ran fresh writers on `round-002.md` (`attempt 2` words: `3019, 3240, 2850, 3049`). Both train and holdout pass all gates with zero violations (`train_vector`: `wl_id_per_k` `0.0`, `commercial_per_k` `0.0`, `retail_per_k` `0.348` floor, `within_file_repeat` `0.0`, `top_opener_share` `0.047`, `cross_document_reuse` `0.014` floor). Six fresh judges (`2d743e5f`, `7c6799c4`, `4e0213dd`, `6a482eca`, `774139a5`, `f07663dc`, seeds `18061` and `28061`) scored `[10, 10, 10]` on 10 train pairs and `[9, 9, 9]` on 9 holdout pairs (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
