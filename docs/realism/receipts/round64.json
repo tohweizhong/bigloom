@@ -1,0 +1,237 @@
+{
+  "round": 64,
+  "date_sgt": "2026-11-05 23:18",
+  "champion_policy": "policies/writer/round-061.md",
+  "champion_policy_sha256": "c3a89169a63147575f70f83d7c4346204ac207b820fc67505d29934f510901c3",
+  "candidate_policy": "policies/writer/round-064.md",
+  "candidate_policy_sha256": "726fcccb2feb2f983df1e0ba39ad7d2ffc09a97f068b35cd4317a8ae168aa46a",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, keep the standalone 65-to-90-word opening paragraphs and compact 40-to-55-word closing fact paragraph while replacing abstract standards-mandate openers and plain-record-entry register formulas with direct practitioner guidance in varied sentence lengths and natural closing fact statements that ban the word register alongside store and stores.",
+    "why": "On train-061cr.json, judge_error is 0.0 (18, 18, and 18 of 18 correct across 18 pairs) because judges identified synthetic passages by rigid In the ... register closing formulas and abstract third-person guidelines mandate openers, while train-062.json and train-063.json showed that keeping the closing fact paragraph holds all six deterministic defect distances including cross_document_reuse at 0.0."
+  },
+  "writer_accept_rounds": {
+    "2026": 1,
+    "2027": 1,
+    "3101": 1,
+    "3102": 1
+  },
+  "agent_words": {
+    "2026": 3092,
+    "2027": 2336,
+    "3101": 2575,
+    "3102": 2444
+  },
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": [],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 30.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.046,
+    "unique_sentences": 32.167,
+    "words_per_mb": 222.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.021
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.048,
+    "unique_sentences": 33.333,
+    "words_per_mb": 239.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.06,
+    "unique_sentences": 27.5,
+    "words_per_mb": 216.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 957,
+      "words_per_mb": 456,
+      "sentences": 51,
+      "unique_sentences": 51,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.039,
+      "text_gzip_ratio": 0.424,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 765,
+      "words_per_mb": 146,
+      "sentences": 34,
+      "unique_sentences": 34,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.449,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 973,
+      "words_per_mb": 464,
+      "sentences": 53,
+      "unique_sentences": 53,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.019,
+      "text_gzip_ratio": 0.396,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "10 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 763,
+      "words_per_mb": 146,
+      "sentences": 34,
+      "unique_sentences": 34,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.029,
+      "text_gzip_ratio": 0.404,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "10 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 325,
+      "words_per_mb": 155,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.465,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 369,
+      "words_per_mb": 70,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.453,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": [
+    "All four seeds wrote prose for the three technical standards episodes (digital_service_standards_review, cybersecurity_compliance_review, cloud_architecture_standards_review) and passed narrate accept on orchestrator attempt 1.",
+    "Both train (9 pairs) and holdout (8 pairs) passed qualify with zero violations and all six defect metrics at 0.0 on both train and holdout."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Embed automated accessibility linters and semantic markup validators directly into portal build pipelines before deploying public service updates. Front-end engineering squads verify keyboard focus order, screen-reader landmarks, and colour contrast ratios against baseline design tokens during every pull request review. Reject interface builds that omit accessible labels on interactive form controls. Synthetic browser probes execute continuous transaction checks across regional points of presence to measure real-world page rendering speeds. Early pipeline enforcement prevents usability regressions from reaching citizen-facing production environments. Configure API gateways and identity broker endpoints with adaptive connection pooling to absorb seasonal traffic spikes across public portals. Platform engineers benchmark authentication token exchange latency under simulated concurrency before approving major release cutovers. Isolate heavy document upload workflows onto dedicated worker queues. Real-time availability monitors track upstream directory response times and trigger automated pod scaling whenever request queues lengthen. Separating stateful session handshakes from static asset delivery keeps transactional"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Automate transport certificate renewal and database credential rotation through managed secret orchestration services. Ingress controllers and internal service proxies enforce modern cipher suites and strict mutual authentication across all inter-service communication paths. Rotate service account keys on fixed calendar intervals without manual intervention. Infrastructure teams test zero-downtime connection draining during scheduled credential rollovers so application pods refresh database sessions seamlessly. Automated secret lifecycle management eliminates static long-lived credentials from agency configuration files. For Government Technology Agency, signed container image digests and dependency manifests verified against the central vulnerability baseline, and centralised audit log forwarding and retention rules verified across all production and staging namespaces. In addition, ingress load balancers and internal service meshes passed automated transport encryption and cipher suite checks, while managed database credentials and service account keys completed scheduled ninety-day rotation without service interruption across hosted database clusters."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r064t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "None. Store Performance in PPTX appendix schedule titles is replaced with Service Performance.",
+      "train_mean_floor": 0.0
+    },
+    "cross_document_reuse": {
+      "cause": "None on train.",
+      "train_mean_floor": 0.0
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18061,
+  "judge_pairs_train": 9,
+  "judge_pairs_holdout": 8,
+  "judge_correct_train_raw": [
+    9,
+    9,
+    9
+  ],
+  "judge_correct_holdout_raw": [
+    8,
+    8,
+    8
+  ],
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": 2.0,
+    "reasons": [
+      "no train dimension improved by more than its band"
+    ]
+  }
+}

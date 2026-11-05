@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 05 Nov 2026 22:55 SGT (Level 2E `ff10264` merged; starting Round 64) |
+| Updated | 05 Nov 2026 23:19 SGT (Round 64 completed, rejected; `runs/docx-sample-pack` built and verified; `policies/writer/round-061.md` remains champion) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B + Level 2C `2039bb5` + Level 2D `429c21f` + Level 2E `ff10264` merged) |
 | Champion policy | `policies/writer/round-061.md` (`99911740…`, LF) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-061c.json` (train view `docs/realism/loop/train-061cr.json`) |
-| Last round | Round 63, rejected (`improved: ()`, `worsened: ()`, `holdout_gain: -0.3`, train judges `[18, 18, 18]` on 18 pairs, holdout judges `[14, 14, 14]` on 14 pairs) |
-| Next round number | 64 |
+| Last round | Round 64, rejected (`improved: ()`, `worsened: ()`, `holdout_gain: 2.0`, train judges `[9, 9, 9]` on 9 pairs, holdout judges `[8, 8, 8]` on 8 pairs; all 6 defect metrics `0.0` on both train and holdout) |
+| Next round number | 65 |
 | Real files for the judges | `runs/realism/real/` (11 real files; `DPO Registration Instruction Guide_Mar2024.pdf` and `spp model development procedure manual 2021 v5.0.docx` excluded in `realism_pairs._pool`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Rebuild `runs/loop/cache` and run Level 1 Round 64 (`r064t` / `r064h`).
+1. Paused after Round 64 and `runs/docx-sample-pack` verification because `gemini-google-teamfood-wtu-v2` quota reached 1 percent remaining. Resume with Level 2F (DOCX paragraph blank-line separator in `docx_lines` and general mid-sentence text-fact lowercasing in `longform_filter.py`) and Round 65 after quota resets.
 
 ### Level 2E change: three technical standards episodes, `-2mb_final` pair filter, and statutory masking (05 Nov 22:55 SGT)
 
@@ -668,6 +668,8 @@ samples, and the policy digest.
 | L2 (after 61) | Flush blank lines in `passages()`, drop section/table/chart headers, strip spaces before punctuation, exclude SPP manual, include all 6 target files in `build_pairs()`, and replace `Store Performance` in PPTX slide titles (`2039bb5`, `rescore-v2-061c.json`) | Rescore | Rebuilt `round-061.md` corpora with zero writer runs. Both train and holdout pass all gates with `retail_per_k: 0.0` (`train_vector`: all 6 defect distances `0.0`; `holdout_vector`: `retail_per_k` `0.0`, `cross_document_reuse` `0.021`). Six fresh judges (`8b69846a`, `75365a1b`, `63ec7e91`, `31c70a3c`, `e1df9fcb`, `21dea84f`, seeds `18061` and `28061`) scored `[18, 18, 18]` on 18 train pairs and `[17, 17, 17]` on 17 holdout pairs (`judge_error` `0.0`) |
 | 62 | Replace the normative/closing-paragraph sentence in `QUALITY` with a rule to write direct imperative guidance sentences paired with plain explanatory sentences, weave each required fact naturally once into a relevant sentence without a closing fact block, and forbid the words `store`, `stores`, and `register` while reaching at least 95 percent of `target_words` (`2fd35454…`) | Rejected | All 4 seeds passed the 80% length guard (`seed_2026` 3321 on attempt 2 after 1606, `seed_2027` 3248, `seed_3101` 3132, `seed_3102` 3276 on attempt 2 after 2276) and both sets passed all build and retrieval gates with zero violations (`holdout_gain` `+1.0`, `cross_document_reuse` `0.021` to `0.011`), but train `cross_document_reuse` rose from `0.0` to `0.013` (distance `0.012` > `0.01` band) and train judges (`a6f7d75d`, `061bd6ab`, `310d432c`, `seed = 18062`) and holdout judges (`4093bf74`, `1d44de64`, `e570b64a`, `seed = 28062`) scored `[15, 15, 15]` on 15 pairs (`judge_error` `0.0`) |
 | 63 | In `QUALITY`, keep the standalone 65-to-90-word opening paragraphs and compact 40-to-55-word closing fact paragraph while replacing abstract `standards mandate` openers and `plain record entry` register formulas with direct practitioner guidance in varied sentence lengths and natural closing fact statements that ban the word `register` alongside `store` and `stores` (`9d29d475…`) | Rejected | Both train seeds passed validation and the 80% length guard on attempt 1 (`seed_2026` 3249, `seed_2027` 2769) and all 6 train defect distances were `0.0` (`cross_document_reuse` `0.0`, `top_opener_share` `0.055`), while holdout `seed_3102` wrote 2376 and 2204 words across 2 attempts and train judges (`b259923c`, `ed4e330a`, `11ee102a`, `seed = 18063`) scored `[18, 18, 18]` on 18 pairs and holdout judges (`c82a4ef1`, `c456c2e4`, `6e22cf12`, `seed = 28063`) scored `[14, 14, 14]` on 14 pairs (`judge_error` `0.0`) |
+| L2 (after 63) | Add `"deck": true` to `digital_service_standards_review` and `cybersecurity_compliance_review`, add third technical episode `CloudArchitectureAssurance` (`cloud_architecture_standards_review`, `"word": true`, `"deck": true`, domain `"operations"`) in `packs/govtech.json`, put all three technical review types first in `PREFERRED_TYPES` in `build.py`, filter `synth_files` to `-2mb_final` in `build_pairs()`, strip mid-line `c)` list tags, and mask `GovTech Act 2016`, `RFC 2350`, and `IM8` (`ff10264`) | Code fix | All three target slots (`docx`, `pdf`, `pptx`) select technical standards episodes (`digital_service_standards_review`, `cybersecurity_compliance_review`, `cloud_architecture_standards_review`) with no finance variance or agency code mapping targets, `pairs.md` samples only `-2mb_final` synthetic files, and real passages have no `GovTech Act 2016`, `RFC 2350`, `IM8`, or `c)` list markers (`35 passed in 97.83s`) |
+| 64 | In `QUALITY`, write each section as direct public-sector practitioner engineering, security, and operational control guidance opening with standalone 65-to-90-word paragraphs in varied sentence lengths that mix direct imperatives with plain declarative technical statements without abstract standards-mandate openers or a mechanical action-plus-rationale template, and confine all required facts to a compact 40-to-55-word closing paragraph in natural operational sentences without `register`, `store`, or `stores` (`726fcccb…`) | Rejected | All 4 seeds passed `narrate accept` on attempt 1 (`seed_2026` 3092, `seed_2027` 2336, `seed_3101` 2575, `seed_3102` 2444) and both train and holdout passed `qualify` with zero violations and all 6 defect metrics at `0.0` on both train and holdout (`holdout_gain` `+2.0`, holdout `cross_document_reuse` `0.021` to `0.0`). Train judges (`0fe5b051`, `c1257c12`, `777cc341`, `seed = 18061`) scored `[9, 9, 9]` on 9 pairs and holdout judges (`55e1eccc`, `f39573bd`, `f8b38a1d`, `seed = 18061`) scored `[8, 8, 8]` on 8 pairs (`judge_error` `0.0`). Built local 3-file DOCX pack in `runs/docx-sample-pack` (`2 MB`, `3 MB`, `5 MB` across the 3 technical types; `qualify` passed with 0 violations and all 6 defect metrics `0.0`, `top_opener_share` `0.027`, `unique_sentences` `49.333`, `words_per_mb` `310.0`) |
 
 ## Appendix B. Files
 
@@ -679,6 +681,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-061.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round61.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-061.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-064.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round64.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-064.json` | Train-only receipts that the proposer reads |
