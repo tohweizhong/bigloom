@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 05 Nov 2026 20:54 SGT (Level 2A + Level 2B merged in `60d1475`; champion rescored in `rescore-v2-061.json`) |
+| Updated | 05 Nov 2026 21:20 SGT (Round 61 promoted `policies/writer/round-061.md` on `retail_per_k` and `cross_document_reuse` with `holdout_gain` +0.16) |
 | Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B `5a7f90a` / `60d1475` merged) |
-| Champion policy | `policies/writer/round-002.md` (`24fc8bdd…`, LF) |
-| Champion baseline receipt | `docs/realism/receipts/rescore-v2-061.json` (train view `docs/realism/loop/train-061r.json`) |
-| Last round | Round 60, rejected (`judge_error` `0.0` on train `[20, 20, 20]` and holdout `[18, 18, 18]` scaled to `[20, 20, 20]`) |
-| Next round number | 61 |
+| Champion policy | `policies/writer/round-061.md` (`99911740…`, LF) |
+| Champion baseline receipt | `docs/realism/receipts/round61.json` (train view `docs/realism/loop/train-061.json`) |
+| Last round | Round 61, promoted (`improved: ('retail_per_k', 'cross_document_reuse')`, `worsened: ()`, `holdout_gain: +0.16`, train judges `[14, 14, 14]` on 14 pairs, holdout judges `[12, 12, 12]` on 12 pairs) |
+| Next round number | 62 |
 | Real files for the judges | `runs/realism/real/` (11 real files, `DPO Registration Instruction Guide_Mar2024.pdf` excluded in `realism_pairs._pool`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Round 61 against `rescore-v2-061.json` (`train-061r.json`).
+1. Apply approved Level 2C fixes (`realism_pairs.passages` paragraph/header/table/caption filtering and PPTX `Store Performance` template replacement) on `realism-v2`, merge into `realism-loop`, and rescore `policies/writer/round-061.md` in `rescore-v2-061c.json` (`train-061cr.json`) before starting Round 62.
 
 ### Level 2A + Level 2B change: clean real-passage extraction noise and add distinct GovTech storylines (05 Nov 20:54 SGT)
 
@@ -642,6 +642,7 @@ samples, and the policy digest.
 | 59 | Change the HARD RULES length band from `90 to 120 percent` to `85 to 120 percent` (`9b8d74b4…`) | Rejected | All 4 seeds passed the 80% length guard after 2 accept runs (`seed_2026` 2698 then 3379, `seed_3101` 2578 then 3341, `seed_2027` 3371, `seed_3102` 3053) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `39.333`), but train judges (`b57d03ee`, `6eb2c418`, `3d69d3b5`, `seed = 18054`) scored `[20, 20, 20]` and holdout judges (`8bb2f07b`, `fd4befe4`, `a4b090e0`, `seed = 28054`) scored 19 of 19 each on 19 pairs (passed to `decide()` as `[20, 20, 20]`) (`judge_error` `0.0`) |
 | 60 | Delete the VOCABULARY sentence that lists public-sector words for sentences that cite no fact (`2f82d162…`) | Rejected | All 4 seeds passed the 80% length guard (3497, 3429, 2900, 3576; `seed_2027` after 2 accept runs) and both sets passed all build and retrieval gates with zero violations, and all 6 train defect distances were `0.0` (`unique_sentences` `43.667`), but train judges (`7f5fdea5`, `c5bc1b04`, `d9d48a3b`, `seed = 18054`) scored `[20, 20, 20]` and holdout judges (`7f47613a`, `4f9c4564`, `9a3d53dc`, `seed = 28054`) scored 18 of 18 each on 18 pairs (passed to `decide()` as `[20, 20, 20]`) (`judge_error` `0.0`) |
 | L2 (after 60) | Clean real-passage extraction noise and exclude DPO screenshot guide in `realism_pairs.py` (Level 2A), and add `DigitalServiceAssurance` and `CybersecurityComplianceReview` episodes in `packs/govtech.json`, `corpus.py`, `build.py`, and `narration.py` (Level 2B) (`5a7f90a`, merged as `60d1475`, `rescore-v2-061.json`) | Rescore | Rebuilt raw corpus cache and ran fresh writers on `round-002.md` (`attempt 2` words: `3019, 3240, 2850, 3049`). Both train and holdout pass all gates with zero violations (`train_vector`: `wl_id_per_k` `0.0`, `commercial_per_k` `0.0`, `retail_per_k` `0.348` floor, `within_file_repeat` `0.0`, `top_opener_share` `0.047`, `cross_document_reuse` `0.014` floor). Six fresh judges (`2d743e5f`, `7c6799c4`, `4e0213dd`, `6a482eca`, `774139a5`, `f07663dc`, seeds `18061` and `28061`) scored `[10, 10, 10]` on 10 train pairs and `[9, 9, 9]` on 9 holdout pairs (`judge_error` `0.0`) |
+| 61 | Replace `"Lead with the position, group related facts, say what they mean."` in `QUALITY` with a rule that opens each section with standalone 65-to-90-word paragraphs of normative public-sector guidelines and operational control rules on the section topic, confines all required facts to a compact 40-to-55-word closing paragraph as plain record entries without retelling an incident or monthly close storyline, bans `store`/`stores`, and requires at least 95 percent of `target_words` (`99911740…`) | Promoted | All 4 seeds passed the 80% length guard (`seed_2026` 2618 on attempt 2 after 2145, `seed_2027` 3345, `seed_3101` 2396, `seed_3102` 3137) and both sets passed all build and retrieval gates with zero violations. Train `retail_per_k` (`0.348` to `0.0`) and `cross_document_reuse` (`0.014` to `0.0`) improved beyond their bands with zero worsened dimensions and `holdout_gain` `+0.16`. Train judges (`8e708fd8`, `a6af5281`, `840c5535`, `seed = 18061`) scored `[14, 14, 14]` on 14 pairs and holdout judges (`5dd8775b`, `23a787d1`, `2c71a8dc`, `seed = 28061`) scored `[12, 12, 12]` on 12 pairs (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
@@ -653,6 +654,6 @@ samples, and the policy digest.
 | `src/bigloom/realism.py` | Realism findings for each file, checked by `bigloom qualify` |
 | `src/bigloom/formats/longform_filter.py` | The appendix and WorldLoom ID filter |
 | `policies/PROPOSER.md` | Instructions for the proposer subagent |
-| `policies/writer/round-001.md` to `round-060.md` | Versioned writer policies |
-| `docs/realism/receipts/round0.json` to `round60.json` | Full round receipts |
-| `docs/realism/loop/train-002.json` to `train-060.json` | Train-only receipts that the proposer reads |
+| `policies/writer/round-001.md` to `round-061.md` | Versioned writer policies |
+| `docs/realism/receipts/round0.json` to `round61.json` | Full round receipts |
+| `docs/realism/loop/train-002.json` to `train-061.json` | Train-only receipts that the proposer reads |
