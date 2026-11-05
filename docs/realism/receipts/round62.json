@@ -1,0 +1,254 @@
+{
+  "round": 62,
+  "date_sgt": "2026-11-05 22:25",
+  "champion_policy": "policies/writer/round-061.md",
+  "champion_policy_sha256": "9991174031b46be3cb526c7eb0733900b26134909356e57b377ef99696b34c38",
+  "candidate_policy": "policies/writer/round-062.md",
+  "candidate_policy_sha256": "2fd3545466577b7502bda2206052c4e76d70b16f6d0ea721651bce1d3fd3d071",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "Replace the normative/closing-paragraph sentence in QUALITY with a rule to write direct imperative guidance sentences paired with plain explanatory sentences, weave each required fact naturally once into a relevant sentence without a closing fact block, and forbid the words store, stores, and register while reaching at least 95 percent of target_words.",
+    "why": "On train-061cr.json, judge_error is 0.0 (18, 18, and 18 of 18 correct across 18 pairs) because judges identified synthetic passages by the rigid closing In the ... register formula and third-person institutional summary statements instead of direct imperative guidance."
+  },
+  "writer_accept_rounds": {
+    "2026": 1,
+    "2027": 1,
+    "3101": 1,
+    "3102": 1
+  },
+  "agent_words_attempt_1": {
+    "2026": 1606,
+    "3102": 2276
+  },
+  "agent_words": {
+    "2026": 3321,
+    "2027": 3248,
+    "3101": 3132,
+    "3102": 3276
+  },
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": [],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 30.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.046,
+    "unique_sentences": 32.167,
+    "words_per_mb": 222.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.021
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.046,
+    "unique_sentences": 26.167,
+    "words_per_mb": 180.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.013
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.045,
+    "unique_sentences": 31.0,
+    "words_per_mb": 251.5,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.011
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 369,
+      "words_per_mb": 176,
+      "sentences": 17,
+      "unique_sentences": 17,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.059,
+      "text_gzip_ratio": 0.451,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 684,
+      "words_per_mb": 130,
+      "sentences": 32,
+      "unique_sentences": 32,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.031,
+      "text_gzip_ratio": 0.419,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 588,
+      "words_per_mb": 280,
+      "sentences": 21,
+      "unique_sentences": 21,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.048,
+      "text_gzip_ratio": 0.411,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1107,
+      "words_per_mb": 211,
+      "sentences": 52,
+      "unique_sentences": 52,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.019,
+      "text_gzip_ratio": 0.395,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 444,
+      "words_per_mb": 212,
+      "sentences": 21,
+      "unique_sentences": 21,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.048,
+      "text_gzip_ratio": 0.471,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 372,
+      "words_per_mb": 71,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.415,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": "seed-2026 wrote 1606 words on attempt 1 (below 2094.4 80% length guard) and 3321 words on attempt 2. seed-3102 wrote 2276 words on attempt 1 (below 2509.6 80% length guard) and 3276 words on attempt 2. All 4 seeds passed narrate accept and both builds passed qualify with zero violations.",
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Implement the approved interim remediation for the inventory valuation service, where manual agency code mapping override applied to complete valuation for the period within the operational environment. Address the underlying technical discrepancy directly, as diagnostic checks confirmed the issue was stale legacy-to-new agency code mapping in the reference data register across the cloud platform records. Documenting interim overrides clearly ensures that platform engineers maintain audit traceability while manual code mappings remain in active use. Keep the manual override workflow under strict change supervision until automated validation rules replace hand-maintained agency code tables. Controlled interim operation allows downstream finance and technology teams to finish period reporting without risking further pipeline interruptions. Verify the operational feed health for the inventory valuation service immediately, because the pipeline status currently stands at failed within the cloud data platform. Conduct a full scope check on the product hierarchy sync service, where 22,859 records are affected"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Prioritise gateway connection tuning and remaining interface fixes across engineering squads so that peak traffic surges do not degrade authentication speed or compliance coverage. Enforce consistent interface architecture across Government Technology Agency, where standard design system components are active across all tier-one citizen portals to provide a unified experience for citizens. Instrument every digital workflow with behavioural tracking, ensuring that real-time usability telemetry and transaction completion funnels are instrumented on every public service workflow so product teams can spot drop-off points early. Deploy reusable verification patterns across public portals, confirming that shared identity verification banners and standard form validation patterns are deployed across all agency transactional forms to reduce form errors and support data protection compliance. Review user satisfaction telemetry alongside technical adoption metrics, noting that the portfolio recorded a positive score of 88.4% from service users completing digital transactions. Standardising frontend patterns and telemetry pipelines simplifies maintenance for engineering"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r062t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "None. Store Performance in PPTX appendix schedule titles is replaced with Service Performance.",
+      "train_mean_floor": 0.0
+    },
+    "cross_document_reuse": {
+      "cause": "None on train.",
+      "train_mean_floor": 0.0
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18062,
+  "holdout_judge_seed": 28062,
+  "judge_pairs_train": 15,
+  "judge_pairs_holdout": 15,
+  "judge_raw_correct_train": [
+    15,
+    15,
+    15
+  ],
+  "judge_raw_correct_holdout": [
+    15,
+    15,
+    15
+  ],
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "judge_ids": {
+    "train": [
+      "a6f7d75d",
+      "061bd6ab",
+      "310d432c"
+    ],
+    "holdout": [
+      "4093bf74",
+      "1d44de64",
+      "e570b64a"
+    ]
+  },
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [
+      "cross_document_reuse"
+    ],
+    "holdout_gain": 1.0,
+    "reasons": [
+      "no train dimension improved by more than its band",
+      "train dimensions worsened beyond their band: cross_document_reuse"
+    ]
+  }
+}

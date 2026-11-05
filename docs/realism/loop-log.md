@@ -14,18 +14,18 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 05 Nov 2026 21:45 SGT (Level 2C rescore `rescore-v2-061c.json` / `train-061cr.json` completed on `policies/writer/round-061.md`) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B + Level 2C `2039bb5` merged) |
+| Updated | 05 Nov 2026 22:25 SGT (Round 62 completed, rejected; `policies/writer/round-061.md` remains champion) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B + Level 2C `2039bb5` + Level 2D `429c21f` merged) |
 | Champion policy | `policies/writer/round-061.md` (`99911740…`, LF) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-061c.json` (train view `docs/realism/loop/train-061cr.json`) |
-| Last round | Round 61, promoted (`improved: ('retail_per_k', 'cross_document_reuse')`, `worsened: ()`, `holdout_gain: +0.16`); rescored in `rescore-v2-061c.json` (train judges `[18, 18, 18]` on 18 pairs, holdout judges `[17, 17, 17]` on 17 pairs) |
-| Next round number | 62 |
+| Last round | Round 62, rejected (`improved: ()`, `worsened: ('cross_document_reuse',)`, `holdout_gain: +1.0`, train judges `[15, 15, 15]` on 15 pairs, holdout judges `[15, 15, 15]` on 15 pairs) |
+| Next round number | 63 |
 | Real files for the judges | `runs/realism/real/` (11 real files; `DPO Registration Instruction Guide_Mar2024.pdf` and `spp model development procedure manual 2021 v5.0.docx` excluded in `realism_pairs._pool`) |
 | Grader digest (v2) | `b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647` |
 
 ### Open items
 
-1. Run Level 1 Round 62 (`r062t` / `r062h`) against `docs/realism/receipts/rescore-v2-061c.json`.
+1. Run Level 1 Round 63 (`r063t` / `r063h`) against `docs/realism/receipts/rescore-v2-061c.json`.
 
 ### Level 2D change: clean real-passage table splices, spacing typos, and tool/person masking (05 Nov 22:04 SGT)
 
@@ -659,6 +659,7 @@ samples, and the policy digest.
 | L2 (after 60) | Clean real-passage extraction noise and exclude DPO screenshot guide in `realism_pairs.py` (Level 2A), and add `DigitalServiceAssurance` and `CybersecurityComplianceReview` episodes in `packs/govtech.json`, `corpus.py`, `build.py`, and `narration.py` (Level 2B) (`5a7f90a`, merged as `60d1475`, `rescore-v2-061.json`) | Rescore | Rebuilt raw corpus cache and ran fresh writers on `round-002.md` (`attempt 2` words: `3019, 3240, 2850, 3049`). Both train and holdout pass all gates with zero violations (`train_vector`: `wl_id_per_k` `0.0`, `commercial_per_k` `0.0`, `retail_per_k` `0.348` floor, `within_file_repeat` `0.0`, `top_opener_share` `0.047`, `cross_document_reuse` `0.014` floor). Six fresh judges (`2d743e5f`, `7c6799c4`, `4e0213dd`, `6a482eca`, `774139a5`, `f07663dc`, seeds `18061` and `28061`) scored `[10, 10, 10]` on 10 train pairs and `[9, 9, 9]` on 9 holdout pairs (`judge_error` `0.0`) |
 | 61 | Replace `"Lead with the position, group related facts, say what they mean."` in `QUALITY` with a rule that opens each section with standalone 65-to-90-word paragraphs of normative public-sector guidelines and operational control rules on the section topic, confines all required facts to a compact 40-to-55-word closing paragraph as plain record entries without retelling an incident or monthly close storyline, bans `store`/`stores`, and requires at least 95 percent of `target_words` (`99911740…`) | Promoted | All 4 seeds passed the 80% length guard (`seed_2026` 2618 on attempt 2 after 2145, `seed_2027` 3345, `seed_3101` 2396, `seed_3102` 3137) and both sets passed all build and retrieval gates with zero violations. Train `retail_per_k` (`0.348` to `0.0`) and `cross_document_reuse` (`0.014` to `0.0`) improved beyond their bands with zero worsened dimensions and `holdout_gain` `+0.16`. Train judges (`8e708fd8`, `a6af5281`, `840c5535`, `seed = 18061`) scored `[14, 14, 14]` on 14 pairs and holdout judges (`5dd8775b`, `23a787d1`, `2c71a8dc`, `seed = 28061`) scored `[12, 12, 12]` on 12 pairs (`judge_error` `0.0`) |
 | L2 (after 61) | Flush blank lines in `passages()`, drop section/table/chart headers, strip spaces before punctuation, exclude SPP manual, include all 6 target files in `build_pairs()`, and replace `Store Performance` in PPTX slide titles (`2039bb5`, `rescore-v2-061c.json`) | Rescore | Rebuilt `round-061.md` corpora with zero writer runs. Both train and holdout pass all gates with `retail_per_k: 0.0` (`train_vector`: all 6 defect distances `0.0`; `holdout_vector`: `retail_per_k` `0.0`, `cross_document_reuse` `0.021`). Six fresh judges (`8b69846a`, `75365a1b`, `63ec7e91`, `31c70a3c`, `e1df9fcb`, `21dea84f`, seeds `18061` and `28061`) scored `[18, 18, 18]` on 18 train pairs and `[17, 17, 17]` on 17 holdout pairs (`judge_error` `0.0`) |
+| 62 | Replace the normative/closing-paragraph sentence in `QUALITY` with a rule to write direct imperative guidance sentences paired with plain explanatory sentences, weave each required fact naturally once into a relevant sentence without a closing fact block, and forbid the words `store`, `stores`, and `register` while reaching at least 95 percent of `target_words` (`2fd35454…`) | Rejected | All 4 seeds passed the 80% length guard (`seed_2026` 3321 on attempt 2 after 1606, `seed_2027` 3248, `seed_3101` 3132, `seed_3102` 3276 on attempt 2 after 2276) and both sets passed all build and retrieval gates with zero violations (`holdout_gain` `+1.0`, `cross_document_reuse` `0.021` to `0.011`), but train `cross_document_reuse` rose from `0.0` to `0.013` (distance `0.012` > `0.01` band) and train judges (`a6f7d75d`, `061bd6ab`, `310d432c`, `seed = 18062`) and holdout judges (`4093bf74`, `1d44de64`, `e570b64a`, `seed = 28062`) scored `[15, 15, 15]` on 15 pairs (`judge_error` `0.0`) |
 
 ## Appendix B. Files
 
