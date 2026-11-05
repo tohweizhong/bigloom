@@ -27,6 +27,13 @@ Update this section at the end of each round and after each loop change.
 
 1. Run Level 1 Round 62 (`r062t` / `r062h`) against `docs/realism/receipts/rescore-v2-061c.json`.
 
+### Level 2D change: clean real-passage table splices, spacing typos, and tool/person masking (05 Nov 22:04 SGT)
+
+- **Approval.** Approved by the monitor at 05 Nov 21:48 SGT after inspecting the `rescore-v2-061c` judge logs.
+- **Cause.** In `rescore-v2-061c`, 13 of the 18 real passages in `pairs.md` still leaked PDF table splices (`WU-9:`, `Use the Not required for`, `Ensure that the acknowledgment includes key details about the Allowing`, `Model-as-a- Service`, `architecture1`), missing spaces (`service.Ensure`, `Use.gov.sg`, `Register.gov.sg`, `and.edu.sg`, `colour(e.g.`), minor typos (`effective meet`, `develops and maintain`, `when they are updates`), RFC 2350 phone numbers and section headers (`+65 6211`, `2.2.`, `5.1.`), duplicated web headings, or unmasked tool and person names (`Choo Fai Cheong`, `Hansard Analysis`, `IM8 Q&A`, `BrowserStack`, `LambdaTest`, `Google PageSpeed Insights`, `Flesch Reading Ease`).
+- **Change (`429c21f`).** `realism_pairs.py` expands `PRODUCTS`, `ORGS`, `_DROP_LINE`, `_clean_line()`, and `passages()` so all 30 real passages across the 9 Singapore GovTech reference files contain zero table splices, spacing glitches, or unmasked tool/person names.
+- **Tests.** `test_level_2d_real_pool_has_no_extraction_splices_or_unmasked_tools` failed on the old code and passed on the new code (`36 passed in 2.79s`).
+
 ### Level 2C change: flush blank lines in `passages()`, drop section and caption headers, exclude SPP manual, and replace PPTX `Store Performance` title (05 Nov 21:45 SGT)
 
 - **Approval.** Approved by the monitor at 05 Nov 21:01 SGT and 21:25 SGT.
