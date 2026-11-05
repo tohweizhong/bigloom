@@ -77,8 +77,10 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
     order, with the build's ranking (`build.family_rank`: a new family first, then a preferred
     type, then the largest word brief), then the spares. `build.EXCLUDED_TYPES` are never chosen.
     """
-    from .build import EXCLUDED_TYPES, _renderable, family_rank
+    from .build import EXCLUDED_TYPES, PUBLIC_SECTOR_EXCLUDED_TYPES, _renderable, family_rank
+    from .questions import _public_sector
 
+    excluded = set(EXCLUDED_TYPES) | (set(PUBLIC_SECTOR_EXCLUDED_TYPES) if _public_sector(world) else set())
     formats_of = _renderable(_composed(world), list(formats))  # type: ignore[arg-type]
     types = {i.id: i.artifact_type for i in world.artifact_intents}
     intent_of = {ir.id: ir.intent_id for ir in world.artifact_irs}
@@ -97,7 +99,7 @@ def choose_candidates(world: World, requests: Sequence[Mapping[str, Any]], forma
         # The same ranking as `build._choose`: a new family first, then a preferred type, then
         # the largest word brief. An excluded type is never a candidate.
         pool = [a for a in words
-                if kind(a) not in used_types and kind(a) not in EXCLUDED_TYPES
+                if kind(a) not in used_types and kind(a) not in excluded
                 and ((fmt in formats_of.get(a, set())) if fmt else bool(set(formats) & formats_of.get(a, set())))]
         if not pool:
             return None
@@ -142,6 +144,10 @@ def public_terms(request: dict[str, Any], world: World) -> dict[str, Any]:
         if any(k.startswith(base + ".") or k == base for k in kinds):
             stem = base.rsplit(".", 1)[-1]
             terms[stem] = f"This agency reports a {noun}. Write \"{noun}\" for the {base} facts, never a profit or margin term."
+    terms["public_sector_register"] = (
+        "Use institutional Singapore public-sector standards and acronyms naturally where relevant to the section "
+        "(for example IM8, WCAG, DSS, PDPA, CSIRT, COTS, SaaS, RBAC, TLS, DNS, and ITSM), without bare digits outside fact tags."
+    )
     if terms == (request.get("terminology") or {}):
         return request
     return {**request, "terminology": terms}

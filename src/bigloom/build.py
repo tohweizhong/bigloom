@@ -64,14 +64,23 @@ def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
 #: reference holds service standards, guides, and product pages, while the old targets were all
 #: finance documents and one incident review. `knowledge_article` is left out: its brief is about
 #: 380 words in 2 sections, which is thin for a 2 MB or 5 MB file.
-PREFERRED_TYPES: tuple[str, ...] = ("service_impact_assessment",)
+PREFERRED_TYPES: tuple[str, ...] = (
+    "service_impact_assessment",
+    "digital_service_standards_review",
+    "exco_update",
+    "cybersecurity_compliance_review",
+    "incident_rca",
+)
 #: Types that are never a target (see `PREFERRED_TYPES` for the reason).
 EXCLUDED_TYPES: tuple[str, ...] = ("knowledge_article",)
+#: Public-sector pack types that retell the same mapping-table incident as `service_impact_assessment`.
+PUBLIC_SECTOR_EXCLUDED_TYPES: tuple[str, ...] = ("incident_rca", "audit_observations_response")
 
 
 def family_rank(domain: str, artifact_type: str, used_domains: set[str]) -> tuple[int, int]:
     """Return the selection rank of a document type: a new family first, then a preferred type."""
-    return (int(domain in used_domains), int(artifact_type not in PREFERRED_TYPES))
+    pref = PREFERRED_TYPES.index(artifact_type) if artifact_type in PREFERRED_TYPES else len(PREFERRED_TYPES)
+    return (int(domain in used_domains), pref)
 
 
 def _choose(
@@ -87,6 +96,9 @@ def _choose(
     A document from a family that no earlier target uses wins, then a preferred type
     (`family_rank`), then the most body prose, then the most visible sections.
     """
+    from .questions import _public_sector
+
+    excluded = set(EXCLUDED_TYPES) | (set(PUBLIC_SECTOR_EXCLUDED_TYPES) if _public_sector(world) else set())
     intents = {i.id: i for i in world.artifact_intents}
     used_domains = {str(i.domain) for i in world.artifact_intents if i.artifact_type in used_types}
     candidates = []
@@ -94,7 +106,7 @@ def _choose(
         intent = intents.get(ir.intent_id)
         if intent is None or fmt not in formats_of.get(ir.id, ()) or ir.id in used_ids:
             continue
-        if intent.artifact_type in used_types or intent.artifact_type in EXCLUDED_TYPES:
+        if intent.artifact_type in used_types or intent.artifact_type in excluded:
             continue
         visible = [s for s in ir.sections if not s.hidden]
         words = sum(len((s.body or "").split()) for s in visible)

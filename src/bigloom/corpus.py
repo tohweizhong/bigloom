@@ -124,7 +124,11 @@ def _build_args(
     if pack:
         args += ["--pack", pack]
         try:
-            engine = str(json.loads(Path(pack).read_text(encoding="utf-8")).get("base", "retail")).strip().lower()
+            pack_doc = json.loads(Path(pack).read_text(encoding="utf-8"))
+            engine = str(pack_doc.get("base", "retail")).strip().lower()
+            for ep in pack_doc.get("episodes", []):
+                if isinstance(ep, dict) and ep.get("name"):
+                    args += ["--episode", str(ep["name"])]
         except (OSError, ValueError):
             engine = "retail"
     elif domain:
@@ -199,10 +203,14 @@ def install_pack_types(world: World) -> int:
     record = world.recipe.get("pack") if isinstance(world.recipe, dict) else None
     if not isinstance(record, dict) or not record.get("artifact_types"):
         return 0
-    from worldloom import doctypes, packs
+    from worldloom import doctypes, episodes, lob, packs
 
     pack = packs.Pack.model_validate(record)
     doctypes.install(pack.artifact_types)
+    if pack.episodes:
+        episodes.install(pack.episodes)
+    if pack.lobs:
+        lob.install(pack.lobs)
     return len(pack.artifact_types)
 
 
