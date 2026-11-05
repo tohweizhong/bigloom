@@ -33,6 +33,7 @@ PRODUCTS: tuple[str, ...] = (
     "Apple App Store", "Google Play Store", "Huawei AppGallery",
     "Flesch Reading Ease", "Flesch-Kincaid", "Chrome", "Firefox", "Safari", "Edge",
     "Secure Email 3", "SE3", "Gartner",
+    "GovTech Act 2016", "RFC 2350", "IM8",
     "inventory valuation service", "product hierarchy sync service", "inventory-valuation",
     "Agency Reference Data Register", "reference data register",
 )
@@ -123,6 +124,7 @@ def _clean_line(raw: str) -> str:
     line = re.sub(r"\[\s*\]|\[\s*$|^\]\s*", " ", line)
     line = re.sub(r"\s{2,}", " ", line).strip()
     line = re.sub(r"\s+([,.;:!?])", r"\1", line)
+    line = re.sub(r"\b[a-f]\)\s+(?=[a-z])", "", line)
     line = re.sub(r"\breference architecture1\b", "reference architecture", line, flags=re.IGNORECASE)
     line = re.sub(r"([a-z])\.([A-Z])", r"\1. \2", line)
     line = re.sub(r"\b(Use|Register|web-based|use)\.(gov|edu)\.sg\b", r"\1 .\2.sg", line)
@@ -278,7 +280,9 @@ def build_pairs(real_dir: Path, synth_dir: Path, out_dir: Path, n: int, seed: in
                 extra_orgs: Iterable[str] = ()) -> dict[str, Any]:
     """Write `out_dir/pairs.md` with masked blind pairs. Return the answer key (never written here)."""
     real = _pool(sorted(p for p in real_dir.iterdir() if p.is_file()))
-    synth_files = [f for f in sorted(synth_dir.iterdir()) if f.is_file()]
+    all_synth = [f for f in sorted(synth_dir.iterdir()) if f.is_file()]
+    two_mb = [f for f in all_synth if "-2mb_final" in f.name]
+    synth_files = two_mb or all_synth
     synth = _pool(synth_files)
     rng = random.Random(seed)
     rng.shuffle(real)

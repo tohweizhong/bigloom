@@ -20,8 +20,12 @@ GOVTECH_TERMS = ("WOG Finance", "agency code", "Government Technology Agency", "
 
 @pytest.fixture(scope="module")
 def govtech_world(tmp_path_factory: pytest.TempPathFactory) -> World:
+    from bigloom.corpus import install_pack_types
+
     path = build_worldloom_corpus(tmp_path_factory.mktemp("gt") / "corpus", seed=2026, pack=str(PACK), locale="singapore")
-    return World.load(path)
+    w = World.load(path)
+    install_pack_types(w)
+    return w
 
 
 @pytest.fixture(scope="module")
@@ -119,7 +123,11 @@ def test_build_targets_come_from_three_document_families(govtech_world: World) -
     picked = [_choose(govtech_world, fmt, formats_of, used_ids, used_types)[1] for fmt in fmts]
     domain = {i.artifact_type: str(i.domain) for i in govtech_world.artifact_intents}
     assert len({domain[t] for t in picked}) == 3, picked
-    assert picked[0] == "service_impact_assessment", picked  # the DOCX target, the first format
+    assert set(picked) == {
+        "digital_service_standards_review",
+        "cybersecurity_compliance_review",
+        "cloud_architecture_standards_review",
+    }, picked
     assert "knowledge_article" not in picked, picked
 
 
@@ -236,7 +244,11 @@ def test_prepare_candidates_cover_distinct_storylines(tmp_path: Path) -> None:
     intent_of = {ir.id: ir.intent_id for ir in world.artifact_irs}
     chosen = _json.loads((p.requests_path.parent / "plan.json").read_text(encoding="utf-8"))["artifact_ids"]
     kinds = [types[intent_of[a]] for a in chosen]
-    assert kinds[0] == "service_impact_assessment", kinds
+    assert set(kinds[:3]) == {
+        "digital_service_standards_review",
+        "cybersecurity_compliance_review",
+        "cloud_architecture_standards_review",
+    }, kinds
     assert "incident_rca" not in kinds, kinds
     requests = _json.loads(p.requests_path.read_text(encoding="utf-8"))["requests"]
     by_artifact: dict[str, set[str]] = {}
@@ -244,8 +256,7 @@ def test_prepare_candidates_cover_distinct_storylines(tmp_path: Path) -> None:
         by_artifact.setdefault(req["artifact_id"], set()).update(
             str(f.get("kind", "")) for f in req.get("facts", [])
         )
-    incident_artifacts = [aid for aid, fkinds in by_artifact.items() if any(k.startswith("ops.") for k in fkinds)]
-    assert len(incident_artifacts) == 1, (kinds, by_artifact)
     assert any(any(k.startswith("dss.") for k in fkinds) for fkinds in by_artifact.values()), by_artifact
     assert any(any(k.startswith("cyber.") for k in fkinds) for fkinds in by_artifact.values()), by_artifact
+    assert any(any(k.startswith("arch.") for k in fkinds) for fkinds in by_artifact.values()), by_artifact
 

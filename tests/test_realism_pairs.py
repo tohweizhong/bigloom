@@ -266,8 +266,38 @@ def test_level_2d_real_pool_has_no_extraction_splices_or_unmasked_tools() -> Non
         "2.2. Locations where",
         "5.1. Types of Incidents",
         "current year in YYYY",
+        "GovTech Act 2016",
+        "RFC 2350",
+        "IM8",
+        "c) using web analytics",
     ):
         assert bad not in masked_all, f"leaked {bad!r}"
+
+
+def test_build_pairs_prefers_2mb_final_files(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from docx import Document
+
+    real_dir = tmp_path / "real"
+    synth_dir = tmp_path / "synth"
+    out_dir = tmp_path / "out"
+    real_dir.mkdir()
+    synth_dir.mkdir()
+
+    real_doc = Document()
+    real_doc.add_paragraph("Agencies must validate every schema before deploying a shared data service to production. " * 15)
+    real_doc.save(str(real_dir / "real.docx"))
+
+    doc_2mb = Document()
+    doc_2mb.add_paragraph("Two megabyte target prose states the technical standard for agency deployment pipelines. " * 15)
+    doc_2mb.save(str(synth_dir / "bl-001-docx-2mb_final.docx"))
+
+    doc_5mb = Document()
+    doc_5mb.add_paragraph("Five megabyte target prose states the duplicate world episode numbers across passages. " * 15)
+    doc_5mb.save(str(synth_dir / "bl-001-docx-5mb_final.docx"))
+
+    res = rp.build_pairs(real_dir, synth_dir, out_dir, 5, 18064)
+    srcs = {v["synth_src"] for v in res["key"].values()}
+    assert srcs == {"bl-001-docx-2mb_final.docx"}
 
 
 

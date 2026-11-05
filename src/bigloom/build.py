@@ -65,10 +65,11 @@ def _renderable(world: World, formats: Sequence[Format]) -> dict[str, set[str]]:
 #: finance documents and one incident review. `knowledge_article` is left out: its brief is about
 #: 380 words in 2 sections, which is thin for a 2 MB or 5 MB file.
 PREFERRED_TYPES: tuple[str, ...] = (
-    "service_impact_assessment",
     "digital_service_standards_review",
-    "exco_update",
     "cybersecurity_compliance_review",
+    "cloud_architecture_standards_review",
+    "service_impact_assessment",
+    "exco_update",
     "incident_rca",
 )
 #: Types that are never a target (see `PREFERRED_TYPES` for the reason).

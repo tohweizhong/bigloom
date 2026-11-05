@@ -1107,6 +1107,7 @@
         "minutes": 0
       },
       "word": true,
+      "deck": true,
       "sections": [
         {
           "heading": "Service usability and accessibility compliance",
@@ -1153,6 +1154,7 @@
         "minutes": 0
       },
       "word": true,
+      "deck": true,
       "sections": [
         {
           "heading": "Cloud security and IM8 posture",
@@ -1186,6 +1188,53 @@
           ],
           "scope": "any",
           "purpose": "Record the corrective actions committed by system owners, the deployment pipeline scanner rules, the time-bound waiver register status, and the assurance clearance sign-off."
+        }
+      ]
+    },
+    {
+      "key": "cloud_architecture_standards_review",
+      "authority": "approved_report",
+      "lifecycle": "published",
+      "lag": {
+        "days": 0,
+        "hours": 16,
+        "minutes": 0
+      },
+      "word": true,
+      "deck": true,
+      "sections": [
+        {
+          "heading": "Cloud platform architecture and deployment baselines",
+          "kinds": [
+            "arch.blueprints_verified",
+            "arch.pipeline_conformance_rate",
+            "arch.landing_zone_status",
+            "arch.ingress_routing_posture"
+          ],
+          "scope": "any",
+          "purpose": "Set out the cloud reference architecture review across government hosting compartments, naming the blueprints verified, the pipeline conformance rate, the landing zone network isolation status, and the API gateway routing posture."
+        },
+        {
+          "heading": "Continuous integration and runtime observability standards",
+          "kinds": [
+            "arch.iac_scanning_coverage",
+            "arch.telemetry_forwarding_status",
+            "arch.failover_drill_result",
+            "arch.dependency_pinning_status"
+          ],
+          "scope": "any",
+          "purpose": "Detail the infrastructure-as-code policy checks, distributed tracing and log export standards, multi-zone failover test results, and third-party dependency verification rules."
+        },
+        {
+          "heading": "Platform modernisation and architecture roadmap",
+          "kinds": [
+            "arch.template_upgrade_plan",
+            "arch.egress_filter_update",
+            "arch.quota_guardrail_status",
+            "arch.next_review_scope"
+          ],
+          "scope": "any",
+          "purpose": "Record the golden pipeline template upgrades, egress proxy policy updates, autoscaling quota guardrails, and the scope of the next quarterly architecture review."
         }
       ]
     }
@@ -1624,6 +1673,223 @@
           "purpose": "conduct the monthly IM8 compliance and privileged access review"
         }
       ]
+    },
+    {
+      "name": "CloudArchitectureAssurance",
+      "domain": "retail",
+      "period": "month",
+      "detail": "Monthly cloud reference architecture, CI/CD pipeline conformance, and runtime resilience review across government cloud compartments.",
+      "fact_kinds": [
+        {
+          "kind": "arch.blueprints_verified",
+          "value_type": "measure",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 42,
+          "unit": "blueprints",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.pipeline_conformance_rate",
+          "value_type": "percent",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "amount": 97.6,
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.landing_zone_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Segmented virtual private cloud compartments and transit gateway route tables matched the reference topology across all production tenants",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.ingress_routing_posture",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Managed API gateways enforced mutual transport authentication, schema validation, and request rate quotas on all external service endpoints",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.iac_scanning_coverage",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Automated infrastructure-as-code policy gates inspected every declarative template before environment provisioning",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.telemetry_forwarding_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "OpenTelemetry collectors streamed structured traces, latency histograms, and saturation alerts from all container clusters to the central observability backend",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.failover_drill_result",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Multi-zone database standby promotion and stateless worker rescheduling completed within the recovery time objective during scheduled resilience drills",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.dependency_pinning_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Build pipelines verified cryptographic checksums and locked upstream package manifests against the curated internal artifact repository",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.template_upgrade_plan",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Platform engineering published updated golden container and serverless deployment templates for adoption across agency product teams next month",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.egress_filter_update",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Forward proxy allowlists were tightened to restrict outbound runtime connections solely to registered government and partner endpoints",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.quota_guardrail_status",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "Horizontal pod autoscaler bounds and namespace compute budgets were aligned with projected seasonal traffic across all shared clusters",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        },
+        {
+          "kind": "arch.next_review_scope",
+          "value_type": "text",
+          "authority": "approved_report",
+          "period_scope": "period-keyed",
+          "text": "The upcoming quarterly review evaluates zero-trust service mesh mTLS policies and cross-region backup restore automation",
+          "invariants": [
+            {
+              "kind": "holds-at"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "kind": "arch_review_completed",
+          "when": "start",
+          "anchor": "prior_period_end",
+          "business_day": 7,
+          "hour": 11,
+          "minute": 0,
+          "summary": "Cloud architecture governance completed the monthly reference blueprint, CI/CD pipeline, and resilience review.",
+          "actors": [
+            "platform_senior"
+          ],
+          "fact_keys": [
+            "arch.blueprints_verified",
+            "arch.pipeline_conformance_rate",
+            "arch.landing_zone_status",
+            "arch.ingress_routing_posture",
+            "arch.iac_scanning_coverage",
+            "arch.telemetry_forwarding_status",
+            "arch.failover_drill_result",
+            "arch.dependency_pinning_status",
+            "arch.template_upgrade_plan",
+            "arch.egress_filter_update",
+            "arch.quota_guardrail_status",
+            "arch.next_review_scope"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "artifact_type": "cloud_architecture_standards_review",
+          "author_role": "platform_senior",
+          "audience": "technology",
+          "required_facts": [
+            "arch.blueprints_verified",
+            "arch.pipeline_conformance_rate",
+            "arch.landing_zone_status",
+            "arch.ingress_routing_posture",
+            "arch.iac_scanning_coverage",
+            "arch.telemetry_forwarding_status",
+            "arch.failover_drill_result",
+            "arch.dependency_pinning_status",
+            "arch.template_upgrade_plan",
+            "arch.egress_filter_update",
+            "arch.quota_guardrail_status",
+            "arch.next_review_scope"
+          ],
+          "size": "long",
+          "structured": false,
+          "unstructured": true,
+          "triggered_by_events": [
+            "arch_review_completed"
+          ],
+          "rationale": "Monthly cloud architecture and engineering pipeline review covering landing zone isolation, CI/CD policy gates, observability, and failover readiness.",
+          "domain": "operations"
+        }
+      ],
+      "role_slots": [
+        {
+          "slot": "architecture_reviewer",
+          "required": true,
+          "purpose": "conduct the monthly cloud reference architecture and pipeline conformance review"
+        }
+      ]
     }
   ],
   "lobs": [
@@ -1722,6 +1988,58 @@
           "process": "CybersecurityComplianceReview",
           "slot": "security_reviewer",
           "role_key": "audit"
+        }
+      ]
+    },
+    {
+      "name": "cloud_architecture",
+      "title": "Cloud Architecture and Platform Engineering",
+      "purpose": "Define and verify cloud reference architectures, CI/CD pipeline guardrails, and runtime resilience standards across government hosting compartments.",
+      "engine": "retail",
+      "roles": [
+        {
+          "key": "ceo",
+          "title": "Chief Executive",
+          "function": "Executive",
+          "reports_to": null
+        },
+        {
+          "key": "cio",
+          "title": "Chief Information Officer",
+          "function": "Technology",
+          "reports_to": "ceo"
+        },
+        {
+          "key": "platform_senior",
+          "title": "Principal Cloud Architect",
+          "function": "Technology",
+          "reports_to": "cio"
+        }
+      ],
+      "responsibilities": [
+        {
+          "role_key": "platform_senior",
+          "fact_kinds": [
+            "arch.blueprints_verified",
+            "arch.pipeline_conformance_rate",
+            "arch.landing_zone_status"
+          ],
+          "artifact_types": [
+            "cloud_architecture_standards_review"
+          ]
+        }
+      ],
+      "artifact_filings": [
+        "cloud_architecture_standards_review"
+      ],
+      "episode_contributions": [
+        "CloudArchitectureAssurance"
+      ],
+      "slot_bindings": [
+        {
+          "process": "CloudArchitectureAssurance",
+          "slot": "architecture_reviewer",
+          "role_key": "platform_senior"
         }
       ]
     }
