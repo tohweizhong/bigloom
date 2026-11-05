@@ -30,7 +30,7 @@ The loop has two levels:
 | Run rounds from | The `realism-loop` checkout, `/usr/local/google/home/weizhongt/coding/bigloom` |
 | Make Level 2 code changes on | `realism-v2`, worktree `/usr/local/google/home/weizhongt/coding/bigloom-v2` |
 | Raw corpus cache | `runs/loop/cache` (one `seed-<n>` folder for each seed) |
-| Real files for the judges | `runs/realism/real/` (11 files, ignored by git; `DPO Registration Instruction Guide_Mar2024.pdf` is excluded in `realism_pairs._pool` so 10 prose files feed the judge pool). Their counts must match `docs/realism/reference-v2.json`. If the folder is missing, ask the user. |
+| Real files for the judges | `runs/realism/real/` (11 files, ignored by git; `DPO Registration Instruction Guide_Mar2024.pdf` and `spp model development procedure manual 2021 v5.0.docx` are excluded in `realism_pairs._pool` so 9 Singapore agency prose files feed the judge pool). Their counts must match `docs/realism/reference-v2.json`. If the folder is missing, ask the user. |
 | Champion vectors | The newest receipt for the champion under the current grader: a promotion receipt or a `rescore-*.json` receipt |
 
 ## 3. Hard rules

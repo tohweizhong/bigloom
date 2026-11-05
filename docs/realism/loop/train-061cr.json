@@ -1,0 +1,179 @@
+{
+  "round": "061cr",
+  "kind": "rescore",
+  "date_sgt": "2026-11-05 21:45",
+  "champion_policy": "policies/writer/round-061.md",
+  "champion_policy_sha256": "9991174031b46be3cb526c7eb0733900b26134909356e57b377ef99696b34c38",
+  "writer_accept_rounds": {
+    "2026": 0,
+    "2027": 0
+  },
+  "agent_words": {
+    "2026": 2618,
+    "2027": 3345
+  },
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": [],
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 30.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 594,
+      "words_per_mb": 283,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.424,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 652,
+      "words_per_mb": 124,
+      "sentences": 35,
+      "unique_sentences": 35,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.057,
+      "text_gzip_ratio": 0.412,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 876,
+      "words_per_mb": 418,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.056,
+      "text_gzip_ratio": 0.395,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 1116,
+      "words_per_mb": 213,
+      "sentences": 57,
+      "unique_sentences": 57,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.035,
+      "text_gzip_ratio": 0.383,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 347,
+      "words_per_mb": 165,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.442,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 323,
+      "words_per_mb": 62,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.43,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "None. Store Performance in PPTX appendix schedule titles is replaced with Service Performance.",
+      "train_mean_floor": 0.0
+    },
+    "cross_document_reuse": {
+      "cause": "None on train.",
+      "train_mean_floor": 0.0
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18061,
+  "judge_pairs_train": 18,
+  "judge_correct_train": [
+    18,
+    18,
+    18
+  ],
+  "judge_error_train": 0.0,
+  "judge_clues_train": [
+    "Closing paragraphs use a rigid register-entry formula ('In the platform incident register...', 'In the period accounting register...', 'In the monthly compliance register...') that immediately marks the passage as synthetic.",
+    "Normative guidance paragraphs use abstract third-person institutional summary statements ('Telemetry instrumentation guidelines mandate...', 'Operational continuity standards permit...') instead of the direct imperative instructions, concrete tool examples (Chrome, Firefox, BrowserStack, Google PageSpeed Insights), and numbered or lettered requirements used in real Singapore Digital Service Standards and playbooks.",
+    "Multiple synthetic passages from the same document repeat the same closing compliance metrics (38 services, 94.50% accessibility pass rate, 99.92% uptime) across sections."
+  ],
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Operational continuity standards permit controlled manual overrides within reference data registers only when automated translation pipelines encounter unresolved schema or identifier mismatches. Before applying an interim mapping adjustment, platform engineers must verify legacy agency code tables against cloud directory records and record dual authorisation in the ITSM ticket register. Every temporary configuration change requires checksum validation and full audit logging across affected platform databases. Reference data governance rules additionally mandate that engineering teams trace translation failures to specific cross-walk tables before re-running batch jobs. Where legacy and cloud agency codes diverge during cloud migration phases, control procedures require explicit reconciliation of identifier registers prior to resuming automated pipeline schedules. Documenting both the underlying reference discrepancy and the approved interim control maintains auditability across all technology operations. In the platform incident register for the inventory valuation service, the confirmed root cause is recorded as stale legacy-to-new agency code mapping in the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Telemetry instrumentation guidelines mandate that every public workflow embed privacy-compliant analytics sensors to measure funnel completion, step drop-off, and user satisfaction. Event collection pipelines must enforce PDPA anonymisation rules and TLS encryption before forwarding behavioural metrics to central analytics databases. Standardised funnel telemetry enables product owners to identify usability friction across multi-step licensing and application workflows without exposing personal identifiers. Authentication and form design controls additionally require transactional portals to integrate shared identity banners and uniform client-side validation patterns. Enforcing consistent error messaging, session timeout alerts, and RBAC-protected administrative dashboards reduces cognitive load for service users and simplifies long-term ITSM maintenance across agency web properties. Centralised governance of reusable interface patterns keeps agency portals aligned with evolving DSS benchmarks."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r061t/set/large\"))"
+}

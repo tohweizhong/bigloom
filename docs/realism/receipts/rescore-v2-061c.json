@@ -1,0 +1,120 @@
+{
+  "kind": "rescore",
+  "name": "rescore-v2-061c: Level 2C paragraph flush, header and caption drop, SPP manual exclusion, and PPTX Store Performance replacement",
+  "date_sgt": "2026-11-05 21:45",
+  "policy": "policies/writer/round-061.md",
+  "policy_sha256": "9991174031b46be3cb526c7eb0733900b26134909356e57b377ef99696b34c38",
+  "code": "realism-loop 2039bb5 (merged realism-v2 2039bb5)",
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "note": "Level 2C flushes paragraphs on blank lines in realism_pairs.passages(), drops numbered section headings, table captions, and chart captions, removes spaces before punctuation in _clean_line(), excludes the US power-grid manual (spp model development procedure manual 2021 v5.0.docx) in _pool(), includes all 6 target files in build_pairs(), and replaces Store Performance with Service Performance in PPTX slide titles. Rebuilt from the accepted Round 61 corpora with zero new writer runs.",
+  "writer_accept_rounds": {
+    "2026": 0,
+    "2027": 0,
+    "3101": 0,
+    "3102": 0
+  },
+  "agent_words": {
+    "2026": 2618,
+    "2027": 3345,
+    "3101": 2396,
+    "3102": 3137
+  },
+  "train_gate_passed": true,
+  "holdout_gate_passed": true,
+  "train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 30.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.046,
+    "unique_sentences": 32.167,
+    "words_per_mb": 222.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.021
+  },
+  "distances_train": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "distances_holdout": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.0,
+    "cross_document_reuse": 0.02
+  },
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "None. Store Performance in PPTX appendix schedule titles is replaced with Service Performance.",
+      "train_mean_floor": 0.0
+    },
+    "cross_document_reuse": {
+      "cause": "None on train.",
+      "train_mean_floor": 0.0
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18061,
+  "holdout_judge_seed": 28061,
+  "judges": {
+    "real_set": "runs/realism/real",
+    "pairs_train": 18,
+    "pairs_holdout": 17,
+    "train": {
+      "ids": [
+        "8b69846a",
+        "75365a1b",
+        "63ec7e91"
+      ],
+      "correct": [
+        18,
+        18,
+        18
+      ],
+      "judge_error": 0.0
+    },
+    "holdout": {
+      "ids": [
+        "31c70a3c",
+        "e1df9fcb",
+        "21dea84f"
+      ],
+      "correct": [
+        17,
+        17,
+        17
+      ],
+      "judge_error": 0.0
+    }
+  },
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Operational continuity standards permit controlled manual overrides within reference data registers only when automated translation pipelines encounter unresolved schema or identifier mismatches. Before applying an interim mapping adjustment, platform engineers must verify legacy agency code tables against cloud directory records and record dual authorisation in the ITSM ticket register. Every temporary configuration change requires checksum validation and full audit logging across affected platform databases. Reference data governance rules additionally mandate that engineering teams trace translation failures to specific cross-walk tables before re-running batch jobs. Where legacy and cloud agency codes diverge during cloud migration phases, control procedures require explicit reconciliation of identifier registers prior to resuming automated pipeline schedules. Documenting both the underlying reference discrepancy and the approved interim control maintains auditability across all technology operations. In the platform incident register for the inventory valuation service, the confirmed root cause is recorded as stale legacy-to-new agency code mapping in the"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Telemetry instrumentation guidelines mandate that every public workflow embed privacy-compliant analytics sensors to measure funnel completion, step drop-off, and user satisfaction. Event collection pipelines must enforce PDPA anonymisation rules and TLS encryption before forwarding behavioural metrics to central analytics databases. Standardised funnel telemetry enables product owners to identify usability friction across multi-step licensing and application workflows without exposing personal identifiers. Authentication and form design controls additionally require transactional portals to integrate shared identity banners and uniform client-side validation patterns. Enforcing consistent error messaging, session timeout alerts, and RBAC-protected administrative dashboards reduces cognitive load for service users and simplifies long-term ITSM maintenance across agency web properties. Centralised governance of reusable interface patterns keeps agency portals aligned with evolving DSS benchmarks."
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r061t/set/large\"))"
+}
