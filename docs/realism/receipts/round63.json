@@ -1,0 +1,251 @@
+{
+  "round": 63,
+  "date_sgt": "2026-11-05 22:42",
+  "champion_policy": "policies/writer/round-061.md",
+  "champion_policy_sha256": "9991174031b46be3cb526c7eb0733900b26134909356e57b377ef99696b34c38",
+  "candidate_policy": "policies/writer/round-063.md",
+  "candidate_policy_sha256": "9d29d475c5b8eb4d21c286466b3cfeb96a4f8514b983dbeeb0e354c907fb155b",
+  "proposer_change": {
+    "target_metric": "judge_error",
+    "change": "In QUALITY, keep the standalone 65-to-90-word opening paragraphs and compact 40-to-55-word closing fact paragraph while replacing abstract standards mandate openers and plain record entry register formulas with direct practitioner guidance in varied sentence lengths and natural closing fact statements that ban the word register alongside store and stores.",
+    "why": "On train-061cr.json, judge_error is 0.0 (18, 18, and 18 of 18 correct across 18 pairs) because judges identified synthetic passages by rigid In the ... register closing formulas and abstract third-person guidelines mandate openers, while train-062.json showed that dropping the closing fact paragraph raised cross_document_reuse from 0.0 to 0.013."
+  },
+  "writer_accept_rounds": {
+    "2026": 1,
+    "2027": 1,
+    "3101": 1,
+    "3102": 1
+  },
+  "agent_words_attempt_1": {
+    "3102": 2376
+  },
+  "agent_words": {
+    "2026": 3249,
+    "2027": 2769,
+    "3101": 2485,
+    "3102": 2204
+  },
+  "grader_sha256": "b1ff1f404a091754a90e18db3084b450d277481a6d1aee2128cafb2b2be1a647",
+  "gate_passed": true,
+  "gate_violations": [],
+  "champion_train_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 30.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "champion_holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.046,
+    "unique_sentences": 32.167,
+    "words_per_mb": 222.333,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.021
+  },
+  "vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.055,
+    "unique_sentences": 25.5,
+    "words_per_mb": 228.0,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.0
+  },
+  "holdout_vector": {
+    "wl_id_per_k": 0.0,
+    "commercial_per_k": 0.0,
+    "retail_per_k": 0.0,
+    "within_file_repeat": 0.0,
+    "top_opener_share": 0.05,
+    "unique_sentences": 28.333,
+    "words_per_mb": 210.833,
+    "dates_after_doc_date": 0.0,
+    "cross_document_reuse": 0.024
+  },
+  "per_file": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "mb": 2.1,
+      "words": 649,
+      "words_per_mb": 309,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.433,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-001-docx-5mb_final.docx",
+      "mb": 5.24,
+      "words": 641,
+      "words_per_mb": 122,
+      "sentences": 26,
+      "unique_sentences": 26,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.038,
+      "text_gzip_ratio": 0.417,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "mb": 2.1,
+      "words": 1081,
+      "words_per_mb": 515,
+      "sentences": 37,
+      "unique_sentences": 37,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.054,
+      "text_gzip_ratio": 0.408,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-002-pdf-5mb_final.pdf",
+      "mb": 5.24,
+      "words": 939,
+      "words_per_mb": 179,
+      "sentences": 36,
+      "unique_sentences": 36,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.056,
+      "text_gzip_ratio": 0.402,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": "06 March 2026",
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-2mb_final.pptx",
+      "mb": 2.1,
+      "words": 373,
+      "words_per_mb": 178,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.466,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    },
+    {
+      "file": "bl-003-pptx-5mb_final.pptx",
+      "mb": 5.24,
+      "words": 342,
+      "words_per_mb": 65,
+      "sentences": 14,
+      "unique_sentences": 14,
+      "within_file_repeat": 0.0,
+      "top_opener_share": 0.071,
+      "text_gzip_ratio": 0.453,
+      "wl_id_per_k": 0.0,
+      "any_id_per_k": 0.0,
+      "retail_per_k": 0.0,
+      "commercial_per_k": 0.0,
+      "doc_date": null,
+      "dates_after_doc_date": 0
+    }
+  ],
+  "writer_notes": "Both train seeds passed narrate accept and the 80% length guard on attempt 1 (seed-2026: 3249, seed-2027: 2769). Holdout seed-3102 wrote 2376 and 2204 words across 2 attempts (below 2509.6 threshold). Both builds passed qualify with zero violations.",
+  "samples": [
+    {
+      "file": "bl-001-docx-2mb_final.docx",
+      "text": "Interim operational continuity during reference data incidents relies on controlled configuration overrides executed under dual-engineer authorisation and strict RBAC controls. When automated translation between legacy agency codes and cloud identifiers fails, platform specialists prepare verified lookup patches and test them against isolated staging datasets prior to production execution. Every manual override is logged in the central ITSM ticket with checksum evidence so auditors can trace interim adjustments back to approved source tables. Maintaining a provisional operating posture also demands continuous monitoring of patched ingestion runs until permanent schema automation replaces hand-maintained translation files across shared cloud database clusters. Engineers compare output totals from manual runs against historical baselines, verify that no orphan records remain in quarantine queues, and keep rollback scripts ready throughout the holding period. Disciplined change control ensures that temporary mapping fixes restore downstream batch completion without introducing secondary data drift. Root-cause analysis for the inventory valuation service"
+    },
+    {
+      "file": "bl-002-pdf-2mb_final.pdf",
+      "text": "Consistent identity verification and input validation patterns further reduce user friction across cross-agency digital journeys. Platform squads deploy unified masthead banners, standardised session timeout warnings, and inline field-level error prompts that guide service users through complex statutory declarations on the first attempt. Regular automated audits verify that hosted portals reference current component versions and that no custom scripts bypass central TLS security headers or client-side validation rules during form submission across internal staging environments and production release verification checklists each month. Across Government Technology Agency, monthly platform architecture checks confirmed that standard design system components are active across all tier-one citizen portals for public service delivery. Furthermore, operational telemetry audits verified that real-time usability telemetry and transaction completion funnels are instrumented on every public service workflow across hosted environments, while frontend governance reviews established that shared identity verification banners and standard form validation patterns are deployed across all agency transactional"
+    }
+  ],
+  "samples_method": "samples(Path(\"runs/loop/r063t/set/large\"))",
+  "known_floors": {
+    "retail_per_k": {
+      "cause": "None. Store Performance in PPTX appendix schedule titles is replaced with Service Performance.",
+      "train_mean_floor": 0.0
+    },
+    "cross_document_reuse": {
+      "cause": "None on train.",
+      "train_mean_floor": 0.0
+    },
+    "within_file_repeat": {
+      "cause": "None. All frontmatter and backmatter template repeats are stripped.",
+      "train_mean_floor": 0.0
+    }
+  },
+  "judge_seed": 18063,
+  "holdout_judge_seed": 28063,
+  "judge_pairs_train": 18,
+  "judge_pairs_holdout": 14,
+  "judge_raw_correct_train": [
+    18,
+    18,
+    18
+  ],
+  "judge_raw_correct_holdout": [
+    14,
+    14,
+    14
+  ],
+  "judge_correct_train": [
+    20,
+    20,
+    20
+  ],
+  "judge_correct_holdout": [
+    20,
+    20,
+    20
+  ],
+  "judge_ids": {
+    "train": [
+      "b259923c",
+      "ed4e330a",
+      "11ee102a"
+    ],
+    "holdout": [
+      "c82a4ef1",
+      "c456c2e4",
+      "6e22cf12"
+    ]
+  },
+  "decision": {
+    "promote": false,
+    "improved": [],
+    "worsened": [],
+    "holdout_gain": -0.3,
+    "reasons": [
+      "no train dimension improved by more than its band",
+      "holdout did not gain (normalised gain -0.3)"
+    ]
+  }
+}
