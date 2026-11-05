@@ -362,6 +362,7 @@ def filtered_longform() -> Iterator[None]:
             "",
             _clean(text or ""),
         ).strip()
+        cleaned = re.sub(r"\bStore Performance\b", "Service Performance", cleaned)
         words = cleaned.split()
         return " ".join(words[:5]).rstrip(",;:") if words else "Overview"
 

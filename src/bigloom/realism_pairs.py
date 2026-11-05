@@ -70,7 +70,9 @@ _DROP_LINE = re.compile(
     r"\bThe number of web browsers\b|\(int\)\s*conducted\.|\(days\)\s*\(int\)|"
     r"^Home\s+Products and services\b|^Interested to find out more about\b|^Why use\b|^How to use\b|^What's the latest on\b|"
     r"^Visit the\s+.*website to learn more\b|^Have questions\?\s*Email us\b|"
-    r"\|\s*Government Technology Agency\b)",
+    r"\|\s*Government Technology Agency\b|"
+    r"^Table \d+(?:\.\d+)?\s*:|^Source:\s|^Figure:\s.*\bBars:\s|"
+    r"^(?:\d{1,2}\s+)?Revised\s+.*\bforecast\b)",
     re.IGNORECASE,
 )
 
@@ -80,9 +82,16 @@ def _clean_line(raw: str) -> str:
     collapsed = re.sub(r"\s+", " ", raw).strip()
     if not collapsed or _DROP_LINE.search(collapsed):
         return ""
+    if (
+        re.match(r"^\d{1,2}(?:\.\d+)?\s+[A-Z]", collapsed)
+        and len(collapsed.split()) <= 14
+        and not collapsed.endswith((".", "!", "?"))
+    ):
+        return ""
     line = CLUE.sub(" ", collapsed)
     line = re.sub(r"\[\s*\]|\[\s*$|^\]\s*", " ", line)
     line = re.sub(r"\s{2,}", " ", line).strip()
+    line = re.sub(r"\s+([,.;:!?])", r"\1", line)
     line = re.sub(r"\bat least\s+every\s+day\(s\)", "regularly", line, flags=re.IGNORECASE)
     line = re.sub(r"\bevery\s+day\(s\)", "periodically", line, flags=re.IGNORECASE)
     line = re.sub(r"\bat least\s+day\(s\)", "in advance", line, flags=re.IGNORECASE)
@@ -134,6 +143,9 @@ def passages(text: str) -> list[str]:
                 continue
         line = _clean_line(raw)
         if not line:
+            if not collapsed and cur:
+                paras.append(" ".join(cur))
+                cur = []
             continue
         if len(line.split()) >= 6:
             cur.append(line)
@@ -172,6 +184,7 @@ def _pool(files: Sequence[Path]) -> list[tuple[str, int, str]]:
         (f.name, i, p)
         for f in files
         if "DPO Registration Instruction Guide" not in f.name
+        and "spp model development procedure manual" not in f.name.lower()
         for i, p in enumerate(passages(text_of(f)))
     ]
 
@@ -192,8 +205,7 @@ def build_pairs(real_dir: Path, synth_dir: Path, out_dir: Path, n: int, seed: in
                 extra_orgs: Iterable[str] = ()) -> dict[str, Any]:
     """Write `out_dir/pairs.md` with masked blind pairs. Return the answer key (never written here)."""
     real = _pool(sorted(p for p in real_dir.iterdir() if p.is_file()))
-    synth_files = [f for f in sorted(synth_dir.iterdir())
-                   if f.is_file() and "-5mb_final.docx" not in f.name and "-5mb_final.pptx" not in f.name]
+    synth_files = [f for f in sorted(synth_dir.iterdir()) if f.is_file()]
     synth = _pool(synth_files)
     rng = random.Random(seed)
     rng.shuffle(real)

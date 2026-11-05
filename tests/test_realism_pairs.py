@@ -168,6 +168,68 @@ def test_passages_strip_real_corpus_extraction_artifacts() -> None:
     assert "available to users 24/7." in pr_joined
 
 
+def test_clean_line_strips_space_before_punctuation() -> None:
+    raw = "The Government Technology Agency (Synthetic), acting as host, published the notice."
+    assert rp._clean_line(raw) == "The Government Technology Agency, acting as host, published the notice."
+
+
+def test_passages_flush_on_blank_lines_and_drop_headers_and_captions() -> None:
+    sec1 = " ".join(
+        [
+            "Agencies must validate every schema before deploying a shared data service to production.",
+            "Each integration team records the validation outcome in the release log before cutover.",
+        ]
+        * 5
+    )
+    sec2 = " ".join(
+        [
+            "Service owners must review access permissions every quarter and revoke dormant accounts promptly.",
+            "System administrators archive the signed review sheet in the compliance repository.",
+        ]
+        * 5
+    )
+    text = (
+        "1 Executive summary: schema governance and release controls\n\n"
+        f"{sec1}\n\n"
+        "2 Access review and quarterly audit controls\n\n"
+        f"{sec2}\n\n"
+        "4 Revised gross surplus forecast\n\n"
+        "Table 4.1: Revised gross surplus forecast (SGD thousands)\n\n"
+        "Source: March 2026 Board Pack; Finance Model (SGD thousands).\n\n"
+        "Figure: Revised gross surplus forecast (SGD thousands) Bars: FY2025 Actual=1200.0, FY2026 Plan=1350.0\n"
+    )
+    out = rp.passages(text)
+    assert len(out) >= 2
+    joined = " ".join(out)
+    for bad in (
+        "1 Executive summary",
+        "2 Access review",
+        "4 Revised gross surplus forecast",
+        "Table 4.1:",
+        "Source: March 2026",
+        "Figure: Revised gross surplus",
+    ):
+        assert bad not in joined, f"leaked {bad!r}"
+
+
+def test_pool_excludes_spp_manual_and_dpo_guide(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from docx import Document
+
+    body = "Agencies must validate every schema before deploying a shared data service to production. " * 15
+    p_ok = tmp_path / "Understand Users.docx"
+    p_spp = tmp_path / "spp model development procedure manual 2021 v5.0.docx"
+    p_dpo = tmp_path / "DPO Registration Instruction Guide.docx"
+    for p in (p_ok, p_spp, p_dpo):
+        doc = Document()
+        doc.add_paragraph(body)
+        doc.save(str(p))
+    pooled = rp._pool([p_ok, p_spp, p_dpo])
+    names = {item[0] for item in pooled}
+    assert names == {"Understand Users.docx"}
+
+
+
+
 
 
 

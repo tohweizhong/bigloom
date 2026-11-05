@@ -301,3 +301,22 @@ def test_filter_clears_abstract_and_lowercases_mid_sentence_text_facts(long_doc,
     assert ". Stale legacy-to-new product hierarchy mapping in the merchandising master opened" in cleaned
     assert "and ERP logs show no interruption" in cleaned
 
+
+def test_rendered_deck_replaces_store_performance_retail_label(world, tmp_path: Path) -> None:  # type: ignore[no-untyped-def]
+    """Loop v2c: PPTX schedule slides replace Store Performance with Service Performance."""
+    from worldloom.render import enterprise
+    from worldloom.render.enterprise import pptx as epptx
+
+    from bigloom.realism_metrics import text_of
+
+    with lf.filtered_longform():
+        ctx = enterprise.context(world, ("pptx",))
+        deck_ir = next(ir for ir in world.artifact_irs if ctx.intent(ir).artifact_type == "executive_summary")
+        pptx_path = tmp_path / "deck_retail.pptx"
+        pptx_path.write_bytes(epptx.render_deck(ctx, deck_ir))
+    deck_text = text_of(pptx_path)
+    assert "Store Performance" not in deck_text
+    assert "Service Performance" in deck_text
+
+
+
