@@ -126,7 +126,8 @@ Round `N` uses `NNN` for the three-digit number, `runs/loop/r<NNN>t` for train, 
    holdout set only when both train and holdout pass steps 5 to 7. This gives `train-<NNN>.json` a
    train judge score on every valid train build and never reveals a holdout gate failure. Build pairs
    with `build_pairs(real_dir, synth_dir, out_dir, 20, seed)`. Use `<root>/set/large` of each build as
-   `synth_dir`. Use the pair seed of the current baseline (`18000 +` the baseline round number), the
+   `synth_dir` (`build_pairs` selects `-2mb_final` target files when present so each episode appears
+   once in `pairs.md`). Use the pair seed of the current baseline (`18000 +` the baseline round number), the
    same seed that the champion used. Keep the answer key in memory. Do not write it to disk until all
    judges reply. Start three fresh judge subagents for each judged set:
 

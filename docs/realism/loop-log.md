@@ -14,8 +14,8 @@ Update this section at the end of each round and after each loop change.
 
 | Item | Value |
 |---|---|
-| Updated | 05 Nov 2026 22:42 SGT (Round 63 completed, rejected; `policies/writer/round-061.md` remains champion) |
-| Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B + Level 2C `2039bb5` + Level 2D `429c21f` merged) |
+| Updated | 05 Nov 2026 22:55 SGT (Level 2E `ff10264` merged; starting Round 64) |
+| Loop version | v3 (`judge_error` scored in `decide`, Level 2A + Level 2B + Level 2C `2039bb5` + Level 2D `429c21f` + Level 2E `ff10264` merged) |
 | Champion policy | `policies/writer/round-061.md` (`99911740…`, LF) |
 | Champion baseline receipt | `docs/realism/receipts/rescore-v2-061c.json` (train view `docs/realism/loop/train-061cr.json`) |
 | Last round | Round 63, rejected (`improved: ()`, `worsened: ()`, `holdout_gain: -0.3`, train judges `[18, 18, 18]` on 18 pairs, holdout judges `[14, 14, 14]` on 14 pairs) |
@@ -25,7 +25,14 @@ Update this section at the end of each round and after each loop change.
 
 ### Open items
 
-1. Run Level 2E on `realism-v2` and Level 1 Round 64 (`r064t` / `r064h`).
+1. Rebuild `runs/loop/cache` and run Level 1 Round 64 (`r064t` / `r064h`).
+
+### Level 2E change: three technical standards episodes, `-2mb_final` pair filter, and statutory masking (05 Nov 22:55 SGT)
+
+- **Approval.** Instructed by the monitor at 05 Nov 22:31 SGT after inspecting the `train-062.json` and `train-063.json` judge logs.
+- **Cause.** First, `govtech.json` had only two technical standards review episodes (`digital_service_standards_review` in domain `engineering` and `cybersecurity_compliance_review` in domain `risk`), neither of which allowed `"deck": true`, so the third target slot (`pptx` or `docx`) fell back to finance (`exco_update`) or incident operations (`service_impact_assessment`). Second, `build_pairs()` drew synthetic passages from both `-2mb_final` and `-5mb_final` files, duplicating the same episode numbers across pairs in `pairs.md`. Third, real passages retained mid-line lettered list markers (`c) using web analytics`) and unmasked `GovTech Act 2016`, `RFC 2350`, and `IM8`.
+- **Change (`ff10264`).** `packs/govtech.json` enables `"deck": true` on `digital_service_standards_review` and `cybersecurity_compliance_review`, and adds a third technical episode `CloudArchitectureAssurance` (`cloud_architecture_standards_review`, `"word": true`, `"deck": true`, domain `"operations"`, role `platform_senior`) with 12 `arch.*` facts. `src/bigloom/build.py` places those three technical types first in `PREFERRED_TYPES`. `src/bigloom/realism_pairs.py` filters `synth_files` to `-2mb_final` files when present, strips mid-line `\b[a-f]\)\s+(?=[a-z])` list tags, and masks `GovTech Act 2016`, `RFC 2350`, and `IM8`.
+- **Tests.** Extended `test_realism_pairs.py` and `test_govtech_pack.py`; verified 3 tests failed on the old code, `worldloom pack check packs/govtech.json` passed with zero lint findings, and all 35 tests in the Level 2E suite passed (`35 passed in 97.83s`).
 
 ### Level 2D change: clean real-passage table splices, spacing typos, and tool/person masking (05 Nov 22:04 SGT)
 
